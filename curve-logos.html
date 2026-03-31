@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>curve · logo directions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cabinet+Grotesk:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #131313;
+      min-height: 100vh;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      color: #E5E2E1;
+      overflow-x: hidden;
+    }
+
+    /* Atmospheric bokeh background */
+    .bg-atmosphere {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-atmosphere::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: -10%;
+      width: 60%;
+      height: 70%;
+      background: radial-gradient(ellipse at center, rgba(255,95,0,0.07) 0%, rgba(255,95,0,0.03) 40%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .bg-atmosphere::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      right: -5%;
+      width: 55%;
+      height: 65%;
+      background: radial-gradient(ellipse at center, rgba(255,140,74,0.06) 0%, rgba(255,95,0,0.025) 40%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(50px);
+    }
+
+    .bg-glow-mid {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 60%;
+      background: radial-gradient(ellipse at center, rgba(255,95,0,0.04) 0%, transparent 60%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      padding: 64px 48px 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Page header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .page-title {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(229, 226, 225, 0.45);
+    }
+
+    .page-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255, 95, 0, 0.3);
+      margin: 20px auto 0;
+    }
+
+    /* Grid */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* Card */
+    .logo-card {
+      border: 1px solid rgba(255, 95, 0, 0.12);
+      border-radius: 20px;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 28px 24px;
+      background: rgba(255, 255, 255, 0.012);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s ease, background 0.4s ease;
+    }
+
+    .logo-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,95,0,0.04) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .logo-card:hover {
+      border-color: rgba(255, 95, 0, 0.26);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .logo-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .concept-label {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(229, 226, 225, 0.38);
+      margin-top: 20px;
+      flex-shrink: 0;
+    }
+
+    /* ===================== */
+    /* CONCEPT 1 — Mono Arc  */
+    /* ===================== */
+    .c1-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .c1-arc {
+      display: block;
+      overflow: visible;
+    }
+
+    .c1-wordmark {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 2.4rem;
+      letter-spacing: -0.03em;
+      color: #E5E2E1;
+      line-height: 1;
+      margin-top: -2px;
+    }
+
+    .c1-sub {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #FF5F00;
+      margin-top: 6px;
+    }
+
+    /* ========================= */
+    /* CONCEPT 2 — Serif C Mark  */
+    /* ========================= */
+    .c2-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+      line-height: 1;
+    }
+
+    .c2-big-c {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 5.6rem;
+      color: #FF5F00;
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+      margin-right: -2px;
+    }
+
+    .c2-rest {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 2.35rem;
+      color: #E5E2E1;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      padding-bottom: 4px;
+    }
+
+    /* ====================== */
+    /* CONCEPT 3 — Flow Line  */
+    /* ====================== */
+    .c3-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .c3-wordmark {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 2.55rem;
+      letter-spacing: -0.03em;
+      color: #E5E2E1;
+      line-height: 1;
+    }
+
+    .c3-flow {
+      display: block;
+      margin-top: 1px;
+      overflow: visible;
+    }
+
+    /* ====================== */
+    /* CONCEPT 4 — Arc Stack  */
+    /* ====================== */
+    .c4-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .c4-arc {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .c4-wordmark {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #E5E2E1;
+      line-height: 1;
+    }
+
+    .c4-divider {
+      width: 100%;
+      max-width: 160px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #FF5F00, transparent);
+      margin: 9px 0;
+    }
+
+    .c4-sub {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 8.5px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(229, 226, 225, 0.5);
+      line-height: 1;
+    }
+
+    /* ========================== */
+    /* CONCEPT 5 — Gradient Word  */
+    /* ========================== */
+    .c5-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .c5-wordmark {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 5rem;
+      line-height: 1;
+      background: linear-gradient(100deg, #FF5F00 0%, #ff8c4a 45%, #FFB599 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.01em;
+    }
+
+    .c5-sub {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      color: rgba(229, 226, 225, 0.45);
+      margin-top: 7px;
+      line-height: 1;
+    }
+
+    /* ======================== */
+    /* CONCEPT 6 — Bezier Mark  */
+    /* ======================== */
+    .c6-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .c6-icon {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .c6-wordmark {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      letter-spacing: -0.03em;
+      color: #E5E2E1;
+      line-height: 1;
+    }
+
+    .c6-sep {
+      width: 1px;
+      height: 38px;
+      background: rgba(255,95,0,0.25);
+      margin: 0 2px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Atmospheric background -->
+  <div class="bg-atmosphere"></div>
+  <div class="bg-glow-mid"></div>
+
+  <div class="page-wrapper">
+
+    <!-- Header -->
+    <header class="page-header">
+      <p class="page-title">curve &nbsp;·&nbsp; logo directions</p>
+      <div class="page-divider"></div>
+    </header>
+
+    <!-- Grid -->
+    <div class="logo-grid">
+
+      <!-- CARD 1: Mono Arc -->
+      <div class="logo-card">
+        <div class="logo-display">
+          <div class="c1-wrapper">
+            <!-- Precise arc above the wordmark -->
+            <svg class="c1-arc" width="138" height="28" viewBox="0 0 138 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M 8 24 C 28 4, 110 4, 130 24"
+                stroke="#FF5F00"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                fill="none"
+              />
+            </svg>
+            <div class="c1-wordmark">curve</div>
+            <div class="c1-sub">Systems</div>
+          </div>
+        </div>
+        <span class="concept-label">01 &nbsp;·&nbsp; Mono Arc</span>
+      </div>
+
+      <!-- CARD 2: Serif C Mark -->
+      <div class="logo-card">
+        <div class="logo-display">
+          <div class="c2-wrapper">
+            <span class="c2-big-c">C</span>
+            <span class="c2-rest">urve</span>
+          </div>
+        </div>
+        <span class="concept-label">02 &nbsp;·&nbsp; Serif C Mark</span>
+      </div>
+
+      <!-- CARD 3: Flow Line -->
+      <div class="logo-card">
+        <div class="logo-display">
+          <div class="c3-wrapper">
+            <div class="c3-wordmark">curve</div>
+            <svg class="c3-flow" width="154" height="20" viewBox="0 0 154 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="flowGrad" x1="0" y1="0" x2="154" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF5F00" stop-opacity="0"/>
+                  <stop offset="30%" stop-color="#FF5F00" stop-opacity="1"/>
+                  <stop offset="70%" stop-color="#FF5F00" stop-opacity="1"/>
+                  <stop offset="100%" stop-color="#FF5F00" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path
+                d="M 0 6 C 30 6, 44 16, 77 16 C 110 16, 124 6, 154 6"
+                stroke="url(#flowGrad)"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                fill="none"
+              />
+            </svg>
+          </div>
+        </div>
+        <span class="concept-label">03 &nbsp;·&nbsp; Flow Line</span>
+      </div>
+
+      <!-- CARD 4: Arc + Stack -->
+      <div class="logo-card">
+        <div class="logo-display">
+          <div class="c4-wrapper">
+            <!-- Small centered arc icon -->
+            <svg class="c4-arc" width="56" height="22" viewBox="0 0 56 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M 4 20 C 4 6, 52 6, 52 20"
+                stroke="#FF5F00"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                fill="none"
+              />
+            </svg>
+            <div class="c4-wordmark">Curve</div>
+            <div class="c4-divider"></div>
+            <div class="c4-sub">Systems</div>
+          </div>
+        </div>
+        <span class="concept-label">04 &nbsp;·&nbsp; Arc + Stack</span>
+      </div>
+
+      <!-- CARD 5: Gradient Wordmark -->
+      <div class="logo-card">
+        <div class="logo-display">
+          <div class="c5-wrapper">
+            <div class="c5-wordmark">curve</div>
+            <div class="c5-sub">by Validated Systems</div>
+          </div>
+        </div>
+        <span class="concept-label">05 &nbsp;·&nbsp; Gradient Wordmark</span>
+      </div>
+
+      <!-- CARD 6: Bezier Mark -->
+      <div class="logo-card">
+        <div class="logo-display">
+          <div class="c6-wrapper">
+            <!-- Bezier icon: abstract C shape made from bezier handles -->
+            <svg class="c6-icon" width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Main C curve path -->
+              <path
+                d="M 42 12 C 42 12, 22 8, 14 20 C 6 32, 14 46, 42 42"
+                stroke="#FF5F00"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <!-- Anchor point top -->
+              <circle cx="42" cy="12" r="2.5" fill="none" stroke="#FF5F00" stroke-width="1.5"/>
+              <!-- Anchor point bottom -->
+              <circle cx="42" cy="42" r="2.5" fill="none" stroke="#FF5F00" stroke-width="1.5"/>
+              <!-- Control handle top -->
+              <line x1="42" y1="12" x2="22" y2="8" stroke="rgba(255,95,0,0.45)" stroke-width="1" stroke-linecap="round"/>
+              <circle cx="22" cy="8" r="1.5" fill="#FF5F00" fill-opacity="0.55"/>
+              <!-- Control handle bottom -->
+              <line x1="42" y1="42" x2="14" y2="46" stroke="rgba(255,95,0,0.45)" stroke-width="1" stroke-linecap="round"/>
+              <circle cx="14" cy="46" r="1.5" fill="#FF5F00" fill-opacity="0.55"/>
+            </svg>
+            <div class="c6-sep"></div>
+            <div class="c6-wordmark">curve</div>
+          </div>
+        </div>
+        <span class="concept-label">06 &nbsp;·&nbsp; Bezier Mark</span>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

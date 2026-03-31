@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Curve — Attribution Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Geist', -apple-system, sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BACKGROUND */
+.bg-base { position: fixed; inset: 0; z-index: 0; background: #0a0a0a; }
+.bg-glow {
+  position: fixed; bottom: -20%; left: 50%; transform: translateX(-50%);
+  width: 120vw; height: 65vh; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse 80% 70% at 50% 100%,
+    rgba(220,70,5,0.65) 0%, rgba(180,50,3,0.4) 28%,
+    rgba(100,25,2,0.18) 55%, transparent 72%);
+  animation: glowBreathe 10s ease-in-out infinite;
+}
+.bg-grain {
+  position: fixed; inset: 0; z-index: 5; opacity: 0.042; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+@keyframes glowBreathe {
+  0%,100% { opacity: 0.8; }
+  50%      { opacity: 1; }
+}
+
+/* LAYOUT */
+.app { position: relative; z-index: 10; display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 218px; flex-shrink: 0;
+  border-right: 0.5px solid rgba(255,255,255,0.07);
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+}
+
+.sidebar-top { padding: 26px 20px 20px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+.sidebar-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.logo-mark {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: rgba(220,80,10,0.12); border: 0.5px solid rgba(220,80,10,0.28);
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-name { font-size: 13px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+
+.client-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 9px; padding: 9px 12px; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.client-pill:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); }
+.client-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(80,210,100,0.85); flex-shrink: 0;
+  box-shadow: 0 0 7px rgba(80,210,100,0.5);
+  animation: livePulse 2.8s ease-in-out infinite;
+}
+@keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+.client-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.75); }
+.client-chevron { margin-left: auto; color: rgba(255,255,255,0.2); }
+
+.sidebar-nav { padding: 14px 10px; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.nav-section-label {
+  font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2); padding: 10px 10px 6px; font-weight: 500;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: 8px;
+  font-size: 13px; color: rgba(255,255,255,0.35);
+  cursor: pointer; transition: all 0.18s; user-select: none;
+  text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.65); }
+.nav-item.active { background: rgba(220,80,10,0.1); color: rgba(255,255,255,0.88); }
+.nav-item.active svg { color: rgba(220,90,15,0.9); }
+.nav-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; font-size: 9.5px; font-weight: 600;
+  background: rgba(220,80,10,0.18); border: 0.5px solid rgba(220,80,10,0.28);
+  color: rgba(230,100,20,0.85); padding: 2px 7px; border-radius: 100px;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 0.5px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; gap: 10px;
+}
+.footer-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(220,80,10,0.45), rgba(160,40,5,0.3));
+  border: 0.5px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.75);
+}
+.footer-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6); }
+.footer-role { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+/* MAIN */
+.main { margin-left: 218px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* TOPBAR */
+.topbar {
+  padding: 20px 32px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  background: rgba(10,10,10,0.7);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-left h1 { font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.85); letter-spacing: -0.02em; margin-bottom: 2px; }
+.topbar-left p { font-size: 11.5px; color: rgba(255,255,255,0.28); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.ctrl-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.09);
+  border-radius: 8px; padding: 8px 13px;
+  font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.5); cursor: pointer;
+  transition: all 0.18s;
+}
+.ctrl-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.14); }
+
+.btn-primary {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(220,80,10,0.9); border: none; border-radius: 8px;
+  padding: 8px 15px;
+  font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.95); cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.btn-primary:hover { background: rgba(232,92,16,1); transform: translateY(-1px); box-shadow: 0 6px 22px rgba(220,80,10,0.28); }
+.btn-primary:active { transform: translateY(0); }
+
+/* CONTENT */
+.content { padding: 28px 32px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.kpi-card {
+  background: rgba(255,255,255,0.028); border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 20px 22px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.22s, background 0.22s;
+  cursor: default;
+}
+.kpi-card:hover { border-color: rgba(255,255,255,0.13); background: rgba(255,255,255,0.042); }
+.kpi-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+}
+.kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.kpi-label { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.28); font-weight: 500; }
+.kpi-ico { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-value {
+  font-size: 26px; font-weight: 300; letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.9); line-height: 1; margin-bottom: 10px;
+}
+.kpi-value sub { font-size: 16px; font-weight: 400; vertical-align: baseline; }
+.kpi-delta { font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.up   { color: rgba(75,210,95,0.8); }
+.dn   { color: rgba(220,75,75,0.8); }
+.vs   { font-size: 11px; color: rgba(255,255,255,0.22); font-weight: 400; margin-left: 3px; }
+
+/* GRID MID */
+.mid-row { display: grid; grid-template-columns: 1fr 320px; gap: 14px; align-items: start; }
+
+/* PANEL */
+.panel {
+  background: rgba(255,255,255,0.022); border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px; overflow: hidden; position: relative;
+}
+.panel::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.065), transparent);
+}
+.panel-hd {
+  padding: 18px 22px; border-bottom: 0.5px solid rgba(255,255,255,0.055);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.72); letter-spacing: -0.01em; }
+.panel-sub { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 2px; }
+.panel-link { font-size: 11px; font-weight: 500; color: rgba(220,80,10,0.8); cursor: pointer; letter-spacing: 0.02em; transition: color 0.18s; }
+.panel-link:hover { color: rgba(232,95,20,1); }
+
+/* UTM TABLE */
+.utm-head {
+  display: grid; grid-template-columns: 2fr 96px 96px 120px 76px 64px;
+  padding: 9px 22px; border-bottom: 0.5px solid rgba(255,255,255,0.048);
+}
+.th { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.22); font-weight: 500; }
+.utm-row {
+  display: grid; grid-template-columns: 2fr 96px 96px 120px 76px 64px;
+  padding: 15px 22px; border-bottom: 0.5px solid rgba(255,255,255,0.038);
+  align-items: center; cursor: pointer; transition: background 0.16s;
+}
+.utm-row:last-child { border-bottom: none; }
+.utm-row:hover { background: rgba(255,255,255,0.022); }
+.utm-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.82); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.utm-video { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.utm-url-text { font-size: 10px; font-family: 'Geist Mono', monospace; color: rgba(255,255,255,0.22); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mono { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.72); white-space: nowrap; }
+.mono-sub { font-size: 10px; color: rgba(255,255,255,0.25); font-family: 'Geist', sans-serif; margin-top: 3px; white-space: nowrap; }
+.mono-rev { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88); white-space: nowrap; }
+
+.badge-active {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 8px; border-radius: 100px; font-size: 10px; font-weight: 500;
+  background: rgba(75,210,95,0.09); border: 0.5px solid rgba(75,210,95,0.22);
+  color: rgba(95,215,110,0.8);
+}
+.badge-active::before { content:''; width:4px; height:4px; border-radius:50%; background:rgba(75,210,95,0.85); }
+
+.ch-up   { font-size: 11px; font-weight: 500; color: rgba(75,210,95,0.75); font-family: 'Geist Mono', monospace; }
+.ch-down { font-size: 11px; font-weight: 500; color: rgba(220,75,75,0.75); font-family: 'Geist Mono', monospace; }
+
+/* REVENUE PANEL */
+.rev-body { padding: 20px 22px; }
+.rev-total-num { font-size: 30px; font-weight: 300; letter-spacing: -0.04em; color: rgba(255,255,255,0.9); line-height: 1; margin-bottom: 3px; }
+.rev-period-txt { font-size: 11px; color: rgba(255,255,255,0.28); margin-bottom: 22px; }
+
+.bar-list { display: flex; flex-direction: column; gap: 13px; }
+.bar-item { display: flex; flex-direction: column; gap: 5px; }
+.bar-row-top { display: flex; align-items: center; justify-content: space-between; }
+.bar-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+.bar-amt { font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.7); }
+.bar-track { height: 3px; background: rgba(255,255,255,0.06); border-radius: 100px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, rgba(195,58,8,0.7), rgba(230,100,18,0.9)); transition: width 1.1s cubic-bezier(0.4,0,0.2,1); }
+
+.rev-rule { height: 0.5px; background: rgba(255,255,255,0.05); margin: 20px 0; }
+.rev-stats { display: flex; gap: 18px; }
+.rev-stat-item { flex: 1; }
+.rev-stat-lbl { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 5px; }
+.rev-stat-val { font-family: 'Geist Mono', monospace; font-size: 17px; font-weight: 500; color: rgba(255,255,255,0.8); }
+
+/* LEADS */
+.leads-head {
+  display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr 82px 90px;
+  padding: 9px 22px; border-bottom: 0.5px solid rgba(255,255,255,0.048);
+}
+.lead-row {
+  display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr 82px 90px;
+  padding: 13px 22px; border-bottom: 0.5px solid rgba(255,255,255,0.035);
+  align-items: center; transition: background 0.16s;
+}
+.lead-row:last-child { border-bottom: none; }
+.lead-row:hover { background: rgba(255,255,255,0.018); }
+.lead-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.78); }
+.lead-email { font-size: 10.5px; font-family: 'Geist Mono', monospace; color: rgba(255,255,255,0.28); margin-top: 2px; }
+.lead-src { font-size: 11px; color: rgba(255,255,255,0.48); display: flex; align-items: center; gap: 5px; }
+.lead-val { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.72); }
+.lead-date { font-size: 11px; color: rgba(255,255,255,0.28); }
+
+.stage { display: inline-flex; padding: 3px 8px; border-radius: 100px; font-size: 10px; font-weight: 500; letter-spacing: 0.03em; }
+.stage-c { background: rgba(75,210,95,0.09); border: 0.5px solid rgba(75,210,95,0.2); color: rgba(95,215,110,0.8); }
+.stage-q { background: rgba(220,80,10,0.1); border: 0.5px solid rgba(220,80,10,0.22); color: rgba(230,100,20,0.82); }
+.stage-n { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.09); color: rgba(255,255,255,0.42); }
+
+.copy-sm {
+  background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 6px; padding: 5px 9px;
+  font-family: 'Geist', sans-serif; font-size: 10px; font-weight: 500;
+  color: rgba(255,255,255,0.38); cursor: pointer; transition: all 0.18s; white-space: nowrap;
+}
+.copy-sm:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.68); }
+
+/* MODAL OVERLAY */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.28s;
+}
+.overlay.open    { display: flex; }
+.overlay.visible { opacity: 1; }
+
+.modal {
+  background: #0f0f0f; border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 18px; padding: 28px; width: 100%; max-width: 460px;
+  transform: translateY(14px); transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  position: relative; max-height: 90vh; overflow-y: auto;
+}
+.overlay.visible .modal { transform: translateY(0); }
+.modal::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  border-radius: 18px 18px 0 0;
+}
+.modal-hd { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+.modal-title { font-size: 18px; font-weight: 300; letter-spacing: -0.025em; color: rgba(255,255,255,0.9); }
+.modal-title strong { font-weight: 500; display: block; }
+.modal-x {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: rgba(255,255,255,0.38); font-size: 16px;
+  transition: all 0.18s; flex-shrink: 0;
+}
+.modal-x:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
+
+/* LINK DISPLAY BOX */
+.link-box {
+  background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 13px 14px; margin-bottom: 18px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.link-text {
+  flex: 1; font-family: 'Geist Mono', monospace; font-size: 10.5px;
+  color: rgba(255,255,255,0.48); line-height: 1.6; word-break: break-all;
+}
+.btn-copy-link {
+  background: rgba(220,80,10,0.14); border: 0.5px solid rgba(220,80,10,0.26);
+  border-radius: 7px; padding: 6px 11px;
+  font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500;
+  color: rgba(230,100,20,0.88); cursor: pointer; transition: all 0.18s; white-space: nowrap; flex-shrink: 0;
+}
+.btn-copy-link:hover { background: rgba(220,80,10,0.24); }
+
+.modal-stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
+.modal-stat-box { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 13px; }
+.modal-stat-lbl { font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 5px; }
+.modal-stat-num { font-family: 'Geist Mono', monospace; font-size: 17px; font-weight: 500; color: rgba(255,255,255,0.82); }
+
+.video-row {
+  background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.07);
+  border-radius: 10px; padding: 13px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.video-row-label { font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 4px; }
+.video-row-name { font-size: 13px; color: rgba(255,255,255,0.62); }
+
+/* FORM FIELDS */
+.field-group { display: flex; flex-direction: column; gap: 13px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.3); font-weight: 500; }
+.field input, .field select, .field textarea {
+  width: 100%; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 9px; color: rgba(255,255,255,0.8); font-family: 'Geist', sans-serif;
+  font-size: 13px; padding: 11px 13px; outline: none; transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+.field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.18); }
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: rgba(220,80,10,0.45); background: rgba(255,255,255,0.07);
+}
+.field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='rgba(255,255,255,0.28)' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.field select option { background: #1a1a1a; }
+.field-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.generated-url {
+  background: rgba(220,80,10,0.07); border: 0.5px solid rgba(220,80,10,0.2);
+  border-radius: 9px; padding: 12px 14px;
+  font-family: 'Geist Mono', monospace; font-size: 10.5px;
+  color: rgba(230,100,20,0.82); line-height: 1.6; word-break: break-all;
+  display: none;
+}
+
+.btn-generate {
+  background: rgba(220,80,10,0.9); border: none; border-radius: 9px;
+  padding: 12px; width: 100%;
+  font-family: 'Geist', sans-serif; font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.95); cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-generate:hover { background: rgba(232,92,16,1); transform: translateY(-1px); }
+.btn-generate:active { transform: translateY(0); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(8px);
+  z-index: 300; background: rgba(22,22,22,0.96); border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 9px; padding: 10px 16px;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.72);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(75,210,95,0.85); flex-shrink: 0; }
+
+/* MOBILE */
+@media (max-width: 960px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .mid-row { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  .content { padding: 20px 16px; }
+  .topbar { padding: 16px 18px; }
+}
+@media (max-width: 640px) {
+  .utm-head, .utm-row { grid-template-columns: 1fr 96px 72px; }
+  .utm-head .th:nth-child(3), .utm-row > *:nth-child(3),
+  .utm-head .th:nth-child(4), .utm-row > *:nth-child(4),
+  .utm-head .th:nth-child(6), .utm-row > *:nth-child(6) { display: none; }
+  .leads-head, .lead-row { grid-template-columns: 1fr 1fr 78px; }
+  .leads-head .th:nth-child(2), .lead-row > *:nth-child(2),
+  .leads-head .th:nth-child(3), .lead-row > *:nth-child(3),
+  .leads-head .th:nth-child(4), .lead-row > *:nth-child(4) { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="bg-base"></div>
+<div class="bg-glow"></div>
+<div class="bg-grain"></div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">
+        <div class="logo-mark">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5" stroke="rgba(220,100,20,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6.5 11C6.5 11 4 9.75 4 7.5" stroke="rgba(220,100,20,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="9.5" cy="9.5" r="1.5" fill="rgba(220,100,20,0.85)"/>
+          </svg>
+        </div>
+        <span class="logo-name">Curve</span>
+      </div>
+      <div class="client-pill">
+        <div class="client-dot"></div>
+        <span class="client-name">Northgate Wellness</span>
+        <svg class="client-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1 1L5 5L9 1"/></svg>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Analytics</div>
+      <a class="nav-item active" onclick="setActive(this)">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.35">
+          <rect x="1" y="1" width="5" height="5" rx="1.2"/>
+          <rect x="8" y="1" width="5" height="5" rx="1.2"/>
+          <rect x="1" y="8" width="5" height="5" rx="1.2"/>
+          <rect x="8" y="8" width="5" height="5" rx="1.2"/>
+        </svg>
+        Overview
+      </a>
+      <a class="nav-item" onclick="setActive(this)">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="7" cy="7" r="5.5"/>
+          <path d="M3 7H11M7 1.5C7 1.5 5 4 5 7C5 10 7 12.5 7 12.5M7 1.5C7 1.5 9 4 9 7C9 10 7 12.5 7 12.5"/>
+        </svg>
+        UTM Links
+        <span class="nav-badge">4</span>
+      </a>
+      <a class="nav-item" onclick="setActive(this)">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.35">
+          <path d="M1.5 11.5L4.5 7.5L7.5 9L11 4.5"/>
+          <path d="M11 4.5H13V6.5" stroke-linecap="round"/>
+        </svg>
+        Revenue
+      </a>
+      <a class="nav-item" onclick="setActive(this)">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="7" cy="5.5" r="2.8"/>
+          <path d="M1.5 13C1.5 10.51 4.02 8.5 7 8.5C9.98 8.5 12.5 10.51 12.5 13"/>
+        </svg>
+        Leads
+        <span class="nav-badge">12</span>
+      </a>
+      <div class="nav-section-label" style="margin-top:8px">Account</div>
+      <a class="nav-item" onclick="setActive(this)">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.35">
+          <circle cx="7" cy="7" r="2.2"/>
+          <path d="M7 1.5V3M7 11V12.5M12.5 7H11M3 7H1.5M11.04 2.96L9.95 4.05M4.05 9.95L2.96 11.04M11.04 11.04L9.95 9.95M4.05 4.05L2.96 2.96"/>
+        </svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="footer-avatar">NW</div>
+      <div>
+        <div class="footer-name">Northgate Wellness</div>
+        <div class="footer-role">Client Portal</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Attribution Overview</h1>
+        <p>Jan 1 — Mar 25, 2025 &nbsp;·&nbsp; All UTM sources</p>
+      </div>
+      <div class="topbar-right">
+        <button class="ctrl-btn">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.35">
+            <rect x="0.5" y="1.5" width="10" height="9" rx="1.5"/>
+            <path d="M3.5 0.5V2.5M7.5 0.5V2.5M0.5 4.5H10.5"/>
+          </svg>
+          Jan – Mar 2025
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1 1L4 4L7 1"/></svg>
+        </button>
+        <button class="ctrl-btn">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.35">
+            <path d="M1 3H10M2.5 6H8.5M4 9H7"/>
+          </svg>
+          Filter
+        </button>
+        <button class="btn-primary" onclick="openNewModal()">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M5 1V9M1 5H9"/>
+          </svg>
+          New UTM Link
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- KPI ROW -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Revenue Attributed</span>
+            <div class="kpi-ico" style="background:rgba(220,80,10,0.1);border:0.5px solid rgba(220,80,10,0.22)">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="rgba(220,100,20,0.8)" stroke-width="1.4">
+                <path d="M6 1V11M9 3.5C9 3.5 7.8 2.5 6 2.5C4.2 2.5 3 3.3 3 4.5C3 5.7 4.5 6.2 6 6.5C7.5 6.8 9 7.3 9 8.5C9 9.7 7.8 9.5 6 9.5C4.2 9.5 3 8.5 3 8.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value">£47,293</div>
+          <div class="kpi-delta up">
+            <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 6L4.5 2L8 6"/></svg>
+            +18.3%
+            <span class="vs">vs last period</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Total Clicks</span>
+            <div class="kpi-ico" style="background:rgba(70,140,255,0.08);border:0.5px solid rgba(70,140,255,0.16)">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="rgba(90,160,255,0.7)" stroke-width="1.4">
+                <path d="M2 2L7 7M7 7H4.5M7 7V4.5" stroke-linecap="round"/>
+                <circle cx="3.2" cy="8.8" r="1.4"/>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value">18,472</div>
+          <div class="kpi-delta up">
+            <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 6L4.5 2L8 6"/></svg>
+            +11.7%
+            <span class="vs">vs last period</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Leads Captured</span>
+            <div class="kpi-ico" style="background:rgba(160,90,255,0.08);border:0.5px solid rgba(160,90,255,0.16)">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="rgba(180,120,255,0.7)" stroke-width="1.4">
+                <circle cx="6" cy="4.5" r="2.5"/>
+                <path d="M1.5 11C1.5 8.79 3.52 7 6 7C8.48 7 10.5 8.79 10.5 11"/>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value">847</div>
+          <div class="kpi-delta up">
+            <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 6L4.5 2L8 6"/></svg>
+            +24.1%
+            <span class="vs">vs last period</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Avg. Conversion</span>
+            <div class="kpi-ico" style="background:rgba(255,175,40,0.08);border:0.5px solid rgba(255,175,40,0.16)">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="rgba(255,185,60,0.7)" stroke-width="1.4">
+                <circle cx="6" cy="6" r="5"/>
+                <path d="M3.8 6L5.4 7.8L8.5 4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value">4.<sub>58</sub>%</div>
+          <div class="kpi-delta dn">
+            <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1L4.5 5L8 1"/></svg>
+            -0.3%
+            <span class="vs">vs last period</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MID ROW -->
+      <div class="mid-row">
+
+        <!-- UTM TABLE -->
+        <div class="panel">
+          <div class="panel-hd">
+            <div>
+              <div class="panel-title">Active UTM Links</div>
+              <div class="panel-sub">Click any row to view full link and breakdown</div>
+            </div>
+            <span class="panel-link">View all →</span>
+          </div>
+          <div class="utm-head">
+            <div class="th">Campaign</div>
+            <div class="th">Clicks</div>
+            <div class="th">Leads</div>
+            <div class="th">Revenue</div>
+            <div class="th">Status</div>
+            <div class="th">Change</div>
+          </div>
+          <div id="utmRows"></div>
+        </div>
+
+        <!-- REVENUE PANEL -->
+        <div class="panel">
+          <div class="panel-hd">
+            <div>
+              <div class="panel-title">Revenue by Link</div>
+              <div class="panel-sub">YTD attribution</div>
+            </div>
+          </div>
+          <div class="rev-body">
+            <div class="rev-total-num">£47,293</div>
+            <div class="rev-period-txt">Jan 1 – Mar 25, 2025</div>
+            <div class="bar-list" id="barList"></div>
+            <div class="rev-rule"></div>
+            <div class="rev-stats">
+              <div class="rev-stat-item">
+                <div class="rev-stat-lbl">Avg per link</div>
+                <div class="rev-stat-val">£11,823</div>
+              </div>
+              <div class="rev-stat-item">
+                <div class="rev-stat-lbl">Best month</div>
+                <div class="rev-stat-val">Feb '25</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- LEADS TABLE -->
+      <div class="panel">
+        <div class="panel-hd">
+          <div>
+            <div class="panel-title">Recent Leads</div>
+            <div class="panel-sub">Captured via UTM attribution · last 30 days</div>
+          </div>
+          <span class="panel-link" onclick="showToast('CSV export ready')">Export CSV →</span>
+        </div>
+        <div class="leads-head">
+          <div class="th">Contact</div>
+          <div class="th">Source UTM</div>
+          <div class="th">Value</div>
+          <div class="th">Date</div>
+          <div class="th">Stage</div>
+          <div class="th"></div>
+        </div>
+        <div id="leadsRows"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- NEW UTM MODAL -->
+<div class="overlay" id="newOverlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">
+        Generate UTM Link
+        <strong>New Campaign</strong>
+      </div>
+      <div class="modal-x" onclick="closeNew()">×</div>
+    </div>
+    <div class="field-group">
+      <div class="field">
+        <label>Campaign Name</label>
+        <input type="text" id="newCampaign" placeholder="e.g. April Product Launch" />
+      </div>
+      <div class="field">
+        <label>Destination URL</label>
+        <input type="text" id="newUrl" placeholder="https://northgatewellness.com/shop" />
+      </div>
+      <div class="field-2col">
+        <div class="field">
+          <label>Source</label>
+          <select id="newSource">
+            <option value="youtube">youtube</option>
+            <option value="instagram">instagram</option>
+            <option value="email">email</option>
+            <option value="podcast">podcast</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Medium</label>
+          <select id="newMedium">
+            <option value="video">video</option>
+            <option value="influencer">influencer</option>
+            <option value="organic">organic</option>
+            <option value="paid">paid</option>
+          </select>
+        </div>
+      </div>
+      <div class="generated-url" id="generatedUrl"></div>
+      <button class="btn-generate" onclick="buildLink()">Generate Link →</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">
+        Campaign
+        <strong id="dName"></strong>
+      </div>
+      <div class="modal-x" onclick="closeDetail()">×</div>
+    </div>
+    <div class="link-box">
+      <div class="link-text" id="dUrl"></div>
+      <button class="btn-copy-link" onclick="copyDetailUrl()">Copy Link</button>
+    </div>
+    <div class="modal-stats-grid" id="dStats"></div>
+    <div class="video-row">
+      <svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.3">
+        <rect x="0.5" y="0.5" width="13" height="9" rx="1.5"/>
+        <path d="M5 3L9 5L5 7V3Z" fill="rgba(255,255,255,0.28)" stroke="none"/>
+      </svg>
+      <div>
+        <div class="video-row-label">Linked Video</div>
+        <div class="video-row-name" id="dVideo"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg">Copied to clipboard</span>
+</div>
+
+<script>
+const utmData = [
+  { id:1, name:"Morning Routine",  campaign:"morning_routine_jan", url:"northgatewellness.com/shop?utm_source=youtube&utm_medium=video&utm_campaign=morning_routine_jan",  video:"5 Morning Habits That Changed Everything",    clicks:6847, leads:312, revenue:18294, cvr:4.56, change:+12.4 },
+  { id:2, name:"Supplement Guide", campaign:"supps_guide_feb",     url:"northgatewellness.com/shop?utm_source=youtube&utm_medium=video&utm_campaign=supps_guide_feb",     video:"The Only Supplement Stack You Need",         clicks:4231, leads:198, revenue:11847, cvr:4.68, change:+8.1  },
+  { id:3, name:"Q1 Brand Collab",  campaign:"collab_q1",           url:"northgatewellness.com/shop?utm_source=youtube&utm_medium=influencer&utm_campaign=collab_q1",      video:"I Tried This For 30 Days (ft. Northgate)",   clicks:5104, leads:231, revenue:13402, cvr:4.53, change:+21.7 },
+  { id:4, name:"FAQ March",        campaign:"faq_march",           url:"northgatewellness.com/shop?utm_source=youtube&utm_medium=video&utm_campaign=faq_march",           video:"Answering Your Most Asked Questions",        clicks:2290, leads:106, revenue:3750,  cvr:4.63, change:-3.2  },
+];
+
+const leadsData = [
+  { name:"Marcus Oyelaran",  email:"m.oyelaran@gmail.com",     utm:"Morning Routine",  value:"£294", date:"Mar 23", stage:"converted" },
+  { name:"Priya Nandakumar", email:"priya.n@outlook.com",      utm:"Q1 Brand Collab",  value:"£147", date:"Mar 22", stage:"qualified" },
+  { name:"Joel Strickland",  email:"joel.s87@icloud.com",      utm:"Supplement Guide", value:"£83",  date:"Mar 21", stage:"new"       },
+  { name:"Chloé Beaumont",   email:"chloe.b@northgate.co.uk",  utm:"Morning Routine",  value:"£412", date:"Mar 20", stage:"converted" },
+  { name:"Taiwo Adegoke",    email:"taiwo.ade@gmail.com",      utm:"FAQ March",        value:"£65",  date:"Mar 19", stage:"new"       },
+  { name:"Harriet Mwangi",   email:"h.mwangi@protonmail.com",  utm:"Q1 Brand Collab",  value:"£229", date:"Mar 17", stage:"qualified" },
+  { name:"Finn Castellanos", email:"finn.c@yahoo.com",         utm:"Supplement Guide", value:"£178", date:"Mar 16", stage:"converted" },
+];
+
+const totalRev = utmData.reduce((s,u) => s+u.revenue, 0);
+let activeDetailUrl = '';
+
+function renderUTM() {
+  const c = document.getElementById('utmRows');
+  c.innerHTML = '';
+  utmData.forEach(u => {
+    const r = document.createElement('div');
+    r.className = 'utm-row';
+    r.onclick = () => openDetail(u);
+    r.innerHTML = `
+      <div>
+        <div class="utm-name">${u.name}</div>
+        <div class="utm-video">${u.video}</div>
+        <div class="utm-url-text">${u.url}</div>
+      </div>
+      <div>
+        <div class="mono">${u.clicks.toLocaleString()}</div>
+        <div class="mono-sub">clicks</div>
+      </div>
+      <div>
+        <div class="mono">${u.leads}</div>
+        <div class="mono-sub">${u.cvr}% CVR</div>
+      </div>
+      <div>
+        <div class="mono-rev">£${u.revenue.toLocaleString()}</div>
+        <div class="mono-sub">${((u.revenue/totalRev)*100).toFixed(1)}% of total</div>
+      </div>
+      <div><span class="badge-active">Active</span></div>
+      <div class="${u.change >= 0 ? 'ch-up' : 'ch-down'}">${u.change >= 0 ? '+' : ''}${u.change}%</div>
+    `;
+    c.appendChild(r);
+  });
+}
+
+function renderBars() {
+  const c = document.getElementById('barList');
+  c.innerHTML = '';
+  const max = Math.max(...utmData.map(u => u.revenue));
+  utmData.forEach(u => {
+    const pct = ((u.revenue / max) * 100).toFixed(1);
+    const el = document.createElement('div');
+    el.className = 'bar-item';
+    el.innerHTML = `
+      <div class="bar-row-top">
+        <span class="bar-label">${u.name}</span>
+        <span class="bar-amt">£${u.revenue.toLocaleString()}</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%" data-w="${pct}%"></div></div>
+    `;
+    c.appendChild(el);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w; });
+  }, 180);
+}
+
+function renderLeads() {
+  const c = document.getElementById('leadsRows');
+  c.innerHTML = '';
+  leadsData.forEach(l => {
+    const sc = l.stage === 'converted' ? 'stage-c' : l.stage === 'qualified' ? 'stage-q' : 'stage-n';
+    const sl = l.stage.charAt(0).toUpperCase() + l.stage.slice(1);
+    const r = document.createElement('div');
+    r.className = 'lead-row';
+    r.innerHTML = `
+      <div>
+        <div class="lead-name">${l.name}</div>
+        <div class="lead-email">${l.email}</div>
+      </div>
+      <div class="lead-src">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="rgba(220,80,10,0.6)" stroke-width="1.3">
+          <circle cx="5" cy="5" r="4"/>
+          <path d="M2 5H8M5 1C5 1 3.5 3 3.5 5C3.5 7 5 9 5 9M5 1C5 1 6.5 3 6.5 5C6.5 7 5 9 5 9"/>
+        </svg>
+        ${l.utm}
+      </div>
+      <div class="lead-val">${l.value}</div>
+      <div class="lead-date">${l.date}</div>
+      <div><span class="stage ${sc}">${sl}</span></div>
+      <div>
+        <button class="copy-sm" onclick="event.stopPropagation();copyText('${l.email}','Email copied')">Copy email</button>
+      </div>
+    `;
+    c.appendChild(r);
+  });
+}
+
+function setActive(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* MODALS */
+function openNew()  { showOverlay('newOverlay'); }
+function closeNew() { hideOverlay('newOverlay'); }
+
+function openDetail(u) {
+  activeDetailUrl = u.url;
+  document.getElementById('dName').textContent = u.name;
+  document.getElementById('dUrl').textContent   = u.url;
+  document.getElementById('dVideo').textContent = u.video;
+  document.getElementById('dStats').innerHTML = `
+    <div class="modal-stat-box"><div class="modal-stat-lbl">Clicks</div><div class="modal-stat-num">${u.clicks.toLocaleString()}</div></div>
+    <div class="modal-stat-box"><div class="modal-stat-lbl">Leads</div><div class="modal-stat-num">${u.leads}</div></div>
+    <div class="modal-stat-box"><div class="modal-stat-lbl">Revenue</div><div class="modal-stat-num">£${u.revenue.toLocaleString()}</div></div>
+  `;
+  showOverlay('detailOverlay');
+}
+function closeDetail() { hideOverlay('detailOverlay'); }
+function copyDetailUrl() { copyText(activeDetailUrl, 'UTM link copied'); }
+
+function showOverlay(id) {
+  const o = document.getElementById(id);
+  o.classList.add('open');
+  requestAnimationFrame(() => requestAnimationFrame(() => o.classList.add('visible')));
+}
+function hideOverlay(id) {
+  const o = document.getElementById(id);
+  o.classList.remove('visible');
+  setTimeout(() => o.classList.remove('open'), 280);
+}
+
+/* LINK GENERATOR */
+function buildLink() {
+  const campaign = (document.getElementById('newCampaign').value.trim() || 'new-campaign').toLowerCase().replace(/\s+/g,'-');
+  const base     = document.getElementById('newUrl').value.trim() || 'https://northgatewellness.com/shop';
+  const source   = document.getElementById('newSource').value;
+  const medium   = document.getElementById('newMedium').value;
+  const link     = `${base}?utm_source=${source}&utm_medium=${medium}&utm_campaign=${campaign}`;
+  const box      = document.getElementById('generatedUrl');
+  box.textContent = link;
+  box.style.display = 'block';
+  copyText(link, 'UTM link generated and copied');
+}
+
+function openNewModal() { openNew(); }
+
+/* UTILITY */
+let toastTimer;
+function copyText(text, msg) {
+  navigator.clipboard.writeText(text).catch(() => {});
+  showToast(msg || 'Copied to clipboard');
+}
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* CLOSE ON BACKDROP */
+document.getElementById('newOverlay').addEventListener('click',    function(e) { if(e.target===this) closeNew(); });
+document.getElementById('detailOverlay').addEventListener('click', function(e) { if(e.target===this) closeDetail(); });
+
+/* INIT */
+renderUTM();
+renderBars();
+renderLeads();
+</script>
+</body>
+</html>

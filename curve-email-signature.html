@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curve — Email Signature</title>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 40px 100px;
+    gap: 48px;
+  }
+  .page-title {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.3);
+    text-align: center;
+  }
+  .page-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 2.4rem;
+    color: #E5E2E1;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-top: 12px;
+  }
+  .section-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,95,0,0.5);
+    font-weight: 600;
+    text-align: center;
+  }
+  .section-desc {
+    font-size: 0.78rem;
+    color: rgba(229,226,225,0.35);
+    text-align: center;
+    max-width: 420px;
+    line-height: 1.6;
+  }
+
+  /* Preview area — simulates white email background */
+  .preview-area {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 48px 56px;
+    max-width: 680px;
+    width: 100%;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+
+  /* Copyable area */
+  .copy-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 680px;
+  }
+  .copy-area {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 2px dashed rgba(255,95,0,0.25);
+    padding: 32px 40px;
+    width: 100%;
+    cursor: text;
+    position: relative;
+  }
+  .copy-area:focus-within {
+    border-color: #FF5F00;
+  }
+
+  .copy-btn {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: -0.01em;
+    color: white;
+    background: linear-gradient(135deg, #FF5F00 0%, #ff8c4a 100%);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .copy-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 32px 8px rgba(255,95,0,0.35);
+  }
+  .copy-btn:active { transform: scale(0.97); }
+
+  .instructions {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 28px 32px;
+    max-width: 520px;
+    width: 100%;
+  }
+  .instructions h3 {
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #FF5F00;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .instructions ol {
+    list-style: none;
+    counter-reset: steps;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .instructions li {
+    counter-increment: steps;
+    font-size: 0.78rem;
+    color: rgba(229,226,225,0.5);
+    line-height: 1.5;
+    padding-left: 24px;
+    position: relative;
+  }
+  .instructions li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    color: #FF5F00;
+    font-weight: 700;
+    font-size: 0.72rem;
+  }
+
+  .status-msg {
+    font-size: 0.72rem;
+    color: rgba(255,95,0,0.7);
+    min-height: 1.2em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div style="text-align:center;">
+  <p class="page-title">Email Signature</p>
+  <p class="page-subtitle">Curve</p>
+</div>
+
+<!-- ── Preview ── -->
+<div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+  <span class="section-label">Preview</span>
+  <p class="section-desc">How it looks in a standard email client on a white background.</p>
+  <div class="preview-area">
+    <!-- === SIGNATURE START === -->
+    <table cellpadding="0" cellspacing="0" border="0" style="font-family:Georgia,'Times New Roman',serif; color:#1a1a1a; line-height:1.4; max-width:480px;">
+      <tr>
+        <td style="padding-bottom:0;">
+          <!-- Orange accent line -->
+          <div style="width:40px; height:2px; background:#FF5F00; margin-bottom:14px;"></div>
+          <!-- Name -->
+          <div style="font-family:Georgia,'Times New Roman',serif; font-size:20px; font-weight:bold; color:#111110; letter-spacing:-0.02em; line-height:1.2;">Cam Mensah</div>
+          <!-- Title -->
+          <div style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#555555; margin-top:4px; line-height:1.3;">
+            Founder, <span style="font-weight:bold; color:#FF5F00;">Curve</span>
+          </div>
+          <!-- Divider -->
+          <div style="width:100%; height:1px; background:#e5e2e1; margin:14px 0 12px;"></div>
+          <!-- Contact row -->
+          <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.4;">
+            <tr>
+              <td style="padding-right:14px;">
+                <a href="mailto:cam@thecurve.media" style="color:#FF5F00; text-decoration:none; font-weight:600;">cam@thecurve.media</a>
+              </td>
+              <td style="padding-right:14px; color:#d0d0d0;">|</td>
+              <td style="padding-right:14px;">
+                <a href="https://thecurve.media" style="color:#FF5F00; text-decoration:none; font-weight:600;">thecurve.media</a>
+              </td>
+              <td style="padding-right:14px; color:#d0d0d0;">|</td>
+              <td style="padding-right:14px;">
+                <a href="https://www.linkedin.com/in/cam-mensah-454b88123/" style="color:#555555; text-decoration:none;">LinkedIn</a>
+              </td>
+              <td style="padding-right:14px; color:#d0d0d0;">|</td>
+              <td>
+                <a href="https://www.instagram.com/cammensah/" style="color:#555555; text-decoration:none;">Instagram</a>
+              </td>
+            </tr>
+          </table>
+          <!-- Tagline -->
+          <div style="font-family:Georgia,'Times New Roman',serif; font-style:italic; font-size:12px; color:#999999; margin-top:12px; letter-spacing:-0.01em;">Architecting faster YouTube growth.</div>
+        </td>
+      </tr>
+    </table>
+    <!-- === SIGNATURE END === -->
+  </div>
+</div>
+
+<!-- ── Copyable Version ── -->
+<div class="copy-wrap">
+  <span class="section-label">Copy to Gmail</span>
+  <p class="section-desc">Click the button below to copy, then paste into your Gmail signature settings.</p>
+  <div class="copy-area" id="signatureCopy">
+    <!-- === SIGNATURE (COPY VERSION) === -->
+    <table cellpadding="0" cellspacing="0" border="0" style="font-family:Georgia,'Times New Roman',serif; color:#1a1a1a; line-height:1.4; max-width:480px;">
+      <tr>
+        <td style="padding-bottom:0;">
+          <div style="width:40px; height:2px; background:#FF5F00; margin-bottom:14px;"></div>
+          <div style="font-family:Georgia,'Times New Roman',serif; font-size:20px; font-weight:bold; color:#111110; letter-spacing:-0.02em; line-height:1.2;">Cam Mensah</div>
+          <div style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#555555; margin-top:4px; line-height:1.3;">
+            Founder, <span style="font-weight:bold; color:#FF5F00;">Curve</span>
+          </div>
+          <div style="width:100%; height:1px; background:#e5e2e1; margin:14px 0 12px;"></div>
+          <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.4;">
+            <tr>
+              <td style="padding-right:14px;">
+                <a href="mailto:cam@thecurve.media" style="color:#FF5F00; text-decoration:none; font-weight:600;">cam@thecurve.media</a>
+              </td>
+              <td style="padding-right:14px; color:#d0d0d0;">|</td>
+              <td style="padding-right:14px;">
+                <a href="https://thecurve.media" style="color:#FF5F00; text-decoration:none; font-weight:600;">thecurve.media</a>
+              </td>
+              <td style="padding-right:14px; color:#d0d0d0;">|</td>
+              <td style="padding-right:14px;">
+                <a href="https://www.linkedin.com/in/cam-mensah-454b88123/" style="color:#555555; text-decoration:none;">LinkedIn</a>
+              </td>
+              <td style="padding-right:14px; color:#d0d0d0;">|</td>
+              <td>
+                <a href="https://www.instagram.com/cammensah/" style="color:#555555; text-decoration:none;">Instagram</a>
+              </td>
+            </tr>
+          </table>
+          <div style="font-family:Georgia,'Times New Roman',serif; font-style:italic; font-size:12px; color:#999999; margin-top:12px; letter-spacing:-0.01em;">Architecting faster YouTube growth.</div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <button class="copy-btn" onclick="copySignature()">Copy Signature</button>
+  <p class="status-msg" id="copyStatus"></p>
+</div>
+
+<!-- ── Instructions ── -->
+<div class="instructions">
+  <h3>How to add to Gmail</h3>
+  <ol>
+    <li>Click "Copy Signature" above</li>
+    <li>Open Gmail &rarr; Settings (gear icon) &rarr; See all settings</li>
+    <li>Scroll to the "Signature" section</li>
+    <li>Create a new signature or edit your existing one</li>
+    <li>Clear the signature box, then paste (Cmd+V)</li>
+    <li>Click "Save Changes" at the bottom</li>
+  </ol>
+</div>
+
+<script>
+function copySignature() {
+  const sig = document.getElementById('signatureCopy');
+  const status = document.getElementById('copyStatus');
+
+  // Select the signature content
+  const range = document.createRange();
+  range.selectNodeContents(sig);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  // Copy as rich text (HTML)
+  try {
+    // Use clipboard API for rich HTML copy
+    const html = sig.innerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const plainBlob = new Blob([sig.innerText], { type: 'text/plain' });
+    const item = new ClipboardItem({
+      'text/html': blob,
+      'text/plain': plainBlob
+    });
+    navigator.clipboard.write([item]).then(() => {
+      status.textContent = 'Copied! Now paste into Gmail signature settings.';
+      setTimeout(() => { status.textContent = ''; }, 4000);
+    }).catch(() => {
+      // Fallback
+      document.execCommand('copy');
+      status.textContent = 'Copied! Now paste into Gmail signature settings.';
+      setTimeout(() => { status.textContent = ''; }, 4000);
+    });
+  } catch (e) {
+    document.execCommand('copy');
+    status.textContent = 'Copied! Now paste into Gmail signature settings.';
+    setTimeout(() => { status.textContent = ''; }, 4000);
+  }
+
+  selection.removeAllRanges();
+}
+</script>
+
+</body>
+</html>

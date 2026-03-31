@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide-Up Entrance Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Core reveal class ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children inside a group */
+    .reveal-group .reveal:nth-child(1) { transition-delay: 0ms; }
+    .reveal-group .reveal:nth-child(2) { transition-delay: 100ms; }
+    .reveal-group .reveal:nth-child(3) { transition-delay: 200ms; }
+    .reveal-group .reveal:nth-child(4) { transition-delay: 300ms; }
+    .reveal-group .reveal:nth-child(5) { transition-delay: 400ms; }
+    .reveal-group .reveal:nth-child(6) { transition-delay: 500ms; }
+
+    /* ── Layout ── */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      gap: 64px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    /* ── Hero block ── */
+    .hero {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-width: 560px;
+    }
+
+    .hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(167,139,250,0.12);
+      border: 1px solid rgba(167,139,250,0.25);
+      color: #a78bfa;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.65;
+    }
+
+    .btn {
+      background: #fff;
+      color: #000;
+      padding: 13px 30px;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn:hover { background: rgba(255,255,255,0.88); }
+
+    /* ── Feature cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .card .icon {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.55;
+    }
+
+    /* ── Testimonial strip ── */
+    .testimonials {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .testimonial {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .testimonial q {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .testimonial .author {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── CTA band ── */
+    .cta-band {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      max-width: 440px;
+    }
+
+    .cta-band h2 {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .cta-band p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── Scroll hint ── */
+    .scroll-hint {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .scroll-hint svg { animation: nudge 1.5s ease-in-out infinite; }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(5px); }
+    }
+
+    /* divider */
+    hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      width: 100%;
+      max-width: 680px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Section 1: Hero ── -->
+  <section>
+    <div class="section-label">↓ Scroll to trigger each section</div>
+    <div class="hero reveal-group">
+      <div class="eyebrow reveal">New in v3.0</div>
+      <h1 class="reveal">Your voice,<br/>everywhere.</h1>
+      <p class="reveal">Superwhisper turns speech into polished text in under a second. Works in any app, on any website.</p>
+      <button class="btn reveal">Download for Mac — it's free</button>
+    </div>
+  </section>
+
+  <!-- ── Section 2: Feature cards ── -->
+  <section>
+    <div class="section-label">Features — slide up on scroll</div>
+    <div class="cards reveal-group">
+      <div class="card reveal">
+        <div class="icon">⚡</div>
+        <h3>Instant</h3>
+        <p>Transcribes in under a second with on-device AI.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon">🌍</div>
+        <h3>100+ Languages</h3>
+        <p>Dictate in your native language, switch on the fly.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon">🔒</div>
+        <h3>Private</h3>
+        <p>Everything stays on your Mac. Nothing is uploaded.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon">🎯</div>
+        <h3>AI Polish</h3>
+        <p>Auto-corrects, formats, and cleans up your words.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon">🖥</div>
+        <h3>System-wide</h3>
+        <p>Works in Slack, Gmail, Notion, and everywhere else.</p>
+      </div>
+      <div class="card reveal">
+        <div class="icon">🎙</div>
+        <h3>Noise Cancel</h3>
+        <p>Background noise suppression built right in.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 3: Testimonials ── -->
+  <section>
+    <div class="section-label">Testimonials — staggered list</div>
+    <div class="testimonials reveal-group">
+      <div class="testimonial reveal">
+        <q>I write 3x faster since switching to Superwhisper. It's the first app I open every morning.</q>
+        <div class="author">— @designerwhoships</div>
+      </div>
+      <div class="testimonial reveal">
+        <q>The accuracy is insane. I've tried every dictation tool and nothing comes close.</q>
+        <div class="author">— @indie_founder</div>
+      </div>
+      <div class="testimonial reveal">
+        <q>Finally, an app that actually understands my accent. This changed how I work.</q>
+        <div class="author">— @remote_dev_life</div>
+      </div>
+      <div class="testimonial reveal">
+        <q>Superwhisper + Notion = the fastest notes I've ever taken in a meeting.</q>
+        <div class="author">— @productivitypilled</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 4: CTA ── -->
+  <section>
+    <div class="cta-band reveal-group">
+      <h2 class="reveal">Stop typing.<br/>Start talking.</h2>
+      <p class="reveal">Join 50,000+ people who've made the switch. Free to download.</p>
+      <button class="btn reveal">Get Superwhisper</button>
+    </div>
+  </section>
+
+  <div class="scroll-hint" id="scrollHint">
+    <span>Scroll</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    // hide scroll hint after first scroll
+    window.addEventListener("scroll", () => {
+      document.getElementById("scrollHint").style.opacity =
+        window.scrollY > 60 ? "0" : "1";
+    }, { passive: true });
+  </script>
+</body>
+</html>

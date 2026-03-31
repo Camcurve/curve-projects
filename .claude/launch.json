@@ -1,0 +1,48 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "attribution-dashboard",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3400", "."],
+      "port": 3400
+    },
+    {
+      "name": "portal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "portal"],
+      "port": 3000
+    }
+  ,
+    {
+      "name": "validated",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3401", "--symlinks", "validated-site"],
+      "port": 3401
+    },
+    {
+      "name": "curve-market-capture",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3402", "curve-market-capture"],
+      "port": 3402
+    },
+    {
+      "name": "curve-banners",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3403", "."],
+      "port": 3403
+    },
+    {
+      "name": "gym-dashboard",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3404", "gym-dashboard"],
+      "port": 3404
+    },
+    {
+      "name": "content-audit",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3405", "curve-content-audit"],
+      "port": 3405
+    }
+  ]
+}

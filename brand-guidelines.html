@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand Guidelines</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════ */
+    :root {
+      --bg-base:       #0c0c0e;
+      --bg-surface:    #131316;
+      --bg-elevated:   #1a1a1f;
+      --border:        rgba(255,255,255,0.07);
+      --border-strong: rgba(255,255,255,0.12);
+
+      --text-primary:   #f0f0f2;
+      --text-secondary: rgba(240,240,242,0.5);
+      --text-tertiary:  rgba(240,240,242,0.25);
+
+      --accent:        #7c6af7;
+      --accent-dim:    rgba(124,106,247,0.15);
+      --accent-border: rgba(124,106,247,0.3);
+
+      --radius-sm:  6px;
+      --radius-md:  12px;
+      --radius-lg:  18px;
+      --radius-xl:  26px;
+
+      --font-display: 'Outfit', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ═══════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══════════════════════════════════════
+       SCROLL ANIMATIONS
+    ═══════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .reveal-group .reveal:nth-child(1)  { transition-delay:   0ms; }
+    .reveal-group .reveal:nth-child(2)  { transition-delay:  80ms; }
+    .reveal-group .reveal:nth-child(3)  { transition-delay: 160ms; }
+    .reveal-group .reveal:nth-child(4)  { transition-delay: 240ms; }
+    .reveal-group .reveal:nth-child(5)  { transition-delay: 320ms; }
+    .reveal-group .reveal:nth-child(6)  { transition-delay: 400ms; }
+    .reveal-group .reveal:nth-child(7)  { transition-delay: 480ms; }
+    .reveal-group .reveal:nth-child(8)  { transition-delay: 560ms; }
+
+    /* ═══════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════ */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ═══════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(12,12,14,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-version {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION STRUCTURE
+    ═══════════════════════════════════════ */
+    .section {
+      padding: 120px 0 80px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-header {
+      margin-bottom: 64px;
+    }
+
+    .section-index {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 52ch;
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    .hero {
+      padding: 160px 0 100px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .hero-eyebrow span {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      max-width: 14ch;
+      margin-bottom: 24px;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--text-secondary);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 44ch;
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .meta-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .meta-divider {
+      width: 1px;
+      height: 32px;
+      background: var(--border-strong);
+    }
+
+    /* ═══════════════════════════════════════
+       01 — COLOR SYSTEM
+    ═══════════════════════════════════════ */
+    .color-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .color-grid { grid-template-columns: 1fr; }
+    }
+
+    .color-swatch {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .swatch-block {
+      height: 140px;
+      position: relative;
+    }
+
+    .color-swatch.large .swatch-block { height: 200px; }
+
+    .swatch-meta {
+      padding: 16px 18px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .swatch-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+
+    .swatch-role {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    .color-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .color-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ═══════════════════════════════════════
+       02 — TYPOGRAPHY
+    ═══════════════════════════════════════ */
+    .type-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 32px;
+      align-items: baseline;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .type-row:first-child { border-top: 1px solid var(--border); }
+
+    .type-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .type-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+    }
+
+    .type-spec {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .t-display {
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      color: var(--text-primary);
+    }
+
+    .t-heading {
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .t-subheading {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+    }
+
+    .t-body {
+      font-size: 0.95rem;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 60ch;
+    }
+
+    .t-caption {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+
+    .t-mono {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════
+       03 — MOTION
+    ═══════════════════════════════════════ */
+    .motion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .motion-grid { grid-template-columns: 1fr; }
+    }
+
+    .motion-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px 32px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .motion-card.wide {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 768px) {
+      .motion-card.wide { grid-column: span 1; }
+    }
+
+    .motion-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .motion-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .motion-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .motion-spec {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .spec-pill {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    /* Demo: stagger */
+    .demo-stagger {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stagger-item {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--accent);
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+    }
+
+    .stagger-item:nth-child(1) { width: 72%; transition-delay:   0ms; }
+    .stagger-item:nth-child(2) { width: 55%; transition-delay:  80ms; }
+    .stagger-item:nth-child(3) { width: 85%; transition-delay: 160ms; }
+    .stagger-item:nth-child(4) { width: 48%; transition-delay: 240ms; }
+
+    .motion-card.active .stagger-item {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Demo: slide-up */
+    .demo-slide {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-block {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .slide-block .s-label { font-size: 0.7rem; color: var(--text-tertiary); margin-bottom: 4px; }
+    .slide-block .s-value { font-size: 0.9rem; font-weight: 500; }
+
+    .slide-block:nth-child(1) { transition-delay:  0ms; }
+    .slide-block:nth-child(2) { transition-delay: 80ms; }
+    .slide-block:nth-child(3) { transition-delay: 160ms; }
+
+    .motion-card.active .slide-block {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Demo: scroll-scale */
+    .demo-scale {
+      position: relative;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scale-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--accent-border);
+      transition: transform 0.6s var(--ease-spring), opacity 0.6s ease;
+    }
+
+    .scale-ring:nth-child(1) { width: 40px;  height: 40px;  opacity: 0.8; }
+    .scale-ring:nth-child(2) { width: 64px;  height: 64px;  opacity: 0.4; }
+    .scale-ring:nth-child(3) { width: 90px;  height: 90px;  opacity: 0.15; }
+
+    .scale-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: relative;
+      z-index: 1;
+      transition: transform 0.6s var(--ease-spring);
+    }
+
+    .motion-card:hover .scale-ring:nth-child(1) { transform: scale(1.25); }
+    .motion-card:hover .scale-ring:nth-child(2) { transform: scale(1.18); }
+    .motion-card:hover .scale-ring:nth-child(3) { transform: scale(1.12); }
+    .motion-card:hover .scale-dot              { transform: scale(1.3); }
+
+    /* Replay button */
+    .replay-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .replay-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+    .replay-btn svg { width: 10px; height: 10px; }
+
+    /* ═══════════════════════════════════════
+       04 — SPACING
+    ═══════════════════════════════════════ */
+    .spacing-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .spacing-row {
+      display: grid;
+      grid-template-columns: 120px 80px 1fr 200px;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      gap: 24px;
+    }
+
+    .spacing-row:last-child { border-bottom: none; }
+    .spacing-row:nth-child(even) { background: rgba(255,255,255,0.015); }
+
+    .spacing-token {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+    }
+
+    .spacing-px {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    .spacing-bar-wrap {
+      flex: 1;
+    }
+
+    .spacing-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    .spacing-usage {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    /* ═══════════════════════════════════════
+       05 — COMPONENTS
+    ═══════════════════════════════════════ */
+    .component-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .component-row { grid-template-columns: 1fr; }
+    }
+
+    .component-tile {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .component-tile-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--text-primary);
+      color: var(--bg-base);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 11px 22px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+      letter-spacing: -0.01em;
+    }
+    .btn-primary:hover  { background: rgba(240,240,242,0.88); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 11px 22px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .btn-ghost:hover  { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+    .btn-ghost:active { transform: scale(0.98); }
+
+    .btn-accent {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent-dim);
+      color: #a89cf8;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 11px 22px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--accent-border);
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .btn-accent:hover  { background: rgba(124,106,247,0.22); }
+    .btn-accent:active { transform: scale(0.98); }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    /* Tags / Badges */
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+    }
+
+    .badge-neutral {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+    }
+    .badge-neutral .badge-dot { background: var(--text-tertiary); }
+
+    .badge-accent {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      color: #a89cf8;
+    }
+    .badge-accent .badge-dot { background: var(--accent); }
+
+    .badge-green {
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: #6ee7b7;
+    }
+    .badge-green .badge-dot { background: #34d399; }
+
+    .badge-amber {
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.25);
+      color: #fcd34d;
+    }
+    .badge-amber .badge-dot { background: #fbbf24; }
+
+    /* Card */
+    .demo-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .demo-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .demo-card-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .demo-card-icon svg { width: 16px; height: 16px; stroke: #a89cf8; }
+
+    .demo-card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .demo-card-sub {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* Input */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .input-field {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+    }
+    .input-field::placeholder { color: var(--text-tertiary); }
+    .input-field:focus {
+      border-color: rgba(124,106,247,0.5);
+      box-shadow: 0 0 0 3px rgba(124,106,247,0.1);
+    }
+
+    .input-hint {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ═══════════════════════════════════════
+       06 — BORDER RADIUS
+    ═══════════════════════════════════════ */
+    .radius-grid {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .radius-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .radius-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      width: 64px; height: 64px;
+    }
+
+    .radius-token {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+    }
+
+    .footer-right {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ═══════════════════════════════════════
+       EASING VISUALIZER
+    ═══════════════════════════════════════ */
+    .easing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .easing-grid { grid-template-columns: 1fr; }
+    }
+
+    .easing-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .easing-track {
+      height: 3px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .easing-ball {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+
+    .easing-card:hover .easing-ball-out   { animation: ball-out   0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .easing-card:hover .easing-ball-in    { animation: ball-in    0.55s ease-in forwards; }
+    .easing-card:hover .easing-ball-inout { animation: ball-inout 0.55s ease-in-out forwards; }
+
+    @keyframes ball-out   { to { left: calc(100% - 10px); } }
+    @keyframes ball-in    { to { left: calc(100% - 10px); } }
+    @keyframes ball-inout { to { left: calc(100% - 10px); } }
+
+    .easing-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .easing-value {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+    }
+
+    .easing-use {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <span class="nav-logo">Brand Guidelines</span>
+      <ul class="nav-links">
+        <li><a href="#colors">Colors</a></li>
+        <li><a href="#typography">Type</a></li>
+        <li><a href="#motion">Motion</a></li>
+        <li><a href="#components">Components</a></li>
+        <li><a href="#spacing">Spacing</a></li>
+      </ul>
+      <span class="nav-version">v1.0.0</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="page-wrap">
+      <div class="reveal-group">
+        <div class="hero-eyebrow reveal">
+          <span></span>
+          Design System
+        </div>
+        <h1 class="hero-title reveal">
+          Consistent.<br/><em>Intentional.</em><br/>Dark.
+        </h1>
+        <p class="hero-sub reveal">
+          A set of principles, tokens, and interaction patterns that define
+          how this product looks, moves, and feels across every surface.
+        </p>
+        <div class="hero-meta reveal">
+          <div class="meta-item">
+            <span class="meta-label">Font</span>
+            <span class="meta-value">Outfit</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-label">Accent</span>
+            <span class="meta-value">#7c6af7</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-label">Base</span>
+            <span class="meta-value">#0c0c0e</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-label">Motion</span>
+            <span class="meta-value">ease-out / spring</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 01 COLORS ── -->
+  <div class="section" id="colors">
+    <div class="page-wrap">
+      <div class="section-header reveal-group">
+        <div class="section-index reveal">01 — Colors</div>
+        <h2 class="section-title reveal">Palette</h2>
+        <p class="section-desc reveal">A near-neutral dark base with a single desaturated violet accent. Surfaces step up in brightness to signal hierarchy.</p>
+      </div>
+
+      <div class="color-grid reveal-group">
+        <div class="color-swatch large reveal">
+          <div class="swatch-block" style="background:#0c0c0e;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Base</div>
+            <div class="swatch-hex">#0c0c0e</div>
+            <div class="swatch-role">Page background. The absolute floor.</div>
+          </div>
+        </div>
+        <div class="color-swatch reveal">
+          <div class="swatch-block" style="background:#131316;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Surface</div>
+            <div class="swatch-hex">#131316</div>
+            <div class="swatch-role">Cards, panels.</div>
+          </div>
+        </div>
+        <div class="color-swatch reveal">
+          <div class="swatch-block" style="background:#1a1a1f;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Elevated</div>
+            <div class="swatch-hex">#1a1a1f</div>
+            <div class="swatch-role">Inputs, nested containers.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-row reveal-group">
+        <div class="color-swatch reveal">
+          <div class="swatch-block" style="background:#7c6af7; height:100px;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Accent</div>
+            <div class="swatch-hex">#7c6af7</div>
+            <div class="swatch-role">CTAs, focus rings, active states.</div>
+          </div>
+        </div>
+        <div class="color-swatch reveal">
+          <div class="swatch-block" style="background:#f0f0f2; height:100px;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Text Primary</div>
+            <div class="swatch-hex">#f0f0f2</div>
+            <div class="swatch-role">Headlines, body copy.</div>
+          </div>
+        </div>
+        <div class="color-swatch reveal">
+          <div class="swatch-block" style="background:rgba(240,240,242,0.5); height:100px;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Text Secondary</div>
+            <div class="swatch-hex">f0f0f2 / 50%</div>
+            <div class="swatch-role">Subtitles, descriptive text.</div>
+          </div>
+        </div>
+        <div class="color-swatch reveal">
+          <div class="swatch-block" style="background:rgba(240,240,242,0.25); height:100px;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Text Tertiary</div>
+            <div class="swatch-hex">f0f0f2 / 25%</div>
+            <div class="swatch-role">Labels, metadata, placeholders.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 02 TYPOGRAPHY ── -->
+  <div class="section" id="typography">
+    <div class="page-wrap">
+      <div class="section-header reveal-group">
+        <div class="section-index reveal">02 — Typography</div>
+        <h2 class="section-title reveal">Type Scale</h2>
+        <p class="section-desc reveal">Outfit for all display and body text. JetBrains Mono exclusively for code, tokens, and metadata.</p>
+      </div>
+
+      <div class="reveal-group">
+        <div class="type-row reveal">
+          <div class="type-meta">
+            <span class="type-label">Display</span>
+            <span class="type-spec">700 · −0.04em · 1.0lh</span>
+          </div>
+          <div class="t-display">Vox Populi</div>
+        </div>
+        <div class="type-row reveal">
+          <div class="type-meta">
+            <span class="type-label">Heading</span>
+            <span class="type-spec">700 · −0.03em · 1.1lh</span>
+          </div>
+          <div class="t-heading">Section Title</div>
+        </div>
+        <div class="type-row reveal">
+          <div class="type-meta">
+            <span class="type-label">Subheading</span>
+            <span class="type-spec">600 · −0.015em · 1.2lh</span>
+          </div>
+          <div class="t-subheading">Card Title or Label</div>
+        </div>
+        <div class="type-row reveal">
+          <div class="type-meta">
+            <span class="type-label">Body</span>
+            <span class="type-spec">400 · 0em · 1.7lh</span>
+          </div>
+          <div class="t-body">Dictate clearly, get polished prose. Works across every app on your system with no configuration required.</div>
+        </div>
+        <div class="type-row reveal">
+          <div class="type-meta">
+            <span class="type-label">Caption</span>
+            <span class="type-spec">400 · 0em · 1.5lh</span>
+          </div>
+          <div class="t-caption">Last updated March 27, 2026 — Version 1.0</div>
+        </div>
+        <div class="type-row reveal">
+          <div class="type-meta">
+            <span class="type-label">Mono</span>
+            <span class="type-spec">JetBrains Mono 400</span>
+          </div>
+          <div class="t-mono">transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 03 MOTION ── -->
+  <div class="section" id="motion">
+    <div class="page-wrap">
+      <div class="section-header reveal-group">
+        <div class="section-index reveal">03 — Motion</div>
+        <h2 class="section-title reveal">Animation System</h2>
+        <p class="section-desc reveal">Three core animation patterns. All use hardware-accelerated <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--accent)">transform</code> and <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--accent)">opacity</code> — never layout properties.</p>
+      </div>
+
+      <div class="motion-grid reveal-group">
+
+        <!-- Staggered Fade -->
+        <div class="motion-card reveal" id="mc-stagger">
+          <div>
+            <div class="motion-label">Pattern 01</div>
+            <div class="motion-title">Staggered Fade-in</div>
+            <div class="motion-desc">Children appear sequentially with a fixed delay offset. Used for lists, nav items, and feature grids.</div>
+            <div class="demo-stagger">
+              <div class="stagger-item"></div>
+              <div class="stagger-item"></div>
+              <div class="stagger-item"></div>
+              <div class="stagger-item"></div>
+            </div>
+          </div>
+          <div class="motion-spec">
+            <span class="spec-pill">opacity 0 → 1</span>
+            <span class="spec-pill">translateX −12px → 0</span>
+            <span class="spec-pill">delay +80ms per child</span>
+            <span class="spec-pill">duration 400ms</span>
+          </div>
+          <button class="replay-btn" onclick="replay('mc-stagger')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            Replay
+          </button>
+        </div>
+
+        <!-- Slide-Up -->
+        <div class="motion-card reveal" id="mc-slide">
+          <div>
+            <div class="motion-label">Pattern 02</div>
+            <div class="motion-title">Slide-Up Entrance</div>
+            <div class="motion-desc">Elements rise 24px while fading in. Triggered by IntersectionObserver at 15% visibility threshold.</div>
+            <div class="demo-slide">
+              <div class="slide-block">
+                <div class="s-label">Transcription</div>
+                <div class="s-value">On-device, instant</div>
+              </div>
+              <div class="slide-block">
+                <div class="s-label">Latency</div>
+                <div class="s-value">Under 400ms</div>
+              </div>
+              <div class="slide-block">
+                <div class="s-label">Accuracy</div>
+                <div class="s-value">97.4% word error rate</div>
+              </div>
+            </div>
+          </div>
+          <div class="motion-spec">
+            <span class="spec-pill">opacity 0 → 1</span>
+            <span class="spec-pill">translateY 24px → 0</span>
+            <span class="spec-pill">ease-out cubic-bezier</span>
+            <span class="spec-pill">duration 550ms</span>
+          </div>
+          <button class="replay-btn" onclick="replay('mc-slide')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            Replay
+          </button>
+        </div>
+
+        <!-- Scroll Scale -->
+        <div class="motion-card wide reveal" id="mc-scale">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;">
+            <div>
+              <div class="motion-label">Pattern 03</div>
+              <div class="motion-title">Scroll-Driven Scale</div>
+              <div class="motion-desc">Background elements scale up as the user scrolls, creating a sense of depth and forward motion. Scale derived from <code style="font-family:var(--font-mono);font-size:0.82em;color:var(--accent)">scrollY / documentHeight</code>.</div>
+              <div class="motion-spec" style="margin-top:20px;">
+                <span class="spec-pill">transform: scale(1 → 1.3)</span>
+                <span class="spec-pill">passive scroll listener</span>
+                <span class="spec-pill">will-change: transform</span>
+                <span class="spec-pill">interpolate 0–100% scroll</span>
+              </div>
+            </div>
+            <div>
+              <div class="demo-scale">
+                <div class="scale-ring"></div>
+                <div class="scale-ring"></div>
+                <div class="scale-ring"></div>
+                <div class="scale-dot"></div>
+              </div>
+              <p style="text-align:center; font-size:0.72rem; color:var(--text-tertiary); margin-top:12px;">Hover to preview scale</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Easing Reference -->
+      <div style="margin-top:16px;">
+        <h3 style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:14px; padding-top:8px;">Easing Tokens</h3>
+        <div class="easing-grid reveal-group">
+          <div class="easing-card reveal">
+            <div class="easing-track">
+              <div class="easing-ball easing-ball-out"></div>
+            </div>
+            <div class="easing-name">ease-out</div>
+            <div class="easing-value">cubic-bezier(0.16, 1, 0.3, 1)</div>
+            <div class="easing-use">Default for all entrance animations</div>
+          </div>
+          <div class="easing-card reveal">
+            <div class="easing-track">
+              <div class="easing-ball easing-ball-in"></div>
+            </div>
+            <div class="easing-name">ease-in</div>
+            <div class="easing-value">ease-in</div>
+            <div class="easing-use">Exit / dismiss animations only</div>
+          </div>
+          <div class="easing-card reveal">
+            <div class="easing-track">
+              <div class="easing-ball easing-ball-inout"></div>
+            </div>
+            <div class="easing-name">spring</div>
+            <div class="easing-value">cubic-bezier(0.34, 1.56, 0.64, 1)</div>
+            <div class="easing-use">Buttons, badges, interactive pops</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 04 COMPONENTS ── -->
+  <div class="section" id="components">
+    <div class="page-wrap">
+      <div class="section-header reveal-group">
+        <div class="section-index reveal">04 — Components</div>
+        <h2 class="section-title reveal">UI Kit</h2>
+        <p class="section-desc reveal">Reusable primitives that compose every screen. Consistent radius, border, and interaction states throughout.</p>
+      </div>
+
+      <div class="component-row reveal-group">
+        <div class="component-tile reveal">
+          <div class="component-tile-label">Buttons</div>
+          <div class="btn-row">
+            <button class="btn-primary">Start recording</button>
+            <button class="btn-ghost">View transcript</button>
+            <button class="btn-accent">New in v3</button>
+          </div>
+        </div>
+        <div class="component-tile reveal">
+          <div class="component-tile-label">Badges</div>
+          <div class="badge-row">
+            <span class="badge badge-neutral"><span class="badge-dot"></span>Draft</span>
+            <span class="badge badge-accent"><span class="badge-dot"></span>Active</span>
+            <span class="badge badge-green"><span class="badge-dot"></span>Live</span>
+            <span class="badge badge-amber"><span class="badge-dot"></span>Warning</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-row reveal-group">
+        <div class="component-tile reveal">
+          <div class="component-tile-label">Card</div>
+          <div class="demo-card">
+            <div class="demo-card-top">
+              <div class="demo-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+                </svg>
+              </div>
+              <span class="badge badge-green"><span class="badge-dot"></span>Recording</span>
+            </div>
+            <div class="demo-card-title">Voice Input</div>
+            <div class="demo-card-sub">Transcribing in real time. Speak naturally — punctuation is handled automatically.</div>
+          </div>
+        </div>
+        <div class="component-tile reveal">
+          <div class="component-tile-label">Form Input</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div class="input-group">
+              <label class="input-label">API Key</label>
+              <input class="input-field" type="text" placeholder="sk-••••••••••••••••" />
+              <span class="input-hint">Found in Settings → Developer → Keys</span>
+            </div>
+            <button class="btn-primary" style="align-self:flex-start;">Save key</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 05 SPACING ── -->
+  <div class="section" id="spacing">
+    <div class="page-wrap">
+      <div class="section-header reveal-group">
+        <div class="section-index reveal">05 — Spacing</div>
+        <h2 class="section-title reveal">Scale</h2>
+        <p class="section-desc reveal">A base-4 spatial system. All padding, margin, and gap values are multiples of 4px.</p>
+      </div>
+
+      <div class="spacing-grid reveal">
+        <div class="spacing-row">
+          <span class="spacing-token">--space-1</span>
+          <span class="spacing-px">4px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:4%;"></div></div>
+          <span class="spacing-usage">Icon gaps, dot spacing</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-2</span>
+          <span class="spacing-px">8px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:8%;"></div></div>
+          <span class="spacing-usage">Badge padding, tight rows</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-3</span>
+          <span class="spacing-px">12px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:12%;"></div></div>
+          <span class="spacing-usage">Card internal gaps</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-4</span>
+          <span class="spacing-px">16px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:16%;"></div></div>
+          <span class="spacing-usage">Standard padding, list gaps</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-6</span>
+          <span class="spacing-px">24px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:24%;"></div></div>
+          <span class="spacing-usage">Section internal padding</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-8</span>
+          <span class="spacing-px">32px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:32%;"></div></div>
+          <span class="spacing-usage">Grid gutters, card padding</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-12</span>
+          <span class="spacing-px">48px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:48%;"></div></div>
+          <span class="spacing-usage">Component group separation</span>
+        </div>
+        <div class="spacing-row">
+          <span class="spacing-token">--space-20</span>
+          <span class="spacing-px">80px</span>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:80%;"></div></div>
+          <span class="spacing-usage">Section vertical padding</span>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;">
+        <h3 style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:20px;">Border Radius</h3>
+        <div class="radius-grid reveal-group">
+          <div class="radius-item reveal">
+            <div class="radius-box" style="border-radius:6px;"></div>
+            <span class="radius-token">sm / 6px</span>
+          </div>
+          <div class="radius-item reveal">
+            <div class="radius-box" style="border-radius:12px;"></div>
+            <span class="radius-token">md / 12px</span>
+          </div>
+          <div class="radius-item reveal">
+            <div class="radius-box" style="border-radius:18px;"></div>
+            <span class="radius-token">lg / 18px</span>
+          </div>
+          <div class="radius-item reveal">
+            <div class="radius-box" style="border-radius:26px;"></div>
+            <span class="radius-token">xl / 26px</span>
+          </div>
+          <div class="radius-item reveal">
+            <div class="radius-box" style="border-radius:9999px; width:64px; height:32px;"></div>
+            <span class="radius-token">pill / 9999px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="page-wrap">
+      <div class="footer-inner">
+        <div class="footer-left">Brand Guidelines — v1.0.0</div>
+        <div class="footer-right">Generated 2026-03-27</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── IntersectionObserver for all .reveal elements
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible', 'active');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Auto-trigger motion demos when their cards enter view
+    const motionIO = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, { threshold: 0.3 });
+
+    ['mc-stagger', 'mc-slide'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) motionIO.observe(el);
+    });
+
+    // Replay button
+    function replay(id) {
+      const card = document.getElementById(id);
+      if (!card) return;
+      card.classList.remove('active');
+      void card.offsetWidth; // force reflow
+      setTimeout(() => card.classList.add('active'), 20);
+    }
+  </script>
+</body>
+</html>

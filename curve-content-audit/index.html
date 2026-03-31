@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Audit — Curve</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@300,400,500,700,800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+/* ── Reset & Tokens ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #131313;
+  --surface:      #1c1b1b;
+  --surface2:     #201f1f;
+  --border:       rgba(255,255,255,0.09);
+  --border-soft:  rgba(255,255,255,0.04);
+  --accent:       #FF5F00;
+  --accent-dim:   rgba(255,95,0,0.10);
+  --accent-glow:  rgba(255,95,0,0.20);
+  --accent-border:rgba(255,95,0,0.30);
+  --text:         #E5E2E1;
+  --text-muted:   rgba(229,226,225,0.45);
+  --text-faint:   rgba(229,226,225,0.15);
+  --green:        #22c55e;
+  --red:          #ef4444;
+  --font:         'Cabinet Grotesk', 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --radius:       8px;
+  --radius-sm:    5px;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* ── App shell ──────────────────────────────────────────────────────────── */
+.app { height: 100vh; display: flex; flex-direction: column; }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px 0 24px;
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.logo-wordmark {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
+  color: var(--text);
+  line-height: 0.85;
+  user-select: none;
+}
+
+.logo-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.logo-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.api-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  transition: border-color 0.25s;
+}
+.api-pill.connected {
+  border-color: rgba(34,197,94,0.22);
+  color: rgba(255,255,255,0.55);
+}
+
+.api-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.api-dot.on {
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(34,197,94,0.45);
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+/* ── Dashboard grid ─────────────────────────────────────────────────────── */
+.dashboard {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 392px 4px 1fr;
+  min-height: 0;
+}
+
+/* ── Resize handle ──────────────────────────────────────────────────────── */
+.resize-handle {
+  background: var(--border);
+  cursor: col-resize;
+  position: relative;
+  transition: background 0.15s;
+  z-index: 20;
+  flex-shrink: 0;
+}
+.resize-handle:hover,
+.resize-handle.dragging { background: var(--accent); }
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  inset: 0 -6px;
+}
+
+/* ── Left panel ─────────────────────────────────────────────────────────── */
+.panel-left {
+  padding: 26px 26px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.panel-left::-webkit-scrollbar { width: 3px; }
+.panel-left::-webkit-scrollbar-track { background: transparent; }
+.panel-left::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+}
+
+/* ── Right panel ────────────────────────────────────────────────────────── */
+.panel-right {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.panel-right::-webkit-scrollbar { width: 3px; }
+.panel-right::-webkit-scrollbar-track { background: transparent; }
+.panel-right::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+}
+
+/* Ambient orange glow */
+.panel-right::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 90%, rgba(255,95,0,0.16) 0%, rgba(255,100,0,0.06) 45%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,75,0,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 80% 15%, rgba(255,95,0,0.06) 0%, transparent 60%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+/* Subtle grid texture */
+.panel-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Section label ──────────────────────────────────────────────────────── */
+.label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ── Input ──────────────────────────────────────────────────────────────── */
+.input-row { display: flex; gap: 8px; }
+
+.input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 400;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+.input::placeholder { color: var(--text-faint); }
+.input:focus { border-color: var(--accent-border); }
+
+.input-hint {
+  margin-top: 9px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ── Primary button ─────────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-primary:hover { background: #e85c14; }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* ── Search section ─────────────────────────────────────────────────────── */
+.search-section { display: flex; flex-direction: column; gap: 10px; }
+
+.search-input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.search-input::placeholder { color: var(--text-faint); font-weight: 400; }
+.search-input:focus { border-color: var(--accent-border); }
+
+/* ── Status rows ────────────────────────────────────────────────────────── */
+.loading-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-msg {
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.18);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  font-size: 12px;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ── Channel chip ───────────────────────────────────────────────────────── */
+.channel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 4px 12px 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff8b5e;
+  margin-bottom: 13px;
+}
+.channel-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── Stats grid ─────────────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 15px 12px;
+}
+.stat-card.featured {
+  grid-column: 1 / -1;
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+}
+
+.stat-label {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.stat-card.featured .stat-label { color: rgba(255,140,90,0.6); }
+
+.stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.stat-card.featured .stat-val {
+  font-size: 28px;
+  color: #ff8b5e;
+}
+
+.stat-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Video list ─────────────────────────────────────────────────────────── */
+.video-list { display: flex; flex-direction: column; gap: 1px; }
+
+.video-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 8px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.video-item:hover { background: rgba(255,255,255,0.03); }
+.video-item.selected {
+  background: var(--accent-dim) !important;
+}
+.video-item.selected .v-title { color: #fff; }
+
+/* Score badge */
+.score-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+.score-badge.high {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: #fca5a5;
+}
+.score-badge.medium {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  color: #ff8b5e;
+}
+
+.v-info { flex: 1; min-width: 0; }
+.v-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.v-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.v-reason {
+  font-size: 9.5px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.v-views {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.no-flags {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  padding: 12px 0;
+}
+
+/* ── Empty state ────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 13px;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+.empty-icon { width: 44px; height: 44px; }
+.empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.empty-body {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 340px;
+  line-height: 1.65;
+}
+
+/* ── Detail view ────────────────────────────────────────────────────────── */
+.detail-view {
+  max-width: 640px;
+  width: 100%;
+  padding: 40px 48px 60px;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.35s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.summary-banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 32px;
+  text-align: center;
+}
+.summary-banner strong { color: var(--text); font-weight: 700; }
+.summary-banner .accent { color: #ff8b5e; font-weight: 700; }
+
+.detail-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.detail-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.detail-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.detail-meta span { white-space: nowrap; }
+
+/* Large score display */
+.score-display {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.score-number {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.score-number.high { color: var(--red); }
+.score-number.medium { color: var(--accent); }
+.score-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Signals grid */
+.signals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.signal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 14px 12px;
+  text-align: center;
+}
+.signal-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.signal-val {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.signal-hint {
+  font-size: 9px;
+  color: var(--text-faint);
+  margin-top: 5px;
+}
+
+/* Reason section */
+.reason-section {
+  margin-bottom: 24px;
+}
+.reason-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.reason-text {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* Suggestion card */
+.suggestion-card {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.suggestion-label {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,140,90,0.6);
+  margin-bottom: 8px;
+}
+.suggestion-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff8b5e;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.suggestion-body {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+.suggestion-divider {
+  border: none;
+  border-top: 1px solid rgba(255,95,0,0.15);
+  margin: 12px 0;
+}
+
+/* Uplift stat */
+.uplift-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  text-align: center;
+}
+.uplift-label {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.uplift-val {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--green);
+  line-height: 1;
+}
+.uplift-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+/* ── Mode toggle ────────────────────────────────────────────────────────── */
+.mode-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.btn-mode {
+  background: none;
+  border: none;
+  font-family: var(--font);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+.btn-mode:hover { color: var(--text); }
+.btn-mode.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── OAuth UI ───────────────────────────────────────────────────────────── */
+.oauth-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  transition: border-color 0.25s;
+}
+.oauth-pill.connected {
+  border-color: rgba(34,197,94,0.22);
+  color: rgba(255,255,255,0.55);
+}
+.oauth-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.oauth-dot.on {
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(34,197,94,0.45);
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #333;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.1s;
+  white-space: nowrap;
+}
+.btn-google:hover { box-shadow: 0 2px 12px rgba(255,255,255,0.1); }
+.btn-google:active { transform: translateY(1px); }
+.btn-google svg { flex-shrink: 0; }
+
+/* ── Deep-only visibility ───────────────────────────────────────────────── */
+.deep-only { display: none !important; }
+.app.deep-mode .deep-only { display: block !important; }
+.app.deep-mode .deep-only.deep-flex { display: flex !important; }
+.app.deep-mode .deep-only.deep-grid { display: grid !important; }
+
+/* ── Traffic source bars ────────────────────────────────────────────────── */
+.traffic-section { margin-bottom: 24px; }
+.traffic-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.traffic-bars { display: flex; flex-direction: column; gap: 6px; }
+.traffic-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.traffic-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  width: 70px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.traffic-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.traffic-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.traffic-bar-fill.browse    { background: #3b82f6; }
+.traffic-bar-fill.suggested { background: var(--green); }
+.traffic-bar-fill.search    { background: var(--accent); }
+.traffic-bar-fill.external  { background: rgba(255,255,255,0.3); }
+.traffic-bar-fill.other     { background: rgba(255,255,255,0.12); }
+
+.traffic-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 36px;
+  flex-shrink: 0;
+}
+
+/* ── CTR signal card accent ─────────────────────────────────────────────── */
+.signal-card.ctr-card {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+}
+
+/* ── Signals grid responsive (5 cards) ──────────────────────────────────── */
+.app.deep-mode .signals-grid {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* ── Utility ────────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.mt-0 { margin-top: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-wordmark">curve</span>
+      <div class="logo-divider"></div>
+      <span class="logo-sub">Content Audit</span>
+    </div>
+
+    <div class="header-right">
+      <div class="mode-toggle">
+        <button class="btn-mode active" id="btnPublicMode" data-mode="public">Public Audit</button>
+        <button class="btn-mode" id="btnDeepMode" data-mode="deep">Deep Audit</button>
+      </div>
+      <div class="api-pill" id="apiPill">
+        <div class="api-dot" id="apiDot"></div>
+        <span id="apiPillText">No API key</span>
+      </div>
+      <div class="oauth-pill hidden" id="oauthPill">
+        <div class="oauth-dot" id="oauthDot"></div>
+        <span id="oauthPillText">Not connected</span>
+      </div>
+      <button class="btn-ghost hidden" id="btnClearApi">Clear key</button>
+    </div>
+  </header>
+
+  <!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+  <div class="dashboard">
+
+    <!-- Left panel -->
+    <div class="panel-left">
+
+      <!-- API key -->
+      <div id="apiSection">
+        <div class="label">YouTube API Key</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;">
+          <div class="input-row">
+            <input type="password" class="input" id="apiKeyInput"
+              placeholder="AIzaSy…" autocomplete="off" spellcheck="false">
+            <button class="btn-primary" id="btnSaveApi">Save</button>
+          </div>
+          <p class="input-hint">Stored in localStorage only — never leaves your browser.</p>
+        </div>
+      </div>
+
+      <!-- OAuth Client ID (Deep Audit only) -->
+      <div id="oauthSection" class="deep-only">
+        <div class="label">Google OAuth Client ID</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;">
+          <div class="input-row" id="oauthIdRow">
+            <input type="text" class="input" id="oauthClientIdInput"
+              placeholder="123456789.apps.googleusercontent.com" autocomplete="off" spellcheck="false">
+            <button class="btn-primary" id="btnSaveOAuthId">Save</button>
+          </div>
+          <div class="input-row hidden" id="oauthSignInRow" style="margin-top:10px;">
+            <button class="btn-google" id="btnGoogleSignIn">
+              <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59l-7.98-6.19A23.99 23.99 0 0 0 0 24c0 3.77.87 7.35 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              Sign in with Google
+            </button>
+          </div>
+          <p class="input-hint">Create an OAuth 2.0 Client ID (Web app) in Google Cloud Console. Add localhost:3405 to Authorized Origins.</p>
+        </div>
+      </div>
+
+      <!-- Channel input -->
+      <div class="search-section">
+        <div class="label">Channel</div>
+        <div class="input-row">
+          <input type="text" class="search-input" id="channelInput"
+            placeholder="youtube.com/@handle or channel ID" autocomplete="off">
+          <button class="btn-primary" id="btnAudit">Audit</button>
+        </div>
+        <div class="loading-row hidden" id="loadingRow">
+          <div class="spinner"></div>
+          <span id="loadingText">Fetching…</span>
+        </div>
+        <div class="error-msg hidden" id="errorMsg"></div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Stats -->
+      <div id="statsSection" class="hidden">
+        <div class="label mt-0">Audit Overview</div>
+        <div class="channel-chip" id="channelChip">
+          <div class="channel-chip-dot"></div>
+          <span id="channelChipText"></span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Videos Analysed</div>
+            <div class="stat-val" id="statTotal">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Flagged</div>
+            <div class="stat-val" id="statFlagged">—</div>
+          </div>
+          <div class="stat-card featured">
+            <div class="stat-label">Est. Missed Views</div>
+            <div class="stat-val" id="statMissed">—</div>
+            <div class="stat-sub" id="statMissedSub">potential views left on the table</div>
+          </div>
+          <div class="stat-card" style="grid-column:1/-1;">
+            <div class="stat-label">Avg Repackaging Score</div>
+            <div class="stat-val" id="statAvgScore">—</div>
+            <div class="stat-sub">across flagged videos</div>
+          </div>
+          <div class="stat-card deep-only">
+            <div class="stat-label">Avg CTR</div>
+            <div class="stat-val" id="statAvgCtr">—</div>
+          </div>
+          <div class="stat-card deep-only">
+            <div class="stat-label">Avg Retention</div>
+            <div class="stat-val" id="statAvgRetention">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flagged video list -->
+      <div id="videoSection" class="hidden">
+        <div class="label">Flagged Videos</div>
+        <div class="video-list" id="videoList"></div>
+      </div>
+
+    </div>
+
+    <!-- Resize handle -->
+    <div class="resize-handle" id="resizeHandle"></div>
+
+    <!-- Right panel -->
+    <div class="panel-right" id="panelRight">
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <svg class="empty-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:1;filter:drop-shadow(0 0 8px rgba(255,95,0,0.7)) drop-shadow(0 0 18px rgba(255,95,0,0.35));">
+          <rect x="6" y="4" width="24" height="32" rx="3" stroke="#FF5F00" stroke-width="1.8" fill="none"/>
+          <path d="M12 12h12M12 17h8M12 22h10" stroke="#FF5F00" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="32" cy="32" r="9" stroke="#FF5F00" stroke-width="1.8" fill="none"/>
+          <path d="M32 28v8M28 32h8" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div class="empty-title">Enter a channel to audit</div>
+        <div class="empty-body">Paste a YouTube channel URL or handle to scan the last 50 videos. We'll flag content with repackaging potential — great videos that underperformed due to weak titles or thumbnails.</div>
+      </div>
+
+      <!-- Detail view (hidden until a video is selected) -->
+      <div class="detail-view hidden" id="detailView">
+        <div class="summary-banner" id="summaryBanner"></div>
+
+        <div class="detail-eyebrow">Repackaging Opportunity</div>
+        <div class="detail-title" id="detailTitle"></div>
+        <div class="detail-meta" id="detailMeta"></div>
+
+        <div class="score-display">
+          <div class="score-number" id="detailScore"></div>
+          <div class="score-label">Repackaging Score</div>
+        </div>
+
+        <div class="signals-grid">
+          <div class="signal-card">
+            <div class="signal-label">View / Sub</div>
+            <div class="signal-val" id="sigRatio"></div>
+            <div class="signal-hint" id="sigRatioHint"></div>
+          </div>
+          <div class="signal-card">
+            <div class="signal-label">Age Score</div>
+            <div class="signal-val" id="sigAge"></div>
+            <div class="signal-hint" id="sigAgeHint"></div>
+          </div>
+          <div class="signal-card">
+            <div class="signal-label">Title Quality</div>
+            <div class="signal-val" id="sigTitle"></div>
+            <div class="signal-hint" id="sigTitleHint"></div>
+          </div>
+          <div class="signal-card ctr-card deep-only">
+            <div class="signal-label">CTR</div>
+            <div class="signal-val" id="sigCtr"></div>
+            <div class="signal-hint" id="sigCtrHint"></div>
+          </div>
+          <div class="signal-card deep-only">
+            <div class="signal-label">Retention</div>
+            <div class="signal-val" id="sigRetention"></div>
+            <div class="signal-hint" id="sigRetentionHint"></div>
+          </div>
+        </div>
+
+        <div class="traffic-section deep-only" id="trafficSection">
+          <div class="traffic-title">Traffic Sources</div>
+          <div class="traffic-bars" id="trafficBars"></div>
+        </div>
+
+        <div class="reason-section">
+          <div class="reason-title">Why It Underperformed</div>
+          <div class="reason-text" id="detailReason"></div>
+        </div>
+
+        <div class="suggestion-card">
+          <div class="suggestion-label">Suggested New Title</div>
+          <div class="suggestion-title" id="detailSuggTitle"></div>
+          <hr class="suggestion-divider">
+          <div class="suggestion-label">Thumbnail Brief</div>
+          <div class="suggestion-body" id="detailThumbBrief"></div>
+        </div>
+
+        <div class="uplift-card">
+          <div class="uplift-label">Estimated View Uplift</div>
+          <div class="uplift-val" id="detailUplift"></div>
+          <div class="uplift-hint" id="detailUpliftHint"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════════════════
+const STORAGE_KEY   = 'curve_audit_yt_key';
+const CACHE_KEY     = 'curve_audit_cache';
+const CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+
+let apiKey       = localStorage.getItem(STORAGE_KEY) || '';
+let channelInfo  = null;   // { id, title, subs, thumbnail }
+let allVideos    = [];     // all 50 videos with scores
+let flaggedVideos = [];    // score >= 6, sorted desc
+let channelAvg   = 0;
+let selectedIdx  = -1;
+
+// Deep Audit state
+const OAUTH_ID_KEY       = 'curve_audit_oauth_id';
+const ANALYTICS_CACHE_KEY = 'curve_audit_analytics';
+const ANALYTICS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+let auditMode      = 'public';
+let oauthClientId  = localStorage.getItem(OAUTH_ID_KEY) || '';
+let accessToken    = sessionStorage.getItem('curve_audit_token') || '';
+let oauthUserEmail = '';
+let tokenClient    = null;
+let analyticsData  = {};   // keyed by video ID
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DOM refs
+// ═══════════════════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+
+const apiSection    = $('apiSection');
+const apiKeyInput   = $('apiKeyInput');
+const btnSaveApi    = $('btnSaveApi');
+const btnClearApi   = $('btnClearApi');
+const apiPill       = $('apiPill');
+const apiDot        = $('apiDot');
+const apiPillText   = $('apiPillText');
+const channelInput  = $('channelInput');
+const btnAudit      = $('btnAudit');
+const loadingRow    = $('loadingRow');
+const loadingText   = $('loadingText');
+const errorMsg      = $('errorMsg');
+const statsSection  = $('statsSection');
+const videoSection  = $('videoSection');
+const videoList     = $('videoList');
+const emptyState    = $('emptyState');
+const detailView    = $('detailView');
+const summaryBanner = $('summaryBanner');
+
+// Deep Audit DOM refs
+const oauthPill        = $('oauthPill');
+const oauthDot         = $('oauthDot');
+const oauthPillText    = $('oauthPillText');
+const oauthClientIdInput = $('oauthClientIdInput');
+const oauthIdRow       = $('oauthIdRow');
+const oauthSignInRow   = $('oauthSignInRow');
+const trafficBars      = $('trafficBars');
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Resizable panel
+// ═══════════════════════════════════════════════════════════════════════════
+const dashboard    = document.querySelector('.dashboard');
+const resizeHandle = $('resizeHandle');
+const MIN_LEFT = 280, MAX_LEFT = 620;
+let isResizing = false;
+
+resizeHandle.addEventListener('mousedown', e => {
+  isResizing = true;
+  resizeHandle.classList.add('dragging');
+  document.body.style.cursor    = 'col-resize';
+  document.body.style.userSelect = 'none';
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isResizing) return;
+  const r = dashboard.getBoundingClientRect();
+  const w = Math.min(MAX_LEFT, Math.max(MIN_LEFT, e.clientX - r.left));
+  dashboard.style.gridTemplateColumns = `${w}px 4px 1fr`;
+});
+
+document.addEventListener('mouseup', () => {
+  if (!isResizing) return;
+  isResizing = false;
+  resizeHandle.classList.remove('dragging');
+  document.body.style.cursor     = '';
+  document.body.style.userSelect = '';
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Boot
+// ═══════════════════════════════════════════════════════════════════════════
+function init() {
+  if (apiKey) {
+    setConnected(true);
+    apiSection.classList.add('hidden');
+  }
+  // Restore OAuth state
+  if (oauthClientId) {
+    oauthIdRow.classList.add('hidden');
+    oauthSignInRow.classList.remove('hidden');
+  }
+  if (accessToken) {
+    setOAuthConnected(true, sessionStorage.getItem('curve_audit_email') || 'Connected');
+  }
+  // Defer GIS init until library loads
+  if (oauthClientId) {
+    if (typeof google !== 'undefined') initGIS();
+    else window.addEventListener('load', () => { if (typeof google !== 'undefined') initGIS(); });
+  }
+  bindEvents();
+}
+
+function bindEvents() {
+  btnSaveApi.addEventListener('click', saveKey);
+  apiKeyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+  btnClearApi.addEventListener('click', clearKey);
+  btnAudit.addEventListener('click', runAudit);
+  channelInput.addEventListener('keydown', e => { if (e.key === 'Enter') runAudit(); });
+
+  // Mode toggle
+  $('btnPublicMode').addEventListener('click', () => setAuditMode('public'));
+  $('btnDeepMode').addEventListener('click', () => setAuditMode('deep'));
+
+  // OAuth
+  $('btnSaveOAuthId').addEventListener('click', saveOAuthClientId);
+  oauthClientIdInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveOAuthClientId(); });
+  $('btnGoogleSignIn').addEventListener('click', requestOAuthToken);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// API key management
+// ═══════════════════════════════════════════════════════════════════════════
+function saveKey() {
+  const v = apiKeyInput.value.trim();
+  if (!v) return;
+  apiKey = v;
+  localStorage.setItem(STORAGE_KEY, v);
+  apiKeyInput.value = '';
+  setConnected(true);
+  apiSection.classList.add('hidden');
+}
+
+function clearKey() {
+  apiKey = '';
+  localStorage.removeItem(STORAGE_KEY);
+  setConnected(false);
+  apiSection.classList.remove('hidden');
+}
+
+function setConnected(yes) {
+  if (yes) {
+    apiDot.classList.add('on');
+    apiPill.classList.add('connected');
+    apiPillText.textContent = 'YouTube API connected';
+    btnClearApi.classList.remove('hidden');
+  } else {
+    apiDot.classList.remove('on');
+    apiPill.classList.remove('connected');
+    apiPillText.textContent = 'No API key';
+    btnClearApi.classList.add('hidden');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Mode toggle
+// ═══════════════════════════════════════════════════════════════════════════
+function setAuditMode(mode) {
+  auditMode = mode;
+  const app = document.querySelector('.app');
+  if (mode === 'deep') {
+    app.classList.add('deep-mode');
+    $('btnPublicMode').classList.remove('active');
+    $('btnDeepMode').classList.add('active');
+    oauthPill.classList.remove('hidden');
+  } else {
+    app.classList.remove('deep-mode');
+    $('btnPublicMode').classList.add('active');
+    $('btnDeepMode').classList.remove('active');
+    oauthPill.classList.add('hidden');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// OAuth (Google Identity Services)
+// ═══════════════════════════════════════════════════════════════════════════
+function saveOAuthClientId() {
+  const v = oauthClientIdInput.value.trim();
+  if (!v) return;
+  oauthClientId = v;
+  localStorage.setItem(OAUTH_ID_KEY, v);
+  oauthIdRow.classList.add('hidden');
+  oauthSignInRow.classList.remove('hidden');
+  if (typeof google !== 'undefined') initGIS();
+}
+
+function initGIS() {
+  if (!oauthClientId || typeof google === 'undefined') return;
+  try {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: oauthClientId,
+      scope: 'https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/userinfo.email',
+      callback: handleOAuthResponse,
+    });
+  } catch (e) {
+    console.error('GIS init failed:', e);
+  }
+}
+
+function requestOAuthToken() {
+  if (!tokenClient) {
+    showErr('OAuth not initialized. Check your Client ID.');
+    return;
+  }
+  tokenClient.requestAccessToken();
+}
+
+async function handleOAuthResponse(response) {
+  if (response.error) {
+    showErr('OAuth error: ' + (response.error_description || response.error));
+    return;
+  }
+  accessToken = response.access_token;
+  sessionStorage.setItem('curve_audit_token', accessToken);
+
+  // Fetch user email for display
+  try {
+    const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { 'Authorization': 'Bearer ' + accessToken }
+    });
+    const info = await res.json();
+    oauthUserEmail = info.email || 'Connected';
+    sessionStorage.setItem('curve_audit_email', oauthUserEmail);
+  } catch {
+    oauthUserEmail = 'Connected';
+  }
+  setOAuthConnected(true, oauthUserEmail);
+}
+
+function setOAuthConnected(yes, label) {
+  if (yes) {
+    oauthDot.classList.add('on');
+    oauthPill.classList.add('connected');
+    oauthPillText.textContent = label || 'Connected';
+    oauthSignInRow.classList.add('hidden');
+  } else {
+    oauthDot.classList.remove('on');
+    oauthPill.classList.remove('connected');
+    oauthPillText.textContent = 'Not connected';
+    oauthSignInRow.classList.remove('hidden');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// YouTube Analytics API
+// ═══════════════════════════════════════════════════════════════════════════
+async function ytAnalyticsFetch(params) {
+  const res = await fetch(
+    `https://youtubeanalytics.googleapis.com/v2/reports?${params}`,
+    { headers: { 'Authorization': 'Bearer ' + accessToken } }
+  );
+  const json = await res.json();
+  if (json.error) {
+    if (json.error.code === 401) {
+      accessToken = '';
+      sessionStorage.removeItem('curve_audit_token');
+      setOAuthConnected(false);
+      throw new Error('OAuth token expired. Please sign in again.');
+    }
+    throw new Error(json.error.message || 'Analytics API error');
+  }
+  return json;
+}
+
+async function fetchAnalyticsData(channelId, videos) {
+  analyticsData = {};
+  const ids = videos.map(v => v.id);
+
+  // Find earliest publish date
+  const earliest = videos.reduce((min, v) => {
+    const d = v.published ? v.published.split('T')[0] : '2020-01-01';
+    return d < min ? d : min;
+  }, '2099-01-01');
+  const today = new Date().toISOString().split('T')[0];
+
+  // Batch 1: CTR + Impressions
+  try {
+    setLoading('Pulling CTR & impressions…');
+    const ctrRes = await ytAnalyticsFetch(
+      `ids=channel==${channelId}&startDate=${earliest}&endDate=${today}` +
+      `&metrics=views,impressions,impressionsCtr&dimensions=video` +
+      `&filters=video==${ids.join(',')}&maxResults=50&sort=-views`
+    );
+    if (ctrRes.rows) {
+      for (const row of ctrRes.rows) {
+        const vid = row[0];
+        analyticsData[vid] = analyticsData[vid] || {};
+        analyticsData[vid].views       = row[1];
+        analyticsData[vid].impressions = row[2];
+        analyticsData[vid].ctr         = row[3] * 100; // API returns decimal
+      }
+    }
+  } catch (e) {
+    console.warn('CTR fetch failed:', e.message);
+  }
+
+  // Batch 2: Retention
+  try {
+    setLoading('Pulling retention data…');
+    const retRes = await ytAnalyticsFetch(
+      `ids=channel==${channelId}&startDate=${earliest}&endDate=${today}` +
+      `&metrics=views,averageViewDuration,averageViewPercentage&dimensions=video` +
+      `&filters=video==${ids.join(',')}&maxResults=50&sort=-views`
+    );
+    if (retRes.rows) {
+      for (const row of retRes.rows) {
+        const vid = row[0];
+        analyticsData[vid] = analyticsData[vid] || {};
+        analyticsData[vid].avgViewDuration  = row[2];
+        analyticsData[vid].avgViewPercentage = row[3];
+      }
+    }
+  } catch (e) {
+    console.warn('Retention fetch failed:', e.message);
+  }
+
+  // Batch 3: Traffic sources (top 10 flagged only)
+  const flaggedIds = flaggedVideos.slice(0, 10).map(v => v.id);
+  for (const vid of flaggedIds) {
+    try {
+      setLoading(`Traffic sources (${flaggedIds.indexOf(vid) + 1}/${flaggedIds.length})…`);
+      const pub = videos.find(v => v.id === vid)?.published?.split('T')[0] || earliest;
+      const tsRes = await ytAnalyticsFetch(
+        `ids=channel==${channelId}&startDate=${pub}&endDate=${today}` +
+        `&metrics=views&dimensions=insightTrafficSourceType` +
+        `&filters=video==${vid}`
+      );
+      if (tsRes.rows) {
+        const total = tsRes.rows.reduce((s, r) => s + r[1], 0);
+        const sources = {};
+        for (const row of tsRes.rows) {
+          sources[row[0]] = total > 0 ? (row[1] / total) * 100 : 0;
+        }
+        analyticsData[vid] = analyticsData[vid] || {};
+        analyticsData[vid].trafficSources = sources;
+      }
+    } catch (e) {
+      console.warn('Traffic source fetch failed for', vid, e.message);
+    }
+  }
+}
+
+function getAnalyticsCached(channelId) {
+  try {
+    const raw = sessionStorage.getItem(ANALYTICS_CACHE_KEY);
+    if (!raw) return null;
+    const store = JSON.parse(raw);
+    const entry = store[channelId];
+    if (!entry || Date.now() - entry.ts > ANALYTICS_CACHE_TTL) return null;
+    return entry.data;
+  } catch { return null; }
+}
+
+function setAnalyticsCached(channelId, data) {
+  try {
+    const store = JSON.parse(sessionStorage.getItem(ANALYTICS_CACHE_KEY) || '{}');
+    store[channelId] = { ts: Date.now(), data };
+    sessionStorage.setItem(ANALYTICS_CACHE_KEY, JSON.stringify(store));
+  } catch {}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Channel URL Parser
+// ═══════════════════════════════════════════════════════════════════════════
+function parseChannelInput(raw) {
+  const val = raw.trim();
+  if (!val) return null;
+
+  // Raw channel ID
+  if (/^UC[\w-]{22}$/.test(val)) return { type: 'id', value: val };
+
+  // Bare handle
+  if (/^@[\w.-]+$/.test(val)) return { type: 'handle', value: val };
+
+  // Try parsing as URL
+  let url;
+  try {
+    url = new URL(val.includes('://') ? val : 'https://' + val);
+  } catch {
+    // Treat as search term / custom URL
+    return { type: 'custom', value: val };
+  }
+
+  const path = url.pathname.replace(/\/+$/, '');
+  const segments = path.split('/').filter(Boolean);
+
+  if (segments[0] === 'channel' && segments[1]) {
+    return { type: 'id', value: segments[1] };
+  }
+  if (segments[0] && segments[0].startsWith('@')) {
+    return { type: 'handle', value: segments[0] };
+  }
+  if ((segments[0] === 'c' || segments[0] === 'user') && segments[1]) {
+    return { type: 'custom', value: segments[1] };
+  }
+  if (segments[0]) {
+    return { type: 'custom', value: segments[0] };
+  }
+
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Main Audit Flow
+// ═══════════════════════════════════════════════════════════════════════════
+async function runAudit() {
+  const raw = channelInput.value.trim();
+  if (!raw)    { showErr('Enter a channel URL or handle.'); return; }
+  if (!apiKey) { showErr('Save your YouTube API key first.'); return; }
+
+  const parsed = parseChannelInput(raw);
+  if (!parsed) { showErr('Could not parse channel input.'); return; }
+
+  clearErr();
+  btnAudit.disabled = true;
+
+  // Cache check
+  const cacheKey = parsed.value.toLowerCase();
+  const cached = getCached(cacheKey);
+  if (cached) {
+    channelInfo   = cached.channelInfo;
+    allVideos     = cached.allVideos;
+    flaggedVideos = cached.flaggedVideos;
+    channelAvg    = cached.channelAvg;
+    renderResults(true);
+    btnAudit.disabled = false;
+    return;
+  }
+
+  setLoading('Resolving channel…');
+
+  try {
+    // Step 1: Resolve channel ID
+    let channelId;
+    if (parsed.type === 'id') {
+      channelId = parsed.value;
+    } else if (parsed.type === 'handle') {
+      const handle = parsed.value.startsWith('@') ? parsed.value : '@' + parsed.value;
+      const res = await ytFetch(`channels?part=id&forHandle=${encodeURIComponent(handle)}`);
+      if (res.items && res.items.length > 0) {
+        channelId = res.items[0].id;
+      } else {
+        // Fallback: search
+        const sr = await ytFetch(`search?part=id&q=${encodeURIComponent(handle)}&type=channel&maxResults=1`);
+        if (!sr.items?.length) throw new Error('Channel not found for ' + handle);
+        channelId = sr.items[0].id.channelId;
+      }
+    } else {
+      // custom URL — search for it
+      const sr = await ytFetch(`search?part=id&q=${encodeURIComponent(parsed.value)}&type=channel&maxResults=1`);
+      if (!sr.items?.length) throw new Error('Channel not found for "' + parsed.value + '"');
+      channelId = sr.items[0].id.channelId;
+    }
+
+    // Step 2: Get channel stats
+    setLoading('Pulling channel data…');
+    const chRes = await ytFetch(`channels?part=snippet,statistics&id=${channelId}`);
+    if (!chRes.items?.length) throw new Error('Channel not found.');
+    const ch = chRes.items[0];
+    const subs = parseInt(ch.statistics.subscriberCount || '0', 10);
+    const hiddenSubs = ch.statistics.hiddenSubscriberCount === true;
+    channelInfo = {
+      id: channelId,
+      title: ch.snippet.title,
+      subs: hiddenSubs ? 0 : subs,
+      hiddenSubs,
+      thumbnail: ch.snippet.thumbnails?.medium?.url || ''
+    };
+
+    // Step 3: Get last 50 videos
+    setLoading('Scanning videos…');
+    const searchRes = await ytFetch(`search?part=id&channelId=${channelId}&order=date&type=video&maxResults=50`);
+    const ids = (searchRes.items || []).map(i => i.id.videoId).filter(Boolean);
+    if (!ids.length) throw new Error('No videos found on this channel.');
+
+    // Step 4: Get video details (batch in chunks of 50)
+    setLoading('Analysing performance…');
+    const vRes = await ytFetch(`videos?part=statistics,snippet&id=${ids.join(',')}`);
+
+    const now = Date.now();
+    allVideos = (vRes.items || []).map(item => {
+      const views     = parseInt(item.statistics?.viewCount || '0', 10);
+      const published = new Date(item.snippet?.publishedAt).getTime();
+      const ageMonths = (now - published) / (30 * 24 * 60 * 60 * 1000);
+      return {
+        id:        item.id,
+        title:     item.snippet?.title || 'Untitled',
+        views,
+        published: item.snippet?.publishedAt,
+        ageMonths,
+        thumbnail: item.snippet?.thumbnails?.medium?.url || '',
+      };
+    });
+
+    channelAvg = allVideos.length > 0
+      ? Math.round(allVideos.reduce((s, v) => s + v.views, 0) / allVideos.length)
+      : 0;
+
+    // Step 5: Score each video (initial pass with public data)
+    allVideos.forEach(v => scoreVideo(v));
+    allVideos.sort((a, b) => b.score - a.score);
+    flaggedVideos = allVideos.filter(v => v.score >= 6);
+
+    // Step 5b: Deep Audit — fetch analytics and re-score
+    if (auditMode === 'deep' && accessToken) {
+      try {
+        const cachedAnalytics = getAnalyticsCached(channelInfo.id);
+        if (cachedAnalytics) {
+          analyticsData = cachedAnalytics;
+        } else {
+          await fetchAnalyticsData(channelInfo.id, allVideos);
+          setAnalyticsCached(channelInfo.id, analyticsData);
+        }
+        // Re-score with analytics data
+        allVideos.forEach(v => scoreVideo(v));
+        allVideos.sort((a, b) => b.score - a.score);
+        flaggedVideos = allVideos.filter(v => v.score >= 6);
+      } catch (e) {
+        console.warn('Analytics fetch failed, using public data only:', e.message);
+      }
+    }
+
+    // Cache
+    setCached(cacheKey, { channelInfo, allVideos, flaggedVideos, channelAvg });
+
+    clearLoading();
+    renderResults(false);
+
+  } catch (err) {
+    clearLoading();
+    showErr(err.message);
+  } finally {
+    btnAudit.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// YouTube API helper
+// ═══════════════════════════════════════════════════════════════════════════
+async function ytFetch(endpoint) {
+  const sep = endpoint.includes('?') ? '&' : '?';
+  const res = await fetch(
+    `https://www.googleapis.com/youtube/v3/${endpoint}${sep}key=${encodeURIComponent(apiKey)}`
+  );
+  const json = await res.json();
+  if (json.error) throw new Error(ytErrMsg(json.error));
+  return json;
+}
+
+function ytErrMsg(err) {
+  const reason = err.errors?.[0]?.reason || '';
+  const detail = err.errors?.[0]?.message || err.message || '';
+  if (err.code === 403) {
+    if (reason === 'dailyLimitExceeded') return 'Daily API quota exceeded. Try again tomorrow.';
+    if (reason === 'keyInvalid')         return 'Invalid API key. Check your key and try again.';
+    if (reason === 'accessNotConfigured') return 'YouTube Data API v3 is not enabled. Enable it in Google Cloud Console.';
+    return `Access denied (403): ${detail}`;
+  }
+  if (err.code === 400) return `Bad request: ${detail}`;
+  return detail || 'YouTube API error.';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Scoring Algorithm
+// ═══════════════════════════════════════════════════════════════════════════
+function scoreVideo(v) {
+  const subs = channelInfo.subs;
+  const hiddenSubs = channelInfo.hiddenSubs;
+
+  // Signal 1: View-to-sub ratio
+  let ratioScore = 0;
+  let ratioVal = 0;
+  if (!hiddenSubs && subs > 0) {
+    ratioVal = (v.views / subs) * 100;
+    if      (ratioVal < 2)  ratioScore = 10;
+    else if (ratioVal < 5)  ratioScore = 8;
+    else if (ratioVal < 8)  ratioScore = 6;
+    else if (ratioVal < 10) ratioScore = 4;
+    else if (ratioVal < 15) ratioScore = 2;
+    else                    ratioScore = 0;
+  }
+
+  // Signal 2: Age vs performance
+  let ageScore = 0;
+  const belowAvg = v.views < channelAvg;
+  if      (v.ageMonths > 12 && belowAvg)  ageScore = 10;
+  else if (v.ageMonths > 6  && belowAvg)  ageScore = 8;
+  else if (v.ageMonths > 6  && !belowAvg) ageScore = 5;
+  else if (v.ageMonths > 3  && belowAvg)  ageScore = 6;
+  else if (v.ageMonths > 3  && !belowAvg) ageScore = 3;
+  else                                     ageScore = 1;
+
+  // Signal 3: Title quality
+  let titleScore = 10;
+  const title = v.title;
+  if (/\d/.test(title))            titleScore -= 2;
+  if (/\?/.test(title))            titleScore -= 2;
+  if (hasOutcomeWords(title))      titleScore -= 2;
+  if (hasEmotionalTriggers(title)) titleScore -= 1.5;
+  if (title.length >= 40 && title.length <= 65) titleScore -= 1;
+  // Penalty: excessive all-caps
+  const capsWords = title.match(/\b[A-Z]{4,}\b/g);
+  if (capsWords && capsWords.length >= 3) titleScore += 1;
+  titleScore = Math.max(0, Math.min(10, titleScore));
+
+  // Signal 4: CTR (Deep Audit only)
+  let ctrScore = 0;
+  let ctrVal = 0;
+  const ad = analyticsData[v.id];
+  if (auditMode === 'deep' && ad && ad.ctr != null) {
+    ctrVal = ad.ctr;
+    if      (ctrVal < 2)  ctrScore = 10;
+    else if (ctrVal < 4)  ctrScore = 8;
+    else if (ctrVal < 6)  ctrScore = 6;
+    else if (ctrVal < 8)  ctrScore = 4;
+    else if (ctrVal < 10) ctrScore = 2;
+    else                   ctrScore = 0;
+  }
+
+  // Signal 5: Retention (Deep Audit only)
+  let retentionScore = 0;
+  let retentionVal = 0;
+  if (auditMode === 'deep' && ad && ad.avgViewPercentage != null) {
+    retentionVal = ad.avgViewPercentage;
+    if      (retentionVal < 20) retentionScore = 10;
+    else if (retentionVal < 30) retentionScore = 7;
+    else if (retentionVal < 40) retentionScore = 5;
+    else if (retentionVal < 50) retentionScore = 3;
+    else                         retentionScore = 1;
+  }
+
+  // Composite — weight distribution depends on mode
+  let w1, w2, w3, w4 = 0, w5 = 0;
+  const hasAnalytics = auditMode === 'deep' && ad && ad.ctr != null;
+
+  if (hasAnalytics) {
+    // Deep Audit weights
+    w1 = 0.20; w2 = 0.15; w3 = 0.15; w4 = 0.30; w5 = 0.20;
+    if (hiddenSubs || subs === 0) {
+      w1 = 0; w2 = 0.15; w3 = 0.15; w4 = 0.40; w5 = 0.30;
+    }
+  } else {
+    // Public Audit weights
+    w1 = 0.4; w2 = 0.3; w3 = 0.3;
+    if (hiddenSubs || subs === 0) {
+      w1 = 0; w2 = 0.5; w3 = 0.5;
+    }
+  }
+
+  const raw = ratioScore * w1 + ageScore * w2 + titleScore * w3 + ctrScore * w4 + retentionScore * w5;
+  v.score          = Math.max(1, Math.min(10, Math.round(raw)));
+  v.ratioScore     = ratioScore;
+  v.ageScore       = ageScore;
+  v.titleScore     = Math.round(titleScore);
+  v.ratioVal       = ratioVal;
+  v.ctrScore       = ctrScore;
+  v.ctrVal         = ctrVal;
+  v.retentionScore = retentionScore;
+  v.retentionVal   = retentionVal;
+  v.impressions    = ad?.impressions || 0;
+  v.trafficSources = ad?.trafficSources || null;
+  v.reason         = generateReason(v);
+  v.suggestion     = generateSuggestedTitle(v);
+  v.thumbBrief     = generateThumbBrief(v);
+  v.uplift         = Math.max(0, channelAvg - v.views);
+}
+
+const OUTCOME_WORDS = /\b(how to|secret|mistake|truth|hack|trick|strategy|system|method|formula|blueprint|guide|step|reason|lesson)\b/i;
+const EMOTIONAL_WORDS = /\b(never|always|worst|best|insane|shocking|incredible|ultimate|proven|guaranteed|warning|urgent|finally|impossible)\b/i;
+
+function hasOutcomeWords(t)      { return OUTCOME_WORDS.test(t); }
+function hasEmotionalTriggers(t) { return EMOTIONAL_WORDS.test(t); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Generators
+// ═══════════════════════════════════════════════════════════════════════════
+function generateReason(v) {
+  const parts = [];
+  if (v.ratioScore >= 6 && channelInfo.subs > 0) {
+    parts.push(`Only ${v.ratioVal.toFixed(1)}% view-to-sub ratio (below the 8–10% baseline)`);
+  }
+  if (v.ageScore >= 6) {
+    parts.push(`${Math.round(v.ageMonths)} months old with views below channel average — stalled growth`);
+  }
+  if (v.titleScore >= 6) {
+    const missing = [];
+    if (!/\d/.test(v.title))            missing.push('numbers');
+    if (!/\?/.test(v.title))            missing.push('curiosity hook');
+    if (!hasOutcomeWords(v.title))      missing.push('named outcome');
+    if (!hasEmotionalTriggers(v.title)) missing.push('emotional trigger');
+    if (missing.length) parts.push('Title lacks: ' + missing.join(', '));
+  }
+  // Deep Audit signals
+  if (auditMode === 'deep') {
+    if (v.ctrScore >= 6 && v.retentionScore <= 3) {
+      parts.push(`High retention (${v.retentionVal.toFixed(0)}%) but low CTR (${v.ctrVal.toFixed(1)}%) — great content with weak packaging. Prime repackaging target`);
+    } else {
+      if (v.ctrScore >= 6) parts.push(`CTR of ${v.ctrVal.toFixed(1)}% — packaging not compelling enough to click`);
+      if (v.retentionScore >= 6) parts.push(`Only ${v.retentionVal.toFixed(0)}% average retention — viewers bouncing early`);
+    }
+  }
+  return parts.join('. ') + (parts.length ? '.' : 'Multiple weak signals detected.');
+}
+
+function generateSuggestedTitle(v) {
+  const topic = extractTopic(v.title);
+
+  if (v.titleScore >= 6 && !/\d/.test(v.title)) {
+    return `7 ${topic} Mistakes That Are Killing Your Results`;
+  }
+  if (v.titleScore >= 6 && !/\?/.test(v.title)) {
+    return `Why Is Nobody Talking About ${topic}?`;
+  }
+  if (v.ratioScore >= 8) {
+    return `How to ${topic} (The Method That Actually Works)`;
+  }
+  if (v.ageScore >= 8) {
+    return `I Was Wrong About ${topic} — Here's What Changed`;
+  }
+  return `The ${topic} Strategy That Changed Everything`;
+}
+
+function extractTopic(title) {
+  let t = title
+    .replace(/\s*[\|–—-]\s*.*$/, '')   // strip " | channel name" etc
+    .replace(/#\S+/g, '')              // strip hashtags
+    .replace(/\(.*?\)/g, '')           // strip parentheticals
+    .replace(/\[.*?\]/g, '')           // strip brackets
+    .replace(/ep\.?\s*\d+/gi, '')      // strip episode numbers
+    .trim();
+  if (t.length > 40) t = t.substring(0, 40).replace(/\s\S*$/, '');
+  return t || 'This Topic';
+}
+
+function generateThumbBrief(v) {
+  const parts = ['Close-up face shot with clear eye contact. High-contrast against dark background.'];
+  if (v.titleScore >= 6) {
+    parts.push('Bold 2–3 word text overlay in white or yellow — the core hook, not the full title.');
+  }
+  if (v.ratioScore >= 8) {
+    parts.push('Use a before/after split or comparison visual to create immediate curiosity.');
+  }
+  return parts.join(' ');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Render Results
+// ═══════════════════════════════════════════════════════════════════════════
+function renderResults(fromCache) {
+  // Stats
+  $('channelChipText').textContent = channelInfo.title + (fromCache ? ' · cached' : '');
+  $('statTotal').textContent    = allVideos.length.toString();
+  $('statFlagged').textContent  = flaggedVideos.length.toString();
+
+  const totalMissed = flaggedVideos.reduce((s, v) => s + v.uplift, 0);
+  $('statMissed').textContent = fmt(totalMissed);
+  $('statMissedSub').textContent = `across ${flaggedVideos.length} flagged video${flaggedVideos.length !== 1 ? 's' : ''}`;
+
+  const avgScore = flaggedVideos.length > 0
+    ? (flaggedVideos.reduce((s, v) => s + v.score, 0) / flaggedVideos.length).toFixed(1)
+    : '—';
+  $('statAvgScore').textContent = avgScore;
+
+  // Deep Audit stats
+  if (auditMode === 'deep') {
+    const withCtr = allVideos.filter(v => v.ctrVal > 0);
+    $('statAvgCtr').textContent = withCtr.length > 0
+      ? (withCtr.reduce((s, v) => s + v.ctrVal, 0) / withCtr.length).toFixed(1) + '%'
+      : '—';
+    const withRet = allVideos.filter(v => v.retentionVal > 0);
+    $('statAvgRetention').textContent = withRet.length > 0
+      ? (withRet.reduce((s, v) => s + v.retentionVal, 0) / withRet.length).toFixed(0) + '%'
+      : '—';
+  }
+
+  // Video list
+  videoList.innerHTML = '';
+
+  if (flaggedVideos.length === 0) {
+    videoList.innerHTML = '<div class="no-flags">No videos flagged for repackaging. This channel\'s recent content is performing within expected ranges.</div>';
+  } else {
+    flaggedVideos.forEach((v, i) => {
+      const el = document.createElement('div');
+      el.className = 'video-item';
+      el.innerHTML = `
+        <div class="score-badge ${v.score >= 8 ? 'high' : 'medium'}">${v.score}</div>
+        <div class="v-info">
+          <div class="v-title">${esc(v.title)}</div>
+          <div class="v-meta">${fmt(v.views)} views</div>
+          <div class="v-reason">${esc(v.reason)}</div>
+        </div>
+      `;
+      el.dataset.index = i;
+      el.addEventListener('click', () => selectVideo(i, el));
+      videoList.appendChild(el);
+    });
+  }
+
+  // Show sections
+  statsSection.classList.remove('hidden');
+  videoSection.classList.remove('hidden');
+  emptyState.classList.add('hidden');
+  detailView.classList.add('hidden');
+  selectedIdx = -1;
+
+  // Summary banner
+  summaryBanner.innerHTML = flaggedVideos.length > 0
+    ? `These <strong>${flaggedVideos.length} videos</strong> represent approximately <span class="accent">${fmt(totalMissed)}</span> views you've already paid to make and never collected.`
+    : 'All recent videos are performing within expected ranges.';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Video selection → Detail view
+// ═══════════════════════════════════════════════════════════════════════════
+function selectVideo(idx, el) {
+  if (selectedIdx === idx) {
+    selectedIdx = -1;
+    document.querySelectorAll('.video-item').forEach(v => v.classList.remove('selected'));
+    detailView.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    return;
+  }
+
+  selectedIdx = idx;
+  const v = flaggedVideos[idx];
+
+  // Update list selection
+  document.querySelectorAll('.video-item').forEach(v => v.classList.remove('selected'));
+  el.classList.add('selected');
+
+  // Populate detail
+  $('detailTitle').textContent = v.title;
+
+  const pubDate = v.published ? new Date(v.published).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown';
+  const ratioText = channelInfo.subs > 0 ? v.ratioVal.toFixed(1) + '% view/sub' : 'Subs hidden';
+  $('detailMeta').innerHTML = `
+    <span>${fmt(v.views)} views</span>
+    <span>${pubDate}</span>
+    <span>${ratioText}</span>
+    <span>${Math.round(v.ageMonths)}mo old</span>
+  `;
+
+  const scoreEl = $('detailScore');
+  scoreEl.textContent = v.score + '/10';
+  scoreEl.className = 'score-number ' + (v.score >= 8 ? 'high' : 'medium');
+
+  // Signals
+  $('sigRatio').textContent   = channelInfo.subs > 0 ? v.ratioVal.toFixed(1) + '%' : 'N/A';
+  $('sigRatioHint').textContent = channelInfo.subs > 0 ? (v.ratioScore >= 6 ? 'Below baseline' : 'Acceptable') : 'Hidden';
+  $('sigAge').textContent     = v.ageScore + '/10';
+  $('sigAgeHint').textContent = v.ageMonths > 6 ? 'Stale content' : 'Recent';
+  $('sigTitle').textContent   = v.titleScore + '/10';
+  $('sigTitleHint').textContent = v.titleScore >= 6 ? 'Weak packaging' : 'Decent';
+
+  // Deep Audit signals
+  if (auditMode === 'deep') {
+    $('sigCtr').textContent       = v.ctrVal > 0 ? v.ctrVal.toFixed(1) + '%' : 'N/A';
+    $('sigCtrHint').textContent   = v.ctrScore >= 6 ? 'Weak click-pull' : v.ctrVal > 0 ? 'Healthy' : 'No data';
+    $('sigRetention').textContent = v.retentionVal > 0 ? v.retentionVal.toFixed(0) + '%' : 'N/A';
+    $('sigRetentionHint').textContent = v.retentionScore >= 6 ? 'Early drop-off' : v.retentionVal > 0 ? 'Good hold' : 'No data';
+
+    // Traffic sources
+    renderTrafficBars(v.trafficSources);
+  }
+
+  // Reason
+  $('detailReason').textContent = v.reason;
+
+  // Suggestion
+  $('detailSuggTitle').textContent  = v.suggestion;
+  $('detailThumbBrief').textContent = v.thumbBrief;
+
+  // Uplift
+  $('detailUplift').textContent = '+' + fmt(v.uplift);
+  if (auditMode === 'deep' && v.impressions > 0) {
+    $('detailUpliftHint').textContent = `${fmt(v.impressions)} impressions but only ${v.ctrVal.toFixed(1)}% clicked through`;
+  } else {
+    $('detailUpliftHint').textContent = `Gap between this video (${fmt(v.views)}) and channel average (${fmt(channelAvg)})`;
+  }
+
+  // Show detail, hide empty
+  emptyState.classList.add('hidden');
+  detailView.classList.remove('hidden');
+
+  // Re-trigger animation
+  detailView.style.animation = 'none';
+  detailView.offsetHeight;
+  detailView.style.animation = '';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Traffic source bars
+// ═══════════════════════════════════════════════════════════════════════════
+const TRAFFIC_MAP = {
+  'YT_SEARCH':       { label: 'Search',    cls: 'search' },
+  'RELATED_VIDEO':   { label: 'Suggested', cls: 'suggested' },
+  'SUBSCRIBER':      { label: 'Browse',    cls: 'browse' },
+  'BROWSE':          { label: 'Browse',    cls: 'browse' },
+  'EXT_URL':         { label: 'External',  cls: 'external' },
+  'NOTIFICATION':    { label: 'Notifs',    cls: 'browse' },
+  'PLAYLIST':        { label: 'Playlist',  cls: 'suggested' },
+  'NO_LINK_OTHER':   { label: 'Direct',    cls: 'other' },
+  'NO_LINK_EMBEDDED':{ label: 'Embedded',  cls: 'external' },
+};
+
+function renderTrafficBars(sources) {
+  trafficBars.innerHTML = '';
+  if (!sources) {
+    trafficBars.innerHTML = '<div style="font-size:10px;color:var(--text-faint);">No traffic data available</div>';
+    return;
+  }
+
+  // Consolidate and sort
+  const merged = {};
+  for (const [key, pct] of Object.entries(sources)) {
+    const info = TRAFFIC_MAP[key] || { label: key, cls: 'other' };
+    if (!merged[info.label]) merged[info.label] = { cls: info.cls, pct: 0 };
+    merged[info.label].pct += pct;
+  }
+
+  const sorted = Object.entries(merged).sort((a, b) => b[1].pct - a[1].pct);
+  const maxPct = sorted[0]?.[1].pct || 1;
+
+  for (const [label, { cls, pct }] of sorted) {
+    if (pct < 0.5) continue; // skip trivial sources
+    const row = document.createElement('div');
+    row.className = 'traffic-row';
+    row.innerHTML = `
+      <div class="traffic-label">${esc(label)}</div>
+      <div class="traffic-bar-track">
+        <div class="traffic-bar-fill ${cls}" style="width:0%"></div>
+      </div>
+      <div class="traffic-pct">${pct.toFixed(0)}%</div>
+    `;
+    trafficBars.appendChild(row);
+    // Animate bar
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        row.querySelector('.traffic-bar-fill').style.width = (pct / maxPct * 100) + '%';
+      }, 60);
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Cache helpers
+// ═══════════════════════════════════════════════════════════════════════════
+function getCached(key) {
+  try {
+    const store = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    const entry = store[key];
+    if (!entry) return null;
+    if (Date.now() - entry.ts > CACHE_MAX_AGE) return null;
+    return entry.data;
+  } catch { return null; }
+}
+
+function setCached(key, data) {
+  try {
+    const store = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    store[key] = { ts: Date.now(), data };
+    const keys = Object.keys(store);
+    if (keys.length > 20) delete store[keys[0]];
+    localStorage.setItem(CACHE_KEY, JSON.stringify(store));
+  } catch {}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════════════════
+function fmt(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function setLoading(msg) {
+  loadingText.textContent = msg;
+  loadingRow.classList.remove('hidden');
+}
+function clearLoading() { loadingRow.classList.add('hidden'); }
+
+function showErr(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.classList.remove('hidden');
+}
+function clearErr() { errorMsg.classList.add('hidden'); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Go
+// ═══════════════════════════════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>

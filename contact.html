@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Get in touch — Curve</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@800&display=swap" rel="stylesheet"/>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,600,700,800&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @keyframes pageEnterUp {
+    0%   { opacity: 0; transform: translateY(28px) scale(0.99); }
+    100% { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+  body {
+    animation: pageEnterUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  html, body {
+    background: #0f0e0e;
+    color: #E5E2E1;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Atmospheric glow ── */
+  .atm-bg {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .atm-bg span {
+    position: absolute; border-radius: 50%; filter: blur(110px);
+  }
+  .atm-bg .g1 {
+    width: 60vw; height: 60vw; max-width: 700px; max-height: 700px;
+    background: radial-gradient(circle, rgba(255,95,0,0.11) 0%, transparent 70%);
+    top: -15%; left: -10%;
+  }
+  .atm-bg .g2 {
+    width: 50vw; height: 50vw; max-width: 600px; max-height: 600px;
+    background: radial-gradient(circle, rgba(180,60,0,0.08) 0%, transparent 70%);
+    bottom: 5%; right: -8%;
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1.5rem 6rem;
+  }
+
+  /* ── Logo bar ── */
+  .logo-bar {
+    width: 100%;
+    max-width: 620px;
+    padding: 2.4rem 0 0;
+    margin-bottom: 5rem;
+  }
+  .logo-bar a {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1.45rem;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    color: #F0EFEB;
+    text-decoration: none;
+  }
+
+  /* ── Header copy ── */
+  .header-copy {
+    width: 100%;
+    max-width: 620px;
+    margin-bottom: 3.5rem;
+  }
+  .header-copy h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(2.6rem, 5vw, 3.8rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: #E5E2E1;
+    margin-bottom: 1.1rem;
+  }
+  .header-copy p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: rgba(229,226,225,0.5);
+    max-width: 520px;
+  }
+
+  /* ── Form container ── */
+  .form-wrap {
+    width: 100%;
+    max-width: 620px;
+  }
+
+  /* ── Field groups ── */
+  .field {
+    margin-bottom: 2rem;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(229,226,225,0.85);
+    margin-bottom: 0.65rem;
+    line-height: 1.3;
+  }
+  label .hint {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(229,226,225,0.35);
+    font-weight: 400;
+    margin-top: 0.15rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  select,
+  textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1rem;
+    color: #E5E2E1;
+    outline: none;
+    transition: border-color 0.18s, background 0.18s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input::placeholder, textarea::placeholder {
+    color: rgba(229,226,225,0.18);
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: rgba(255,95,0,0.45);
+    background: rgba(255,95,0,0.03);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(229,226,225,0.35)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+  select option { background: #1a1919; color: #E5E2E1; }
+
+  textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.6;
+  }
+
+  /* ── Commitment scale ── */
+  .scale-wrap {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .scale-wrap input[type="radio"] { display: none; }
+  .scale-wrap label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(229,226,225,0.4);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin: 0;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .scale-wrap input[type="radio"]:checked + label {
+    background: rgba(255,95,0,0.14);
+    border-color: rgba(255,95,0,0.45);
+    color: #FF5F00;
+  }
+  .scale-wrap label:hover {
+    border-color: rgba(255,95,0,0.25);
+    color: rgba(229,226,225,0.65);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 2.4rem 0;
+  }
+
+  /* ── Error ── */
+  .form-error {
+    display: none;
+    background: rgba(255,60,60,0.07);
+    border: 1px solid rgba(255,60,60,0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.875rem;
+    color: #ff7878;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 1.05rem 2rem;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #FF5F00 0%, #ff8c4a 100%);
+    color: #fff;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    margin-top: 0.5rem;
+  }
+  .submit-btn:hover {
+    transform: scale(1.015);
+    box-shadow: 0 0 32px 6px rgba(255,95,0,0.28);
+  }
+  .submit-btn:active { transform: scale(0.985); }
+  .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── Success state ── */
+  .success-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.4rem;
+    padding: 3rem 0;
+  }
+  .success-icon {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: rgba(255,95,0,0.1);
+    border: 1px solid rgba(255,95,0,0.22);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .success-icon svg { width: 28px; height: 28px; color: #FF5F00; }
+  .success-state h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 600;
+    color: #E5E2E1;
+    line-height: 1.1;
+  }
+  .success-state p {
+    font-size: 0.95rem;
+    color: rgba(229,226,225,0.45);
+    max-width: 360px;
+    line-height: 1.7;
+  }
+  .back-link {
+    font-size: 0.875rem;
+    color: #FF5F00;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    opacity: 0.85;
+    transition: opacity 0.18s;
+  }
+  .back-link:hover { opacity: 1; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    .field-row { grid-template-columns: 1fr; gap: 2rem; }
+    .scale-wrap { gap: 0.35rem; }
+    .scale-wrap label { height: 42px; font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="atm-bg">
+  <span class="g1"></span>
+  <span class="g2"></span>
+</div>
+
+<div class="page">
+
+  <!-- Logo -->
+  <div class="logo-bar">
+    <a href="index.html">curve</a>
+  </div>
+
+  <!-- Header copy -->
+  <div class="header-copy">
+    <h1>Get in Touch</h1>
+    <p>We only onboard two clients per month. Fill out this form if you're serious about YouTube growth and we'll reach out within 48 hours to see if it's a fit.</p>
+  </div>
+
+  <!-- Form -->
+  <div class="form-wrap">
+
+    <form id="contact-form" novalidate>
+
+      <div class="form-error" id="form-error"></div>
+
+      <!-- Name -->
+      <div class="field-row">
+        <div>
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" name="first_name" required/>
+        </div>
+        <div>
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" name="last_name" required/>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" required/>
+      </div>
+
+      <!-- Channel -->
+      <div class="field">
+        <label for="channel">YouTube channel URL</label>
+        <input type="url" id="channel" name="channel" placeholder="https://youtube.com/@yourchannel"/>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Channel size -->
+      <div class="field">
+        <label for="subscribers">What is your current subscriber count?</label>
+        <select id="subscribers" name="subscribers" required>
+          <option value="" disabled selected></option>
+          <option>Under 10K</option>
+          <option>10K – 100K</option>
+          <option>100K – 500K</option>
+          <option>500K – 1M</option>
+          <option>1M – 5M</option>
+          <option>5M+</option>
+          <option>No channel yet</option>
+        </select>
+      </div>
+
+      <!-- Revenue -->
+      <div class="field">
+        <label for="revenue">What is your monthly revenue or content budget?</label>
+        <select id="revenue" name="revenue">
+          <option value="" disabled selected></option>
+          <option>Pre-revenue</option>
+          <option>Under $10K / mo</option>
+          <option>$10K – $50K / mo</option>
+          <option>$50K – $200K / mo</option>
+          <option>$200K – $1M / mo</option>
+          <option>$1M+ / mo</option>
+        </select>
+      </div>
+
+      <!-- Commitment -->
+      <div class="field">
+        <label>
+          How committed are you to long-term YouTube growth?
+          <span class="hint">1 = not at all &nbsp;/&nbsp; 10 = whatever it takes</span>
+        </label>
+        <div class="scale-wrap">
+          <input type="radio" name="commitment" id="c1"  value="1" ><label for="c1" >1</label>
+          <input type="radio" name="commitment" id="c2"  value="2" ><label for="c2" >2</label>
+          <input type="radio" name="commitment" id="c3"  value="3" ><label for="c3" >3</label>
+          <input type="radio" name="commitment" id="c4"  value="4" ><label for="c4" >4</label>
+          <input type="radio" name="commitment" id="c5"  value="5" ><label for="c5" >5</label>
+          <input type="radio" name="commitment" id="c6"  value="6" ><label for="c6" >6</label>
+          <input type="radio" name="commitment" id="c7"  value="7" ><label for="c7" >7</label>
+          <input type="radio" name="commitment" id="c8"  value="8" ><label for="c8" >8</label>
+          <input type="radio" name="commitment" id="c9"  value="9" ><label for="c9" >9</label>
+          <input type="radio" name="commitment" id="c10" value="10"><label for="c10">10</label>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Challenge -->
+      <div class="field">
+        <label for="challenge">What's your biggest YouTube challenge right now?</label>
+        <textarea id="challenge" name="challenge"></textarea>
+      </div>
+
+      <!-- Referral -->
+      <div class="field">
+        <label for="referral">How did you hear about Curve?</label>
+        <select id="referral" name="referral">
+          <option value="" disabled selected></option>
+          <option>YouTube</option>
+          <option>Twitter / X</option>
+          <option>LinkedIn</option>
+          <option>Referral</option>
+          <option>Podcast</option>
+          <option>Google</option>
+          <option>Newsletter</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Extra -->
+      <div class="field">
+        <label for="extra">
+          Anything else you want us to know?
+          <span class="hint">optional</span>
+        </label>
+        <textarea id="extra" name="extra"></textarea>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <span id="btn-text">Submit</span>
+        <svg id="btn-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        <svg id="btn-spinner" style="display:none; animation:spin 0.8s linear infinite;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      </button>
+
+    </form>
+
+    <!-- Success -->
+    <div class="success-state" id="success-state">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <h2>You're in the queue.</h2>
+      <p>We'll review your submission and reach out within 48 hours if it's a fit. We read every single one.</p>
+      <a href="validated.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Back to Curve
+      </a>
+    </div>
+
+  </div><!-- /form-wrap -->
+
+</div><!-- /page -->
+
+<script>
+const SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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';
+
+const form      = document.getElementById('contact-form');
+const errorBox  = document.getElementById('form-error');
+const successEl = document.getElementById('success-state');
+const submitBtn = document.getElementById('submit-btn');
+const btnText   = document.getElementById('btn-text');
+const btnArrow  = document.getElementById('btn-arrow');
+const btnSpin   = document.getElementById('btn-spinner');
+
+const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+const radioVal = name => { const c = document.querySelector(`input[name="${name}"]:checked`); return c ? c.value : 'Not selected'; };
+
+function setLoading(on) {
+  submitBtn.disabled = on;
+  btnText.textContent = on ? 'Sending…' : 'Submit';
+  btnArrow.style.display = on ? 'none' : '';
+  btnSpin.style.display  = on ? ''     : 'none';
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  errorBox.style.display = 'none';
+
+  const firstName  = val('first-name');
+  const lastName   = val('last-name');
+  const email      = val('email');
+  const channel    = val('channel');
+  const subscribers = val('subscribers');
+  const revenue    = val('revenue');
+  const commitment = radioVal('commitment');
+  const challenge  = val('challenge');
+  const referral   = val('referral');
+  const extra      = val('extra');
+
+  if (!firstName || !lastName || !email) {
+    errorBox.textContent = 'Please fill in your name and email address.';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  setLoading(true);
+
+  const payload = {
+    blocks: [
+      { type: 'header', text: { type: 'plain_text', text: '🟠 New Inbound — Curve', emoji: true } },
+      { type: 'divider' },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Name*\n${firstName} ${lastName}` },
+          { type: 'mrkdwn', text: `*Email*\n<mailto:${email}|${email}>` }
+        ]
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Channel*\n${channel || '_Not provided_'}` },
+          { type: 'mrkdwn', text: `*Subscribers*\n${subscribers || '_Not provided_'}` }
+        ]
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Monthly Revenue / Budget*\n${revenue || '_Not provided_'}` },
+          { type: 'mrkdwn', text: `*Commitment (1–10)*\n${commitment}` }
+        ]
+      },
+      { type: 'divider' },
+      { type: 'section', text: { type: 'mrkdwn', text: `*Biggest YouTube challenge*\n${challenge || '_Not provided_'}` } },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Heard about Curve via*\n${referral || '_Not provided_'}` },
+          { type: 'mrkdwn', text: `*Anything else*\n${extra || '_Nothing_'}` }
+        ]
+      },
+      { type: 'divider' },
+      {
+        type: 'context',
+        elements: [{ type: 'mrkdwn', text: `Submitted via Curve contact form · ${new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}` }]
+      }
+    ]
+  };
+
+  try {
+    const res = await fetch(SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok || res.status === 200) {
+      form.style.display = 'none';
+      successEl.style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      throw new Error(`${res.status}`);
+    }
+  } catch (err) {
+    errorBox.textContent = 'Something went wrong. Please try again.';
+    errorBox.style.display = 'block';
+    setLoading(false);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Curve — Logo</title>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cabinet Grotesk', sans-serif; background: #0e0e0e; }
+
+  .panel {
+    width: 100%;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 32px;
+    padding: 80px 60px;
+  }
+  .panel-sage  { background: #C9CEC4; }
+  .panel-dark  { background: #111110; }
+  .panel-chalk { background: #F0EFEB; }
+
+  .label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .label-on-sage  { color: rgba(0,0,0,0.28); }
+  .label-on-dark  { color: rgba(255,255,255,0.22); }
+  .label-on-chalk { color: rgba(0,0,0,0.28); }
+
+  .wordmark {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .divider { width: 100%; height: 1px; }
+  .divider-dark  { background: rgba(255,255,255,0.07); }
+  .divider-light { background: rgba(0,0,0,0.07); }
+</style>
+</head>
+<body>
+
+  <div class="panel panel-sage">
+    <span class="label label-on-sage">Wordmark / Sage</span>
+    <span class="wordmark" style="font-size:88px; color:#0e0e0e;">curve</span>
+  </div>
+
+  <div class="divider divider-light"></div>
+
+  <div class="panel panel-dark">
+    <span class="label label-on-dark">Wordmark / Dark</span>
+    <span class="wordmark" style="font-size:88px; color:#F0EFEB;">curve</span>
+  </div>
+
+  <div class="divider divider-dark"></div>
+
+  <div class="panel panel-chalk" style="flex-direction:row; gap:80px; flex-wrap:wrap; justify-content:center; align-items:center;">
+    <div style="display:flex; flex-direction:column; gap:16px; align-items:flex-start;">
+      <span class="label label-on-chalk">Nav — 24px</span>
+      <span class="wordmark" style="font-size:24px; color:#111110;">curve</span>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px; align-items:flex-start;">
+      <span class="label label-on-chalk">Medium — 48px</span>
+      <span class="wordmark" style="font-size:48px; color:#111110;">curve</span>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px; align-items:flex-start;">
+      <span class="label label-on-chalk">Hero — 88px</span>
+      <span class="wordmark" style="font-size:88px; color:#111110;">curve</span>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>curve · YouTube-integrated logo directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #131313;
+    min-height: 100vh;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 40px 80px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Atmospheric glow */
+  .atmo {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .atmo div { position: absolute; }
+
+  h1 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.38);
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+  .subtitle {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,95,0,0.5);
+    margin-bottom: 60px;
+    position: relative; z-index: 1;
+  }
+  .divider {
+    width: 32px; height: 1px;
+    background: linear-gradient(90deg, transparent, #FF5F00, transparent);
+    margin: 0 auto 56px;
+    position: relative; z-index: 1;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 340px);
+    gap: 20px;
+    position: relative; z-index: 1;
+    max-width: 1060px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.028);
+    border: 1px solid rgba(255,95,0,0.10);
+    border-radius: 20px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,95,0,0.25), transparent);
+  }
+  .card:hover { border-color: rgba(255,95,0,0.28); }
+
+  .label {
+    position: absolute;
+    bottom: 18px;
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.32);
+  }
+
+  /* ── Logo styles ─────────────────────────── */
+
+  /* 01 — Progress Bar */
+  .logo-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .logo-progress .word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    color: #E5E2E1;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .progress-bar {
+    width: 148px;
+    height: 3px;
+    background: rgba(229,226,225,0.12);
+    border-radius: 99px;
+    position: relative;
+  }
+  .progress-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 68%;
+    background: linear-gradient(90deg, #FF5F00, #ff8c4a);
+    border-radius: 99px;
+  }
+  .progress-dot {
+    position: absolute;
+    right: -1px; top: 50%;
+    transform: translateY(-50%);
+    width: 9px; height: 9px;
+    background: #FF5F00;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,95,0,0.7);
+  }
+  .progress-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.3);
+    margin-top: 2px;
+  }
+
+  /* 02 — Analytics Curve */
+  .logo-analytics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-analytics .word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 2.6rem;
+    color: #E5E2E1;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  /* 03 — Play C Mark */
+  .logo-play-c {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .play-badge {
+    width: 54px; height: 54px;
+    background: #FF5F00;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 24px rgba(255,95,0,0.35);
+  }
+  .play-badge svg {
+    margin-left: 3px;
+  }
+  .logo-play-c .word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 2.6rem;
+    color: #E5E2E1;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  /* 04 — V as Play Triangle */
+  .logo-v-play {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    position: relative;
+  }
+  .logo-v-play .seg {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #E5E2E1;
+  }
+  .logo-v-play .seg-v {
+    color: #FF5F00;
+    position: relative;
+  }
+
+  /* 05 — Scrubber Wordmark */
+  .logo-scrubber {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .logo-scrubber .yt-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .yt-time {
+    font-size: 0.6rem;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    color: rgba(229,226,225,0.3);
+    letter-spacing: 0.04em;
+  }
+  .yt-scrubber {
+    width: 120px; height: 2.5px;
+    background: rgba(229,226,225,0.12);
+    border-radius: 99px;
+    position: relative;
+  }
+  .yt-scrubber-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 60%;
+    background: #FF5F00;
+    border-radius: 99px;
+  }
+  .yt-scrubber-dot {
+    position: absolute; right: -1px; top: 50%;
+    transform: translateY(-50%);
+    width: 8px; height: 8px;
+    background: #FF5F00;
+    border-radius: 50%;
+  }
+  .logo-scrubber .big-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 3.6rem;
+    color: #E5E2E1;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  /* 06 — Thumbnail Frame */
+  .logo-thumb {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .thumb-frame {
+    width: 96px; height: 54px;
+    border: 1.5px solid rgba(255,95,0,0.5);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: rgba(255,95,0,0.04);
+  }
+  .thumb-frame::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(255,95,0,0.08) 0%, transparent 70%);
+  }
+  .logo-thumb .word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: #E5E2E1;
+    letter-spacing: -0.04em;
+  }
+</style>
+</head>
+<body>
+
+<!-- Atmosphere -->
+<div class="atmo">
+  <div style="top:0;left:50%;transform:translateX(-50%);width:100%;height:70vh;background:radial-gradient(ellipse 70% 50% at 50% 90%,rgba(255,95,0,0.16) 0%,rgba(255,100,0,0.06) 45%,transparent 70%);filter:blur(80px);"></div>
+  <div style="bottom:0;left:-10%;width:60%;height:50vh;background:radial-gradient(ellipse 60% 50% at 20% 80%,rgba(255,80,0,0.10) 0%,transparent 65%);filter:blur(100px);"></div>
+  <div style="bottom:0;right:-10%;width:55%;height:50vh;background:radial-gradient(ellipse 60% 50% at 80% 80%,rgba(255,120,0,0.08) 0%,transparent 65%);filter:blur(100px);"></div>
+</div>
+
+<h1>curve · youtube-integrated logo directions</h1>
+<div class="divider"></div>
+
+<div class="grid">
+
+  <!-- 01 — Progress Bar Wordmark -->
+  <div class="card">
+    <div class="logo-progress">
+      <span class="word">curve</span>
+      <div class="progress-bar">
+        <div class="progress-fill">
+          <div class="progress-dot"></div>
+        </div>
+      </div>
+      <span class="progress-label">channel growth systems</span>
+    </div>
+    <span class="label">01 · progress bar</span>
+  </div>
+
+  <!-- 02 — Analytics Curve Icon -->
+  <div class="card">
+    <div class="logo-analytics">
+      <svg width="148" height="44" viewBox="0 0 148 44" fill="none">
+        <!-- Grid dots -->
+        <circle cx="4"  cy="40" r="1.5" fill="rgba(229,226,225,0.12)"/>
+        <circle cx="4"  cy="28" r="1.5" fill="rgba(229,226,225,0.12)"/>
+        <circle cx="4"  cy="16" r="1.5" fill="rgba(229,226,225,0.12)"/>
+        <circle cx="4"  cy="4"  r="1.5" fill="rgba(229,226,225,0.12)"/>
+        <!-- Area fill under curve -->
+        <path d="M8,40 C30,40 40,36 55,26 C70,16 80,10 100,6 C115,3 128,4 144,4 L144,40 Z"
+              fill="url(#areaGrad)" opacity="0.35"/>
+        <!-- Rising curve -->
+        <path d="M8,40 C30,40 40,36 55,26 C70,16 80,10 100,6 C115,3 128,4 144,4"
+              stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <!-- End glow dot -->
+        <circle cx="144" cy="4" r="4" fill="#FF5F00" opacity="0.9"/>
+        <circle cx="144" cy="4" r="8" fill="rgba(255,95,0,0.2)"/>
+        <defs>
+          <linearGradient id="lineGrad" x1="8" y1="0" x2="144" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#FF5F00" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#FF5F00"/>
+          </linearGradient>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0%"   stop-color="#FF5F00" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#FF5F00" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="word">curve</span>
+    </div>
+    <span class="label">02 · analytics curve</span>
+  </div>
+
+  <!-- 03 — Play Badge + Wordmark -->
+  <div class="card">
+    <div class="logo-play-c">
+      <div class="play-badge">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <polygon points="8,5 18,11 8,17" fill="white"/>
+        </svg>
+      </div>
+      <span class="word">curve</span>
+    </div>
+    <span class="label">03 · play badge mark</span>
+  </div>
+
+  <!-- 04 — Downward V (outer orange) + right-pointing white play button inside -->
+  <div class="card" style="border-color:rgba(255,95,0,0.28); background:rgba(255,95,0,0.04);">
+    <div class="logo-v-play" style="align-items:center; gap:1px;">
+      <span class="seg">cur</span>
+      <!-- Downward orange triangle = the V, white ▶ inside = the play button -->
+      <svg width="40" height="35" viewBox="0 0 44 38" style="display:inline-block; flex-shrink:0;">
+        <!-- Outer: downward-pointing V triangle in orange -->
+        <polygon points="2,2 42,2 22,36" fill="#FF5F00"/>
+        <!-- Inner: right-pointing white play button, centred in the upper mass of the V -->
+        <polygon points="13,10 31,18 13,26" fill="white"/>
+      </svg>
+      <span class="seg">e</span>
+    </div>
+    <span class="label">04 · play-v letterform</span>
+  </div>
+
+  <!-- 05 — Scrubber above Italic Wordmark -->
+  <div class="card">
+    <div class="logo-scrubber">
+      <div class="yt-bar-wrap">
+        <span class="yt-time">0:00</span>
+        <div class="yt-scrubber">
+          <div class="yt-scrubber-fill">
+            <div class="yt-scrubber-dot"></div>
+          </div>
+        </div>
+        <span class="yt-time">∞</span>
+      </div>
+      <span class="big-word">curve</span>
+    </div>
+    <span class="label">05 · video scrubber</span>
+  </div>
+
+  <!-- 06 — Thumbnail Frame -->
+  <div class="card">
+    <div class="logo-thumb">
+      <div class="thumb-frame">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <polygon points="10,7 22,14 10,21" fill="#FF5F00" opacity="0.9"/>
+        </svg>
+      </div>
+      <span class="word">curve</span>
+    </div>
+    <span class="label">06 · thumbnail frame</span>
+  </div>
+
+</div>
+
+</body>
+</html>

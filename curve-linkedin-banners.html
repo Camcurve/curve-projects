@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curve — LinkedIn Banner Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 40px 100px;
+    gap: 80px;
+  }
+
+  .page-title {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.3);
+    text-align: center;
+  }
+  .page-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 2.4rem;
+    color: #E5E2E1;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .concept-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .concept-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,95,0,0.5);
+    font-weight: 600;
+  }
+  .concept-desc {
+    font-size: 0.82rem;
+    color: rgba(229,226,225,0.4);
+    max-width: 500px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* LinkedIn banner: 1584 x 396 */
+  .banner {
+    width: 1584px;
+    height: 396px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Outline preview */
+  .concept-wrap::after {
+    content: '1584 x 396 px';
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.18);
+    margin-top: 4px;
+  }
+
+  /* ══════════════════════════════════════════
+     CONCEPT F — "Hero Wordmark + Graph"
+     ══════════════════════════════════════════ */
+  .banner-f {
+    background: linear-gradient(135deg, #131313 0%, #1e1410 20%, #241812 40%, #261a12 55%, #1e1410 75%, #131313 100%);
+  }
+  .banner-f .f-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 100% at 50% 80%, rgba(255,95,0,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255,95,0,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 50% at 30% 60%, rgba(255,95,0,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 50% at 70% 60%, rgba(255,95,0,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .banner-f .f-graph {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .banner-f .f-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 0;
+    padding: 0 60px;
+  }
+  .banner-f .f-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 2.4rem;
+    color: #E5E2E1;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .banner-f .f-accent {
+    color: #FF5F00;
+  }
+  .banner-f .f-wordmark {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: clamp(8rem, 18vw, 14rem);
+    color: #F0EFEB;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    line-height: 0.82;
+    white-space: nowrap;
+  }
+
+  /* ══════════════════════════════════════════
+     CONCEPT E — "Blank Gradient"
+     ══════════════════════════════════════════ */
+  .banner-e {
+    background: linear-gradient(135deg, #131313 0%, #1a1412 25%, #1f1510 45%, #211711 55%, #1a1412 75%, #131313 100%);
+  }
+  .banner-e .e-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 80% at 30% 50%, rgba(255,95,0,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 80% at 70% 50%, rgba(255,95,0,0.035) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ══════════════════════════════════════════
+     CONCEPT A — "The Analytics Curve"
+     Left: logo + tagline. Right: rising analytics curve graphic
+     ══════════════════════════════════════════ */
+  .banner-a {
+    background: linear-gradient(135deg, #131313 0%, #1a1412 30%, #1f1510 55%, #191311 80%, #131313 100%);
+  }
+  .banner-a .bg-glow {
+    position: absolute;
+    top: -40%;
+    right: -5%;
+    width: 70%;
+    height: 200%;
+    background: radial-gradient(ellipse 60% 50% at 60% 50%, rgba(255,95,0,0.12) 0%, rgba(255,95,0,0.04) 40%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  .banner-a .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 100px;
+    gap: 80px;
+  }
+  .banner-a .left {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .banner-a .wordmark {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 3.8rem;
+    color: #E5E2E1;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+  .banner-a .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 1.65rem;
+    color: rgba(229,226,225,0.55);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    max-width: 340px;
+  }
+  .banner-a .tagline em {
+    color: #FF5F00;
+    font-style: italic;
+  }
+  .banner-a .eyebrow {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #FF5F00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .banner-a .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FF5F00;
+    flex-shrink: 0;
+  }
+  .banner-a .right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+  }
+  /* Grid lines behind chart */
+  .banner-a .grid-lines {
+    position: absolute;
+    inset: 40px 20px;
+  }
+  .banner-a .grid-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(229,226,225,0.04);
+  }
+  .banner-a .divider-v {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(229,226,225,0.025);
+  }
+  /* Client avatar circles */
+  .banner-a .client-avatars {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    gap: 14px;
+  }
+  .banner-a .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,95,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: #E5E2E1;
+    background: rgba(255,95,0,0.12);
+    box-shadow: 0 0 16px rgba(255,95,0,0.15);
+    flex-direction: column;
+    gap: 1px;
+    overflow: hidden;
+    position: relative;
+  }
+  .banner-a .avatar .initials {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: rgba(229,226,225,0.7);
+    line-height: 1;
+  }
+  .banner-a .avatar .av-name {
+    font-size: 0.38rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.35);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .banner-a .avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ══════════════════════════════════════════
+     CONCEPT B — "The Orb"
+     Centered layout. Big orange orb left, text center-right
+     ══════════════════════════════════════════ */
+  .banner-b {
+    background: linear-gradient(135deg, #131313 0%, #1a1412 30%, #1f1510 55%, #191311 80%, #131313 100%);
+  }
+  .banner-b .orb {
+    position: absolute;
+    left: -80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ff8c4a 0%, #FF5F00 45%, #cc3d00 100%);
+    box-shadow: 0 0 120px 40px rgba(255,95,0,0.28), 0 0 260px 80px rgba(255,95,0,0.10);
+    z-index: 1;
+  }
+  .banner-b .orb-letter {
+    position: absolute;
+    left: -80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 480px;
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 18rem;
+    color: rgba(255,255,255,0.14);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .banner-b .content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    margin-left: 440px;
+    padding-right: 100px;
+    gap: 20px;
+  }
+  .banner-b .eyebrow {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #FF5F00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .banner-b .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FF5F00;
+    flex-shrink: 0;
+  }
+  .banner-b .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 3.4rem;
+    color: #E5E2E1;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+  .banner-b .headline .accent {
+    color: #FF5F00;
+  }
+  .banner-b .sub {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: rgba(229,226,225,0.45);
+    line-height: 1.6;
+    max-width: 460px;
+  }
+  .banner-b .wordmark-small {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: rgba(229,226,225,0.25);
+    letter-spacing: -0.04em;
+    position: absolute;
+    bottom: 28px;
+    right: 48px;
+    z-index: 4;
+  }
+
+  /* ══════════════════════════════════════════
+     CONCEPT C — "Clean & Typographic"
+     Fully centered. Big serif headline, progress bar accent, logo below
+     ══════════════════════════════════════════ */
+  .banner-c {
+    background: linear-gradient(135deg, #131313 0%, #1a1412 30%, #1f1510 55%, #191311 80%, #131313 100%);
+  }
+  .banner-c .bg-subtle {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 40% 80% at 15% 50%, rgba(255,95,0,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 80% at 85% 50%, rgba(255,95,0,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .banner-c .noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+  }
+  .banner-c .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 18px;
+    padding: 0 60px;
+  }
+  .banner-c .eyebrow {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #FF5F00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .banner-c .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FF5F00;
+    flex-shrink: 0;
+  }
+  .banner-c .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 4.2rem;
+    color: #E5E2E1;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+  .banner-c .headline .accent {
+    background: linear-gradient(to bottom right, #ffb599, #ff5f00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  /* Progress bar accent */
+  .banner-c .bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .banner-c .bar {
+    width: 200px;
+    height: 3px;
+    background: rgba(229,226,225,0.08);
+    border-radius: 99px;
+    position: relative;
+  }
+  .banner-c .bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 72%;
+    background: linear-gradient(90deg, #FF5F00, #ff8c4a);
+    border-radius: 99px;
+  }
+  .banner-c .bar-dot {
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 9px;
+    height: 9px;
+    background: #FF5F00;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,95,0,0.7);
+  }
+  .banner-c .wordmark {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: rgba(229,226,225,0.2);
+    letter-spacing: -0.04em;
+  }
+  /* Decorative side elements */
+  .banner-c .side-line {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 55%;
+    z-index: 1;
+  }
+  .banner-c .side-line.left {
+    left: 48px;
+    background: linear-gradient(to bottom, transparent, rgba(255,95,0,0.15), transparent);
+  }
+  .banner-c .side-line.right {
+    right: 48px;
+    background: linear-gradient(to bottom, transparent, rgba(255,95,0,0.15), transparent);
+  }
+
+  /* ══════════════════════════════════════════
+     CONCEPT D — "Orb + Big Logo"
+     Big Curve logo left/center, orb behind it,
+     headline pushed right for profile pic clearance
+     ══════════════════════════════════════════ */
+  .banner-d {
+    background: linear-gradient(135deg, #131313 0%, #1a1412 30%, #1f1510 55%, #191311 80%, #131313 100%);
+  }
+  .banner-d .orb {
+    position: absolute;
+    left: 120px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ff8c4a 0%, #FF5F00 45%, #cc3d00 100%);
+    box-shadow: 0 0 120px 40px rgba(255,95,0,0.22), 0 0 260px 80px rgba(255,95,0,0.08);
+    z-index: 1;
+  }
+  .banner-d .orb-letter {
+    position: absolute;
+    left: 120px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 380px;
+    height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 14rem;
+    color: rgba(255,255,255,0.14);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .banner-d .big-wordmark {
+    position: absolute;
+    left: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 7rem;
+    color: #E5E2E1;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    text-shadow: 0 4px 40px rgba(0,0,0,0.5);
+  }
+  .banner-d .right-content {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    text-align: right;
+  }
+  .banner-d .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 2.8rem;
+    color: #E5E2E1;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .banner-d .headline .accent {
+    color: #FF5F00;
+  }
+  .banner-d .sub {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: rgba(229,226,225,0.4);
+    line-height: 1.6;
+    max-width: 380px;
+  }
+  /* Subtle divider between logo and text */
+  .banner-d .vert-divider {
+    position: absolute;
+    right: 520px;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.06), transparent);
+    z-index: 3;
+  }
+
+  /* Safe zone overlay (toggle with checkbox) */
+  .safe-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.35);
+    cursor: pointer;
+  }
+  .safe-toggle input { display: none; }
+  .safe-toggle .check {
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(255,95,0,0.3);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .safe-toggle input:checked + .check {
+    background: #FF5F00;
+    border-color: #FF5F00;
+  }
+  .safe-toggle input:checked + .check::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 1px;
+  }
+  .safe-zone {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+  }
+  #safeToggle:checked ~ .concepts .banner .safe-zone {
+    display: block;
+  }
+  .safe-zone .zone-inner {
+    position: absolute;
+    inset: 0;
+    /* LinkedIn safe zone: ~60px from edges on desktop, profile pic covers bottom-left ~200x200 area */
+    border: 1px dashed rgba(255,95,0,0.25);
+    border-radius: 4px;
+  }
+  .safe-zone .profile-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 220px;
+    height: 180px;
+    border: 1px dashed rgba(255,0,0,0.3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .safe-zone .profile-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,0,0,0.35);
+  }
+
+  .concepts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+  }
+
+  .dl-banner-btn {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: -0.01em;
+    color: white;
+    background: linear-gradient(135deg, #FF5F00 0%, #ff8c4a 100%);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+  }
+  .dl-banner-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 32px 8px rgba(255,95,0,0.35);
+  }
+  .dl-banner-btn:active { transform: scale(0.97); }
+
+  /* Responsive scroll */
+  @media (max-width: 1680px) {
+    .banner {
+      transform-origin: top center;
+      transform: scale(0.7);
+      margin-bottom: -120px;
+    }
+  }
+  @media (max-width: 1200px) {
+    .banner {
+      transform: scale(0.5);
+      margin-bottom: -200px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div style="text-align:center; margin-bottom: 20px;">
+  <p class="page-title">LinkedIn Banner Concepts</p>
+  <p class="page-subtitle">Curve</p>
+</div>
+
+<label class="safe-toggle">
+  <input type="checkbox" id="safeToggle">
+  <span class="check"></span>
+  Show safe zones
+</label>
+
+<div class="concepts">
+
+  <!-- ═══ CONCEPT F — Hero Wordmark + Graph ═══ -->
+  <div class="concept-wrap">
+    <span class="concept-label">Concept F — Hero Wordmark + Graph</span>
+    <p class="concept-desc">Cormorant Garamond headline up top, massive curve wordmark below with the analytics graph woven behind it.</p>
+    <div class="banner banner-f" id="bannerF">
+      <!-- Orange glow bg -->
+      <div class="f-glow"></div>
+      <!-- Graph SVG behind wordmark -->
+      <svg class="f-graph" width="1584" height="396" viewBox="0 0 1584 396" fill="none" preserveAspectRatio="none">
+        <path d="M0,380 C120,378 200,370 340,330 C480,290 560,230 700,170 C840,110 940,65 1100,35 C1200,18 1350,10 1584,8 L1584,396 L0,396 Z"
+              fill="url(#fAreaGrad)" opacity="0.2"/>
+        <path d="M0,380 C120,378 200,370 340,330 C480,290 560,230 700,170 C840,110 940,65 1100,35 C1200,18 1350,10 1584,8"
+              stroke="url(#fLineGrad)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <circle cx="700" cy="170" r="3" fill="#FF5F00" opacity="0.4"/>
+        <circle cx="1100" cy="35" r="3.5" fill="#FF5F00" opacity="0.6"/>
+        <circle cx="1584" cy="8" r="5" fill="#FF5F00" opacity="0.8"/>
+        <circle cx="1584" cy="8" r="14" fill="rgba(255,95,0,0.12)"/>
+        <circle cx="340" cy="330" r="2.5" fill="rgba(255,95,0,0.25)"/>
+        <circle cx="560" cy="230" r="2.5" fill="rgba(255,95,0,0.3)"/>
+        <circle cx="940" cy="65" r="2.5" fill="rgba(255,95,0,0.5)"/>
+        <!-- Subtle grid lines -->
+        <line x1="0" y1="99" x2="1584" y2="99" stroke="rgba(229,226,225,0.025)" stroke-width="1"/>
+        <line x1="0" y1="198" x2="1584" y2="198" stroke="rgba(229,226,225,0.025)" stroke-width="1"/>
+        <line x1="0" y1="297" x2="1584" y2="297" stroke="rgba(229,226,225,0.025)" stroke-width="1"/>
+        <defs>
+          <linearGradient id="fLineGrad" x1="0" y1="0" x2="1584" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#FF5F00" stop-opacity="0.08"/>
+            <stop offset="30%" stop-color="#FF5F00" stop-opacity="0.2"/>
+            <stop offset="70%" stop-color="#FF5F00" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#FF5F00" stop-opacity="0.6"/>
+          </linearGradient>
+          <linearGradient id="fAreaGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0%" stop-color="#FF5F00" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#FF5F00" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <!-- Content -->
+      <div class="f-content">
+        <div class="f-headline">Architecting <span class="f-accent">faster</span> YouTube growth<span class="f-accent">.</span></div>
+        <div class="f-wordmark">curve</div>
+      </div>
+    </div>
+    <button class="dl-banner-btn" onclick="downloadBannerF()">Download PNG</button>
+  </div>
+
+  <!-- ═══ CONCEPT E — Blank Gradient ═══ -->
+  <div class="concept-wrap">
+    <span class="concept-label">Concept E — Blank Gradient</span>
+    <p class="concept-desc">Pure dark gradient background. Nothing else.</p>
+    <div class="banner banner-e" id="bannerE">
+      <div class="e-glow"></div>
+    </div>
+    <button class="dl-banner-btn" onclick="downloadBannerE()">Download PNG</button>
+  </div>
+
+  <!-- ═══ CONCEPT A — Analytics Curve ═══ -->
+  <div class="concept-wrap">
+    <span class="concept-label">Concept A — Analytics Curve</span>
+    <p class="concept-desc">Logo left with tagline. Rising growth curve graphic on the right. Data-driven, performance feel.</p>
+    <div class="banner banner-a">
+      <div class="bg-glow"></div>
+      <div class="content">
+        <div class="left">
+          <span class="eyebrow">YouTube Strategy Agency</span>
+          <span class="wordmark">curve</span>
+          <span class="tagline">Architecting <em>faster</em> YouTube growth.</span>
+        </div>
+        <div class="right">
+          <div class="grid-lines">
+            <div class="grid-line" style="top: 0%"></div>
+            <div class="grid-line" style="top: 25%"></div>
+            <div class="grid-line" style="top: 50%"></div>
+            <div class="grid-line" style="top: 75%"></div>
+            <div class="grid-line" style="top: 100%"></div>
+            <div class="divider-v"></div>
+          </div>
+          <!-- Client avatars floating near the curve -->
+          <div class="client-avatars" style="bottom: 50px; right: 60px;">
+            <div class="avatar">
+              <span class="initials">C</span>
+              <span class="av-name">Chunkz</span>
+            </div>
+            <div class="avatar">
+              <span class="initials">SL</span>
+              <span class="av-name">Sunny</span>
+            </div>
+            <div class="avatar">
+              <span class="initials">AJ</span>
+              <span class="av-name">AJ</span>
+            </div>
+          </div>
+          <svg width="620" height="280" viewBox="0 0 620 280" fill="none" style="position:relative; z-index:1;">
+            <!-- Area fill -->
+            <path d="M0,260 C60,258 100,252 160,230 C220,208 260,170 320,130 C380,90 420,55 480,30 C520,14 560,8 620,6 L620,280 L0,280 Z"
+                  fill="url(#aFill)" opacity="0.3"/>
+            <!-- Main curve line -->
+            <path d="M0,260 C60,258 100,252 160,230 C220,208 260,170 320,130 C380,90 420,55 480,30 C520,14 560,8 620,6"
+                  stroke="url(#aLine)" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Glow dots -->
+            <circle cx="320" cy="130" r="3" fill="#FF5F00" opacity="0.5"/>
+            <circle cx="480" cy="30" r="3.5" fill="#FF5F00" opacity="0.7"/>
+            <circle cx="620" cy="6" r="5" fill="#FF5F00"/>
+            <circle cx="620" cy="6" r="14" fill="rgba(255,95,0,0.15)"/>
+            <!-- Data point markers -->
+            <circle cx="160" cy="230" r="2.5" fill="rgba(255,95,0,0.35)"/>
+            <circle cx="260" cy="170" r="2.5" fill="rgba(255,95,0,0.4)"/>
+            <circle cx="420" cy="55" r="2.5" fill="rgba(255,95,0,0.6)"/>
+            <defs>
+              <linearGradient id="aLine" x1="0" y1="0" x2="620" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FF5F00" stop-opacity="0.15"/>
+                <stop offset="40%" stop-color="#FF5F00" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#FF5F00"/>
+              </linearGradient>
+              <linearGradient id="aFill" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+                <stop offset="0%" stop-color="#FF5F00" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#FF5F00" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <div class="safe-zone" style="inset:0;">
+        <div class="zone-inner"></div>
+        <div class="profile-area">
+          <span class="profile-label">Profile pic area</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONCEPT B — The Orb ═══ -->
+  <div class="concept-wrap">
+    <span class="concept-label">Concept B — The Orb</span>
+    <p class="concept-desc">Brand orb bleeds from the left with the watermark C. Headline and supporting text on the right. Bold, premium agency feel.</p>
+    <div class="banner banner-b">
+      <div class="orb"></div>
+      <div class="orb-letter">C</div>
+      <div class="content">
+        <span class="eyebrow">YouTube Strategy Agency</span>
+        <div class="headline">Architecting faster<br><span class="accent">YouTube growth.</span></div>
+        <p class="sub">Strategy and creative direction for creators and brands building top 1% channels.</p>
+      </div>
+      <span class="wordmark-small">curve</span>
+      <div class="safe-zone" style="inset:0;">
+        <div class="zone-inner"></div>
+        <div class="profile-area">
+          <span class="profile-label">Profile pic area</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONCEPT C — Clean Typographic ═══ -->
+  <div class="concept-wrap">
+    <span class="concept-label">Concept C — Clean Typographic</span>
+    <p class="concept-desc">Centered typographic layout. Big serif headline with gradient accent. Progress bar motif reinforces growth. Minimal, editorial.</p>
+    <div class="banner banner-c">
+      <div class="bg-subtle"></div>
+      <div class="noise"></div>
+      <div class="side-line left"></div>
+      <div class="side-line right"></div>
+      <div class="content">
+        <span class="eyebrow">YouTube Strategy & Creative Direction</span>
+        <div class="headline">Architecting <span class="accent">Faster</span> YouTube Growth.</div>
+        <div class="bar-wrap">
+          <div class="bar">
+            <div class="bar-fill">
+              <div class="bar-dot"></div>
+            </div>
+          </div>
+        </div>
+        <span class="wordmark">curve</span>
+      </div>
+      <div class="safe-zone" style="inset:0;">
+        <div class="zone-inner"></div>
+        <div class="profile-area">
+          <span class="profile-label">Profile pic area</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONCEPT D — Big Logo + Orb ═══ -->
+  <div class="concept-wrap">
+    <span class="concept-label">Concept D — Big Logo + Orb</span>
+    <p class="concept-desc">Oversized Curve wordmark with orb behind it. Headline pushed to the right for profile pic clearance. No eyebrow — pure brand presence.</p>
+    <div class="banner banner-d">
+      <div class="orb"></div>
+      <div class="orb-letter">C</div>
+      <span class="big-wordmark">curve</span>
+      <div class="vert-divider"></div>
+      <div class="right-content">
+        <div class="headline">Architecting faster<br><span class="accent">YouTube growth.</span></div>
+        <p class="sub">Strategy and creative direction for creators and brands building top 1% channels.</p>
+      </div>
+      <div class="safe-zone" style="inset:0;">
+        <div class="zone-inner"></div>
+        <div class="profile-area">
+          <span class="profile-label">Profile pic area</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<canvas id="bannerFCanvas" style="display:none;"></canvas>
+<canvas id="bannerCanvas" style="display:none;"></canvas>
+<script>
+async function downloadBannerF() {
+  await document.fonts.ready;
+  const w = 1584, h = 396;
+  const canvas = document.getElementById('bannerFCanvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient (more orange warmth)
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0,    '#131313');
+  grad.addColorStop(0.20, '#1e1410');
+  grad.addColorStop(0.40, '#241812');
+  grad.addColorStop(0.55, '#261a12');
+  grad.addColorStop(0.75, '#1e1410');
+  grad.addColorStop(1,    '#131313');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Orange glows
+  const g1 = ctx.createRadialGradient(w*0.5, h*0.8, 0, w*0.5, h*0.8, w*0.4);
+  g1.addColorStop(0, 'rgba(255,95,0,0.10)');
+  g1.addColorStop(1, 'rgba(255,95,0,0)');
+  ctx.fillStyle = g1;
+  ctx.fillRect(0, 0, w, h);
+
+  const g2 = ctx.createRadialGradient(w*0.5, h, 0, w*0.5, h, w*0.45);
+  g2.addColorStop(0, 'rgba(255,95,0,0.08)');
+  g2.addColorStop(1, 'rgba(255,95,0,0)');
+  ctx.fillStyle = g2;
+  ctx.fillRect(0, 0, w, h);
+
+  // Subtle grid lines
+  ctx.strokeStyle = 'rgba(229,226,225,0.025)';
+  ctx.lineWidth = 1;
+  [99, 198, 297].forEach(y => {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  });
+
+  // Graph area fill
+  ctx.beginPath();
+  ctx.moveTo(0, 380);
+  ctx.bezierCurveTo(120, 378, 200, 370, 340, 330);
+  ctx.bezierCurveTo(480, 290, 560, 230, 700, 170);
+  ctx.bezierCurveTo(840, 110, 940, 65, 1100, 35);
+  ctx.bezierCurveTo(1200, 18, 1350, 10, 1584, 8);
+  ctx.lineTo(1584, 396);
+  ctx.lineTo(0, 396);
+  ctx.closePath();
+  const areaGrad = ctx.createLinearGradient(0, 0, 0, h);
+  areaGrad.addColorStop(0, 'rgba(255,95,0,0.10)');
+  areaGrad.addColorStop(1, 'rgba(255,95,0,0)');
+  ctx.fillStyle = areaGrad;
+  ctx.fill();
+
+  // Graph line
+  ctx.beginPath();
+  ctx.moveTo(0, 380);
+  ctx.bezierCurveTo(120, 378, 200, 370, 340, 330);
+  ctx.bezierCurveTo(480, 290, 560, 230, 700, 170);
+  ctx.bezierCurveTo(840, 110, 940, 65, 1100, 35);
+  ctx.bezierCurveTo(1200, 18, 1350, 10, 1584, 8);
+  const lineGrad = ctx.createLinearGradient(0, 0, w, 0);
+  lineGrad.addColorStop(0, 'rgba(255,95,0,0.08)');
+  lineGrad.addColorStop(0.3, 'rgba(255,95,0,0.2)');
+  lineGrad.addColorStop(0.7, 'rgba(255,95,0,0.4)');
+  lineGrad.addColorStop(1, 'rgba(255,95,0,0.6)');
+  ctx.strokeStyle = lineGrad;
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Data dots
+  [[340,330,0.25],[560,230,0.3],[700,170,0.4],[940,65,0.5],[1100,35,0.6]].forEach(([x,y,a]) => {
+    ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,95,0,${a})`; ctx.fill();
+  });
+  // End glow
+  ctx.beginPath(); ctx.arc(1584, 8, 14, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,95,0,0.12)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(1584, 8, 5, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,95,0,0.8)'; ctx.fill();
+
+  // Headline: "Architecting faster YouTube growth."
+  const headSize = 38;
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+
+  const headY = 105;
+  const parts = [
+    { text: 'Architecting ', color: '#E5E2E1' },
+    { text: 'faster', color: '#FF5F00' },
+    { text: ' YouTube growth', color: '#E5E2E1' },
+    { text: '.', color: '#FF5F00' }
+  ];
+
+  ctx.font = `600 ${headSize}px 'Cormorant Garamond', serif`;
+  // Measure total width
+  let totalW = 0;
+  parts.forEach(p => { totalW += ctx.measureText(p.text).width; });
+  let startX = (w - totalW) / 2;
+
+  ctx.textAlign = 'left';
+  parts.forEach(p => {
+    ctx.fillStyle = p.color;
+    ctx.fillText(p.text, startX, headY);
+    startX += ctx.measureText(p.text).width;
+  });
+
+  // Big "curve" wordmark
+  const wordSize = 220;
+  ctx.font = `800 ${wordSize}px 'Cabinet Grotesk', sans-serif`;
+  ctx.fillStyle = '#F0EFEB';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.letterSpacing = `${-0.04 * wordSize}px`;
+  ctx.fillText('curve', w / 2, 145);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = 'curve-linkedin-banner-hero.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function downloadBannerE() {
+  const w = 1584, h = 396;
+  const canvas = document.getElementById('bannerCanvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // Base gradient (135deg)
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0,    '#131313');
+  grad.addColorStop(0.25, '#1a1412');
+  grad.addColorStop(0.45, '#1f1510');
+  grad.addColorStop(0.55, '#211711');
+  grad.addColorStop(0.75, '#1a1412');
+  grad.addColorStop(1,    '#131313');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Left warm glow
+  const g1 = ctx.createRadialGradient(w * 0.3, h * 0.5, 0, w * 0.3, h * 0.5, w * 0.35);
+  g1.addColorStop(0, 'rgba(255,95,0,0.05)');
+  g1.addColorStop(1, 'rgba(255,95,0,0)');
+  ctx.fillStyle = g1;
+  ctx.fillRect(0, 0, w, h);
+
+  // Right warm glow
+  const g2 = ctx.createRadialGradient(w * 0.7, h * 0.5, 0, w * 0.7, h * 0.5, w * 0.35);
+  g2.addColorStop(0, 'rgba(255,95,0,0.035)');
+  g2.addColorStop(1, 'rgba(255,95,0,0)');
+  ctx.fillStyle = g2;
+  ctx.fillRect(0, 0, w, h);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = 'curve-linkedin-banner-gradient.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+</script>
+</body>
+</html>

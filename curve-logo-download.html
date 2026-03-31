@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curve Logo — Download PNG</title>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 40px 100px;
+    gap: 40px;
+    min-height: 100vh;
+  }
+  h1 {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.3);
+  }
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .preview-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,95,0,0.4);
+    font-weight: 600;
+  }
+  .preview {
+    background: #131313;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 60px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-dark { background: #131313; }
+  .preview-light { background: #F0EFEB; }
+  .preview-orange { background: #FF5F00; }
+
+  .logo-text {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    line-height: 0.82;
+    white-space: nowrap;
+  }
+
+  canvas { display: none; }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .dl-btn {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: -0.01em;
+    color: white;
+    background: linear-gradient(135deg, #FF5F00 0%, #ff8c4a 100%);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .dl-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 32px 8px rgba(255,95,0,0.35);
+  }
+  .dl-btn:active { transform: scale(0.97); }
+  .dl-btn.ghost {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #E5E2E1;
+  }
+  .dl-btn.ghost:hover {
+    background: rgba(255,255,255,0.1);
+    box-shadow: none;
+  }
+
+  .sizes {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .size-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(229,226,225,0.25);
+  }
+
+  .status {
+    font-size: 0.72rem;
+    color: rgba(255,95,0,0.6);
+    min-height: 1.2em;
+  }
+</style>
+</head>
+<body>
+
+<h1>Curve Logo — PNG Export</h1>
+
+<div class="preview-wrap">
+  <span class="preview-label">White on Dark (primary)</span>
+  <div class="preview preview-dark">
+    <span class="logo-text" style="font-size: 8rem; color: #F0EFEB;">curve</span>
+  </div>
+  <div class="btn-row">
+    <button class="dl-btn" onclick="downloadLogo('#F0EFEB', 'transparent', 'curve-logo-white-transparent')">Download Transparent</button>
+    <button class="dl-btn ghost" onclick="downloadLogo('#F0EFEB', '#131313', 'curve-logo-white-dark-bg')">Download with Dark BG</button>
+  </div>
+</div>
+
+<div class="preview-wrap">
+  <span class="preview-label">Dark on Light</span>
+  <div class="preview preview-light">
+    <span class="logo-text" style="font-size: 8rem; color: #111110;">curve</span>
+  </div>
+  <div class="btn-row">
+    <button class="dl-btn" onclick="downloadLogo('#111110', 'transparent', 'curve-logo-dark-transparent')">Download Transparent</button>
+    <button class="dl-btn ghost" onclick="downloadLogo('#111110', '#F0EFEB', 'curve-logo-dark-light-bg')">Download with Light BG</button>
+  </div>
+</div>
+
+<div class="preview-wrap">
+  <span class="preview-label">White on Orange</span>
+  <div class="preview preview-orange">
+    <span class="logo-text" style="font-size: 8rem; color: #FFFFFF;">curve</span>
+  </div>
+  <div class="btn-row">
+    <button class="dl-btn" onclick="downloadLogo('#FFFFFF', '#FF5F00', 'curve-logo-white-orange-bg')">Download with Orange BG</button>
+  </div>
+</div>
+
+<p class="status" id="status"></p>
+
+<canvas id="canvas"></canvas>
+
+<script>
+async function downloadLogo(textColor, bgColor, filename) {
+  const status = document.getElementById('status');
+  status.textContent = 'Generating PNG...';
+
+  // Wait for font to be fully loaded
+  await document.fonts.ready;
+
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // High-res export: 4x scale
+  const scale = 4;
+  const fontSize = 200;
+  const font = `800 ${fontSize}px 'Cabinet Grotesk', sans-serif`;
+
+  ctx.font = font;
+  const metrics = ctx.measureText('curve');
+  const textWidth = metrics.width;
+  const textHeight = fontSize * 0.82;
+
+  const padX = 60;
+  const padY = 40;
+
+  canvas.width = (textWidth + padX * 2) * scale;
+  canvas.height = (textHeight + padY * 2) * scale;
+
+  ctx.scale(scale, scale);
+
+  // Background
+  if (bgColor !== 'transparent') {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Text
+  ctx.font = font;
+  ctx.fillStyle = textColor;
+  ctx.textBaseline = 'top';
+  ctx.letterSpacing = `${-0.04 * fontSize}px`;
+  ctx.fillText('curve', padX, padY);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = filename + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  status.textContent = `Downloaded ${filename}.png`;
+  setTimeout(() => { status.textContent = ''; }, 3000);
+}
+</script>
+
+</body>
+</html>

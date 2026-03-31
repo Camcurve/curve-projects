@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Capture — Curve</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@300,400,500,700,800&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Tokens ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #131313;
+  --surface:      #1c1b1b;
+  --surface2:     #201f1f;
+  --border:       rgba(255,255,255,0.09);
+  --border-soft:  rgba(255,255,255,0.04);
+  --accent:       #FF5F00;
+  --accent-dim:   rgba(255,95,0,0.10);
+  --accent-glow:  rgba(255,95,0,0.20);
+  --accent-border:rgba(255,95,0,0.30);
+  --text:         #E5E2E1;
+  --text-muted:   rgba(229,226,225,0.45);
+  --text-faint:   rgba(229,226,225,0.15);
+  --green:        #22c55e;
+  --red:          #ef4444;
+  --font:         'Cabinet Grotesk', 'DM Sans', system-ui, sans-serif;
+  --radius:       8px;
+  --radius-sm:    5px;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* ── App shell ──────────────────────────────────────────────────────────── */
+.app { height: 100vh; display: flex; flex-direction: column; }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px 0 24px;
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.logo-wordmark {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
+  color: var(--text);
+  line-height: 0.85;
+  user-select: none;
+}
+
+.logo-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.logo-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.api-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  transition: border-color 0.25s;
+}
+.api-pill.connected {
+  border-color: rgba(34,197,94,0.22);
+  color: rgba(255,255,255,0.55);
+}
+
+.api-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.api-dot.on {
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(34,197,94,0.45);
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+/* ── Dashboard grid ─────────────────────────────────────────────────────── */
+.dashboard {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 392px 4px 1fr;
+  min-height: 0;
+}
+
+/* ── Resize handle ──────────────────────────────────────────────────────── */
+.resize-handle {
+  background: var(--border);
+  cursor: col-resize;
+  position: relative;
+  transition: background 0.15s;
+  z-index: 20;
+  flex-shrink: 0;
+}
+.resize-handle:hover,
+.resize-handle.dragging { background: var(--accent); }
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  inset: 0 -6px;
+}
+
+/* ── Left panel ─────────────────────────────────────────────────────────── */
+.panel-left {
+  padding: 26px 26px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.panel-left::-webkit-scrollbar { width: 3px; }
+.panel-left::-webkit-scrollbar-track { background: transparent; }
+.panel-left::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+}
+
+/* ── Right panel ────────────────────────────────────────────────────────── */
+.panel-right {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Starfield canvas ───────────────────────────────────────────────────── */
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient glow blobs — animated */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.glow-blob-1 {
+  width: 620px;
+  height: 420px;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(255,95,0,0.18) 0%, rgba(255,80,0,0.07) 45%, transparent 70%);
+  filter: blur(55px);
+  animation: glow-breathe-1 4s ease-in-out infinite;
+}
+.glow-blob-2 {
+  width: 400px;
+  height: 360px;
+  bottom: 10%;
+  left: 10%;
+  background: radial-gradient(ellipse, rgba(255,70,0,0.11) 0%, transparent 65%);
+  filter: blur(70px);
+  animation: glow-breathe-2 6s ease-in-out infinite;
+}
+.glow-blob-3 {
+  width: 360px;
+  height: 300px;
+  top: 8%;
+  right: 8%;
+  background: radial-gradient(ellipse, rgba(255,95,0,0.07) 0%, transparent 60%);
+  filter: blur(80px);
+  animation: glow-breathe-3 8s ease-in-out infinite;
+}
+
+@keyframes glow-breathe-1 {
+  0%, 100% { transform: translateX(-50%) scale(1);     opacity: 0.75; }
+  50%       { transform: translateX(-50%) scale(1.12);  opacity: 1;    }
+}
+@keyframes glow-breathe-2 {
+  0%, 100% { transform: scale(0.92) translate(0, 0);       opacity: 0.55; }
+  40%      { transform: scale(1.08) translate(18px, -14px); opacity: 0.9;  }
+  70%      { transform: scale(0.98) translate(-10px, 8px);  opacity: 0.7;  }
+}
+@keyframes glow-breathe-3 {
+  0%, 100% { transform: scale(1)    translate(0, 0);       opacity: 0.5; }
+  35%      { transform: scale(1.1)  translate(-12px, 16px); opacity: 0.85; }
+  65%      { transform: scale(0.94) translate(8px, -8px);  opacity: 0.6;  }
+}
+
+/* Subtle grid texture */
+.panel-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Radial glow (visible when chart is active) */
+.chart-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,95,0,0.10) 0%, transparent 68%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  z-index: 1;
+}
+.chart-glow.visible { opacity: 1; }
+
+/* ── Section label ──────────────────────────────────────────────────────── */
+.label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ── API key section ────────────────────────────────────────────────────── */
+.api-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 16px 14px;
+}
+
+.input-row { display: flex; gap: 8px; }
+
+.input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 400;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+.input::placeholder { color: var(--text-faint); }
+.input:focus { border-color: var(--accent-border); }
+
+.input-hint {
+  margin-top: 9px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ── Primary button ─────────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-primary:hover { background: #e85c14; }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* ── Search ─────────────────────────────────────────────────────────────── */
+.search-section { display: flex; flex-direction: column; gap: 10px; }
+
+.search-input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.search-input::placeholder { color: var(--text-faint); font-weight: 400; }
+.search-input:focus { border-color: var(--accent-border); }
+
+/* ── Status rows ────────────────────────────────────────────────────────── */
+.loading-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-msg {
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.18);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  font-size: 12px;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Stats section ──────────────────────────────────────────────────────── */
+.keyword-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 4px 12px 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff8b5e;
+  margin-bottom: 13px;
+}
+.keyword-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 15px 12px;
+}
+.stat-card.featured {
+  grid-column: 1 / -1;
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+}
+
+.stat-label {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.stat-card.featured .stat-label { color: rgba(255,140,90,0.6); }
+
+.stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.stat-card.featured .stat-val {
+  font-size: 28px;
+  color: #ff8b5e;
+}
+
+.stat-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Video list ─────────────────────────────────────────────────────────── */
+.video-list { display: flex; flex-direction: column; gap: 1px; }
+
+.video-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 4px;
+  border-radius: 7px;
+  cursor: default;
+  transition: background 0.15s;
+}
+.video-item:hover { background: rgba(255,255,255,0.03); }
+
+.v-rank {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.v-rank.top { color: var(--accent); }
+
+.v-thumb {
+  width: 80px;
+  height: 45px;
+  border-radius: 5px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--surface2);
+  display: block;
+}
+
+.v-info { flex: 1; min-width: 0; }
+.v-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.v-channel {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+.v-bar-track {
+  height: 2px;
+  background: var(--border-soft);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.v-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: 0.5;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+
+.v-views {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── Empty state ────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 13px;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+.empty-icon {
+  width: 44px;
+  height: 44px;
+}
+.empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.empty-body {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 300px;
+  line-height: 1.65;
+}
+
+/* ── Chart state ────────────────────────────────────────────────────────── */
+.chart-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  position: relative;
+  z-index: 1;
+}
+
+.chart-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+#donut { display: block; }
+
+/* ── Scenario capture context ───────────────────────────────────────────── */
+.capture-context {
+  text-align: center;
+  margin-top: -14px;
+}
+.capture-line {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.capture-line strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.capture-line .accent { color: #ff8b5e; font-weight: 700; }
+
+/* ── Scenario buttons ───────────────────────────────────────────────────── */
+.scenario-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.scenario-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.scenario-btns { display: flex; gap: 7px; }
+
+.btn-scenario {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s, background 0.18s, transform 0.1s;
+}
+.btn-scenario:hover {
+  border-color: var(--accent-border);
+  color: var(--text);
+  background: var(--accent-dim);
+}
+.btn-scenario:active { transform: translateY(1px); }
+.btn-scenario.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ── Chart row (donut + preview side by side) ───────────────────────────── */
+.chart-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+  transition: gap 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chart-row.has-preview { gap: 44px; }
+
+/* ── Video preview wrapper (handles width expansion) ────────────────────── */
+.vp-wrapper {
+  max-width: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: max-width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chart-row.has-preview .vp-wrapper { max-width: 320px; }
+
+/* ── Video preview card — white, matches website style ──────────────────── */
+.vp-card {
+  width: 300px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.08);
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.45s ease 0.25s,
+    transform 0.55s cubic-bezier(0.16,1,0.3,1) 0.2s,
+    box-shadow 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+.chart-row.has-preview .vp-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+.vp-card:hover {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Thumbnail floats with margins + own radius */
+.vp-img-wrap {
+  margin: 0 10px;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  background: #e8e8e8;
+}
+.vp-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+.vp-card:hover .vp-thumb { transform: scale(1.04); }
+
+/* Card body — avatar + text side by side */
+.vp-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px 14px;
+}
+
+.vp-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  font-family: var(--font);
+  margin-top: 1px;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+
+.vp-text { flex: 1; min-width: 0; }
+
+.vp-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.vp-byline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.vp-channel {
+  font-size: 11px;
+  color: rgba(0,0,0,0.45);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+.vp-dot {
+  font-size: 11px;
+  color: rgba(0,0,0,0.3);
+}
+.vp-views {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.55);
+}
+.vp-views-label {
+  font-size: 11px;
+  color: rgba(0,0,0,0.35);
+}
+
+/* Inner border */
+.vp-inner-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+
+/* ── Selected video item in list ────────────────────────────────────────── */
+.video-item {
+  cursor: pointer;
+}
+.video-item.selected {
+  background: var(--accent-dim) !important;
+}
+.video-item.selected .v-rank { color: var(--accent); }
+.video-item.selected .v-title { color: #fff; }
+
+/* ── Utility ────────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.mt-0 { margin-top: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-wordmark">curve</span>
+      <div class="logo-divider"></div>
+      <span class="logo-sub">Market Capture</span>
+    </div>
+
+    <div class="header-right">
+      <div class="api-pill" id="apiPill">
+        <div class="api-dot" id="apiDot"></div>
+        <span id="apiPillText">No API key</span>
+      </div>
+      <button class="btn-ghost hidden" id="btnClearApi">Clear key</button>
+    </div>
+  </header>
+
+  <!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+  <div class="dashboard">
+
+    <!-- Left panel -->
+    <div class="panel-left">
+
+      <!-- API key -->
+      <div id="apiSection">
+        <div class="label">YouTube API Key</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;">
+          <div class="input-row">
+            <input type="password" class="input" id="apiKeyInput"
+              placeholder="AIzaSy…" autocomplete="off" spellcheck="false">
+            <button class="btn-primary" id="btnSaveApi">Save</button>
+          </div>
+          <p class="input-hint">Stored in localStorage only — never leaves your browser.</p>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="search-section">
+        <div class="label">Keyword</div>
+        <div class="input-row">
+          <input type="text" class="search-input" id="searchInput"
+            placeholder="e.g. sourdough bread" autocomplete="off">
+          <button class="btn-primary" id="btnSearch">Analyse</button>
+        </div>
+        <div class="loading-row hidden" id="loadingRow">
+          <div class="spinner"></div>
+          <span id="loadingText">Fetching…</span>
+        </div>
+        <div class="error-msg hidden" id="errorMsg"></div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Stats -->
+      <div id="statsSection" class="hidden">
+        <div class="label mt-0">Market Overview</div>
+        <div class="keyword-chip" id="keywordChip">
+          <div class="keyword-chip-dot"></div>
+          <span id="keywordChipText"></span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card featured">
+            <div class="stat-label">Total Market Views</div>
+            <div class="stat-val" id="statTotal">—</div>
+            <div class="stat-sub" id="statCount">across — videos</div>
+          </div>
+          <div class="stat-card" style="grid-column:1/-1;">
+            <div class="stat-label">Top 10 Avg</div>
+            <div class="stat-val" id="statTop10Avg">—</div>
+            <div class="stat-sub">what winning looks like</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video list -->
+      <div id="videoSection" class="hidden">
+        <div class="label">Top Videos</div>
+        <div class="video-list" id="videoList"></div>
+      </div>
+
+    </div>
+
+    <!-- Resize handle -->
+    <div class="resize-handle" id="resizeHandle"></div>
+
+    <!-- Right panel -->
+    <div class="panel-right" id="panelRight">
+      <canvas id="starfield" aria-hidden="true"></canvas>
+      <div class="glow-blob glow-blob-1"></div>
+      <div class="glow-blob glow-blob-2"></div>
+      <div class="glow-blob glow-blob-3"></div>
+      <div class="chart-glow" id="chartGlow"></div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <svg class="empty-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:1;filter:drop-shadow(0 0 8px rgba(255,95,0,0.7)) drop-shadow(0 0 18px rgba(255,95,0,0.35));">
+          <g transform="rotate(-45 22 22)">
+            <!-- Door key: round head with hole, long shaft, two teeth -->
+            <circle cx="13" cy="13" r="8" stroke="#FF5F00" stroke-width="1.8"/>
+            <circle cx="13" cy="13" r="3.5" stroke="#FF5F00" stroke-width="1.8"/>
+            <path d="M13 21 L13 40" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M13 30 L18 30" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M13 35 L17 35" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <div class="empty-title">Search a keyword to begin</div>
+        <div class="empty-body">Enter a keyword to pull the top 10 YouTube videos for that topic, map the total views market, and model your capture rate at different monthly volumes.</div>
+      </div>
+
+      <!-- Chart row (chart + video preview side by side) -->
+      <div class="chart-row hidden" id="chartRow">
+
+        <!-- Chart state -->
+        <div class="chart-state" id="chartState">
+          <div class="chart-label">Market Capture Model</div>
+          <canvas id="donut" width="300" height="300"></canvas>
+          <div class="capture-context" id="captureContext">
+            <div class="capture-line" id="captureLine">Select a scenario below</div>
+          </div>
+          <div class="scenario-section">
+            <div class="scenario-label">Monthly views target</div>
+            <div class="scenario-btns">
+              <button class="btn-scenario" data-views="100000">100K</button>
+              <button class="btn-scenario" data-views="500000">500K</button>
+              <button class="btn-scenario" data-views="1000000">1M</button>
+              <button class="btn-scenario" data-views="2000000">2M</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video preview card -->
+        <div class="vp-wrapper" id="vpWrapper">
+          <div class="vp-card" id="vpCard">
+            <div style="height:10px;"></div>
+            <div class="vp-img-wrap">
+              <img class="vp-thumb" id="vpThumb" src="" alt="">
+            </div>
+            <div class="vp-body">
+              <div class="vp-avatar" id="vpAvatar"></div>
+              <div class="vp-text">
+                <div class="vp-title" id="vpTitle"></div>
+                <div class="vp-byline">
+                  <span class="vp-channel" id="vpChannel"></span>
+                  <span class="vp-dot">·</span>
+                  <span class="vp-views" id="vpViews"></span>
+                  <span class="vp-views-label">views</span>
+                </div>
+              </div>
+            </div>
+            <div class="vp-inner-border"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════════════════
+const STORAGE_KEY  = 'curve_yt_key';
+const CACHE_KEY    = 'curve_yt_cache';
+const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
+let apiKey = localStorage.getItem(STORAGE_KEY) || '';
+let videos = [];
+let totalMarket = 0;
+let animId        = null;
+let currentAngle  = 0;   // 0–360 degrees
+let targetAngle   = 0;
+let animStart     = null;
+let scenarioActive = false;
+const ANIM_MS     = 900;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DOM refs
+// ═══════════════════════════════════════════════════════════════════════════
+const $  = id => document.getElementById(id);
+const apiSection   = $('apiSection');
+const apiKeyInput  = $('apiKeyInput');
+const btnSaveApi   = $('btnSaveApi');
+const btnClearApi  = $('btnClearApi');
+const apiPill      = $('apiPill');
+const apiDot       = $('apiDot');
+const apiPillText  = $('apiPillText');
+const searchInput  = $('searchInput');
+const btnSearch    = $('btnSearch');
+const loadingRow   = $('loadingRow');
+const loadingText  = $('loadingText');
+const errorMsg     = $('errorMsg');
+const statsSection = $('statsSection');
+const videoSection = $('videoSection');
+const videoList    = $('videoList');
+const emptyState   = $('emptyState');
+const chartRow     = $('chartRow');
+const chartState   = $('chartState');
+const chartGlow    = $('chartGlow');
+const vpWrapper    = $('vpWrapper');
+const vpCard       = $('vpCard');
+const vpThumb      = $('vpThumb');
+const vpTitle      = $('vpTitle');
+const vpChannel    = $('vpChannel');
+const vpViews      = $('vpViews');
+const vpAvatar     = $('vpAvatar');
+const keywordChip  = $('keywordChip');
+const keywordChipTxt = $('keywordChipText');
+const statTotal      = $('statTotal');
+const statCount      = $('statCount');
+const statTop10Avg   = $('statTop10Avg');
+const captureLine  = $('captureLine');
+const canvas       = $('donut');
+const ctx          = canvas.getContext('2d');
+const DPR          = Math.min(window.devicePixelRatio || 1, 2);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Canvas hi-DPI setup
+// ═══════════════════════════════════════════════════════════════════════════
+const CSS_SIZE = 340;
+canvas.width  = CSS_SIZE * DPR;
+canvas.height = CSS_SIZE * DPR;
+canvas.style.width  = CSS_SIZE + 'px';
+canvas.style.height = CSS_SIZE + 'px';
+ctx.scale(DPR, DPR);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Resizable panel
+// ═══════════════════════════════════════════════════════════════════════════
+const dashboard    = document.querySelector('.dashboard');
+const resizeHandle = $('resizeHandle');
+const MIN_LEFT     = 280;
+const MAX_LEFT     = 620;
+let isResizing     = false;
+
+resizeHandle.addEventListener('mousedown', e => {
+  isResizing = true;
+  resizeHandle.classList.add('dragging');
+  document.body.style.cursor    = 'col-resize';
+  document.body.style.userSelect = 'none';
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isResizing) return;
+  const dashRect = dashboard.getBoundingClientRect();
+  const newWidth = Math.min(MAX_LEFT, Math.max(MIN_LEFT, e.clientX - dashRect.left));
+  dashboard.style.gridTemplateColumns = `${newWidth}px 4px 1fr`;
+});
+
+document.addEventListener('mouseup', () => {
+  if (!isResizing) return;
+  isResizing = false;
+  resizeHandle.classList.remove('dragging');
+  document.body.style.cursor     = '';
+  document.body.style.userSelect = '';
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Boot
+// ═══════════════════════════════════════════════════════════════════════════
+function init() {
+  if (apiKey) {
+    setConnected(true);
+    apiSection.classList.add('hidden');
+  }
+  document.fonts.ready.then(() => drawDonut(0));
+  bindEvents();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Event bindings
+// ═══════════════════════════════════════════════════════════════════════════
+function bindEvents() {
+  btnSaveApi.addEventListener('click', saveKey);
+  apiKeyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+  btnClearApi.addEventListener('click', clearKey);
+  btnSearch.addEventListener('click', runSearch);
+  searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+
+  document.querySelectorAll('.btn-scenario').forEach(btn => {
+    btn.addEventListener('click', () => onScenario(btn, parseInt(btn.dataset.views, 10)));
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// API key management
+// ═══════════════════════════════════════════════════════════════════════════
+function saveKey() {
+  const v = apiKeyInput.value.trim();
+  if (!v) return;
+  apiKey = v;
+  localStorage.setItem(STORAGE_KEY, v);
+  apiKeyInput.value = '';
+  setConnected(true);
+  apiSection.classList.add('hidden');
+}
+
+function clearKey() {
+  apiKey = '';
+  localStorage.removeItem(STORAGE_KEY);
+  setConnected(false);
+  apiSection.classList.remove('hidden');
+}
+
+function setConnected(yes) {
+  if (yes) {
+    apiDot.classList.add('on');
+    apiPill.classList.add('connected');
+    apiPillText.textContent = 'YouTube API connected';
+    btnClearApi.classList.remove('hidden');
+  } else {
+    apiDot.classList.remove('on');
+    apiPill.classList.remove('connected');
+    apiPillText.textContent = 'No API key';
+    btnClearApi.classList.add('hidden');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Search
+// ═══════════════════════════════════════════════════════════════════════════
+async function runSearch() {
+  const kw = searchInput.value.trim();
+  if (!kw)     { showErr('Enter a keyword to search.'); return; }
+  if (!apiKey) { showErr('Save your YouTube API key first.'); return; }
+
+  clearErr();
+  btnSearch.disabled = true;
+
+  // ── Cache check ──────────────────────────────────────────────────────────
+  const cached = getCached(kw);
+  if (cached) {
+    videos      = cached.videos;
+    totalMarket = cached.totalMarket;
+    renderResults(kw, true);
+    btnSearch.disabled = false;
+    return;
+  }
+
+  setLoading('Searching YouTube…');
+
+  try {
+    // ── Step 1: search by view count ─────────────────────────────────────
+    const searchRes = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=id&q=${encodeURIComponent(kw)}&type=video&maxResults=50&order=viewCount&videoDuration=medium&key=${encodeURIComponent(apiKey)}`
+    );
+    const searchJson = await searchRes.json();
+    if (searchJson.error) throw new Error(ytErrMsg(searchJson.error));
+
+    const ids = (searchJson.items || []).map(i => i.id.videoId).filter(Boolean);
+    if (!ids.length) throw new Error('No videos found for that keyword.');
+
+    // ── Step 2: stats + snippet ──────────────────────────────────────────
+    setLoading('Pulling view counts…');
+    const statsRes = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${ids.join(',')}&key=${encodeURIComponent(apiKey)}`
+    );
+    const statsJson = await statsRes.json();
+    if (statsJson.error) throw new Error(ytErrMsg(statsJson.error));
+
+    videos = (statsJson.items || [])
+      .map(item => ({
+        id:        item.id,
+        title:     item.snippet?.title                              || 'Untitled',
+        channel:   item.snippet?.channelTitle                      || 'Unknown',
+        channelId: item.snippet?.channelId                         || '',
+        views:     parseInt(item.statistics?.viewCount || '0', 10),
+        thumbnail: item.snippet?.thumbnails?.medium?.url
+                || item.snippet?.thumbnails?.default?.url
+                || '',
+      }))
+      .sort((a, b) => b.views - a.views);
+
+    if (!videos.length) throw new Error('Could not retrieve video data.');
+
+    totalMarket = videos.reduce((s, v) => s + v.views, 0);
+
+    // ── Cache result ─────────────────────────────────────────────────────
+    setCached(kw, { videos, totalMarket });
+
+    clearLoading();
+    renderResults(kw, false);
+
+  } catch (err) {
+    clearLoading();
+    showErr(err.message);
+  } finally {
+    btnSearch.disabled = false;
+  }
+}
+
+// ─── Cache helpers ────────────────────────────────────────────────────────────
+function getCached(kw) {
+  try {
+    const store = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    const entry = store[kw.toLowerCase()];
+    if (!entry) return null;
+    if (Date.now() - entry.ts > CACHE_MAX_AGE) return null;
+    return entry.data;
+  } catch { return null; }
+}
+
+function setCached(kw, data) {
+  try {
+    const store = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    store[kw.toLowerCase()] = { ts: Date.now(), data };
+    // Keep cache lean — max 30 keywords
+    const keys = Object.keys(store);
+    if (keys.length > 30) delete store[keys[0]];
+    localStorage.setItem(CACHE_KEY, JSON.stringify(store));
+  } catch { /* storage full — skip silently */ }
+}
+
+function ytErrMsg(err) {
+  const reason = err.errors?.[0]?.reason || '';
+  const detail = err.errors?.[0]?.message || err.message || '';
+  if (err.code === 403) {
+    if (reason === 'dailyLimitExceeded') return 'Daily API quota exceeded. Try again tomorrow.';
+    if (reason === 'keyInvalid')         return 'Invalid API key. Check your key and try again.';
+    if (reason === 'accessNotConfigured') return 'YouTube Data API v3 is not enabled. Go to Google Cloud Console → APIs & Services → Library → enable "YouTube Data API v3".';
+    return `Access denied (403 · ${reason || 'forbidden'}): ${detail}`;
+  }
+  if (err.code === 400) return `Bad request (400 · ${reason}): ${detail}`;
+  return detail || 'YouTube API error.';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Render results
+// ═══════════════════════════════════════════════════════════════════════════
+function renderResults(keyword, fromCache) {
+  // Stats
+  const top10Sum = videos.slice(0, 10).reduce((s, v) => s + v.views, 0);
+  keywordChipTxt.textContent = keyword;
+  statTotal.textContent      = fmt(totalMarket);
+  statCount.textContent      = `across ${videos.length} video${videos.length !== 1 ? 's' : ''}${fromCache ? ' · cached' : ''}`;
+  statTop10Avg.textContent   = fmt(Math.round(top10Sum / Math.min(10, videos.length)));
+
+  // Video list
+  videoList.innerHTML = '';
+  const maxV = videos[0]?.views || 1;
+  videos.forEach((v, i) => {
+    const pct = v.views / maxV;
+    const el = document.createElement('div');
+    el.className = 'video-item';
+    el.innerHTML = `
+      <div class="v-rank${i < 3 ? ' top' : ''}">${i + 1}</div>
+      ${v.thumbnail ? `<img class="v-thumb" src="${esc(v.thumbnail)}" alt="" loading="lazy">` : '<div class="v-thumb"></div>'}
+      <div class="v-info">
+        <div class="v-title">${esc(v.title)}</div>
+        <div class="v-channel">${esc(v.channel)}</div>
+        <div class="v-bar-track">
+          <div class="v-bar-fill"></div>
+        </div>
+      </div>
+      <div class="v-views">${fmt(v.views)}</div>
+    `;
+    el.dataset.index = i;
+    el.addEventListener('click', () => selectVideo(i, el));
+    videoList.appendChild(el);
+    // stagger bar animation
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const fill = el.querySelector('.v-bar-fill');
+        if (fill) fill.style.transform = `scaleX(${pct})`;
+      }, 60 + i * 55);
+    });
+  });
+
+  // Show/hide panels
+  statsSection.classList.remove('hidden');
+  videoSection.classList.remove('hidden');
+  emptyState.classList.add('hidden');
+  chartRow.classList.remove('hidden');
+  chartGlow.classList.add('visible');
+
+  // Reset video preview
+  chartRow.classList.remove('has-preview');
+
+  // Reset chart
+  currentAngle   = 0;
+  targetAngle    = 0;
+  scenarioActive = false;
+  captureLine.innerHTML = 'Select a scenario below';
+  document.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
+  drawDonut(0);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Video preview
+// ═══════════════════════════════════════════════════════════════════════════
+let selectedVideoIdx = -1;
+const channelAvatarCache = {};
+
+function selectVideo(idx, el) {
+  // Toggle off if same video clicked again
+  if (selectedVideoIdx === idx) {
+    selectedVideoIdx = -1;
+    document.querySelectorAll('.video-item').forEach(v => v.classList.remove('selected'));
+    chartRow.classList.remove('has-preview');
+    return;
+  }
+
+  selectedVideoIdx = idx;
+  const v = videos[idx];
+
+  // Update selected state in list
+  document.querySelectorAll('.video-item').forEach(v => v.classList.remove('selected'));
+  el.classList.add('selected');
+
+  // Populate card — letter avatar while channel icon loads
+  vpThumb.src           = v.thumbnail || '';
+  vpTitle.textContent   = v.title;
+  vpChannel.textContent = v.channel;
+  vpViews.textContent   = fmt(v.views);
+  setAvatar(v.channel, null);
+
+  // Trigger layout + animation
+  chartRow.classList.add('has-preview');
+
+  // Fetch real channel avatar
+  if (v.channelId) fetchChannelAvatar(v.channelId, v.channel, idx);
+}
+
+function setAvatar(channelName, imgUrl) {
+  if (imgUrl) {
+    vpAvatar.innerHTML = `<img src="${esc(imgUrl)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" alt="">`;
+    vpAvatar.style.background = 'transparent';
+  } else {
+    vpAvatar.innerHTML = channelName.charAt(0).toUpperCase();
+    vpAvatar.style.background = '';
+  }
+}
+
+async function fetchChannelAvatar(channelId, channelName, forIdx) {
+  // Use cache if available
+  if (channelAvatarCache[channelId]) {
+    if (selectedVideoIdx === forIdx) setAvatar(channelName, channelAvatarCache[channelId]);
+    return;
+  }
+  try {
+    const res  = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${encodeURIComponent(apiKey)}`
+    );
+    const data = await res.json();
+    const url  = data.items?.[0]?.snippet?.thumbnails?.medium?.url
+              || data.items?.[0]?.snippet?.thumbnails?.default?.url;
+    if (url) {
+      channelAvatarCache[channelId] = url;
+      if (selectedVideoIdx === forIdx) setAvatar(channelName, url);
+    }
+  } catch { /* fail silently — letter avatar stays */ }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Scenario
+// ═══════════════════════════════════════════════════════════════════════════
+function onScenario(btn, views) {
+  if (!totalMarket) return;
+  scenarioActive = true;
+  document.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const pct = Math.min((views / totalMarket) * 100, 100);
+  const newAngle = (pct / 100) * 360;
+
+  captureLine.innerHTML =
+    `<strong>${fmt(views)}</strong> monthly views &nbsp;·&nbsp; ` +
+    `<span class="accent">${pct < 0.01 ? '<0.01' : pct.toFixed(2)}%</span> of total market`;
+
+  animateToAngle(currentAngle, newAngle);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Canvas donut
+// ═══════════════════════════════════════════════════════════════════════════
+function drawDonut(angleDeg) {
+  const W = CSS_SIZE, H = CSS_SIZE;
+  const cx = W / 2, cy = H / 2;
+  const R  = 120;
+  const TH = 24;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Track ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+  ctx.lineWidth   = TH;
+  ctx.lineCap     = 'butt';
+  ctx.stroke();
+
+  // Active arc — draw even for tiny values (min visual arc = 2deg so it's visible)
+  if (scenarioActive) {
+    const startA   = -Math.PI / 2;
+    const rawAngle = (angleDeg / 360) * Math.PI * 2;
+    const endA     = startA + Math.max(rawAngle, angleDeg > 0 ? (2 / 360) * Math.PI * 2 : 0);
+
+    if (angleDeg > 0) {
+      // Outer halo
+      ctx.save();
+      ctx.globalAlpha = 0.11;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, startA, startA + rawAngle);
+      ctx.strokeStyle = '#FF5F00';
+      ctx.lineWidth   = TH + 14;
+      ctx.lineCap     = 'round';
+      ctx.stroke();
+      ctx.restore();
+
+      // Orange arc
+      const grad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+      grad.addColorStop(0,   '#cc4a00');
+      grad.addColorStop(0.5, '#FF5F00');
+      grad.addColorStop(1,   '#ff8c4a');
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, startA, endA);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = TH;
+      ctx.lineCap     = 'round';
+      ctx.stroke();
+
+      // End dot
+      const ex = cx + R * Math.cos(endA);
+      const ey = cy + R * Math.sin(endA);
+      ctx.beginPath();
+      ctx.arc(ex, ey, 4, 0, Math.PI * 2);
+      ctx.fillStyle   = '#fff';
+      ctx.globalAlpha = 0.9;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Center text
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'middle';
+
+  if (!scenarioActive) {
+    // No scenario selected yet
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.font      = `600 32px 'Cabinet Grotesk', sans-serif`;
+    ctx.fillText('—', cx, cy - 8);
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.font      = `400 11px 'Cabinet Grotesk', sans-serif`;
+    ctx.fillText('pick a scenario', cx, cy + 20);
+  } else {
+    // Always render the percentage — max 3 total digits
+    const pct   = (angleDeg / 360) * 100;
+    const label = pct >= 10  ? pct.toFixed(1).replace(/\.0$/, '') + '%'
+                : pct >= 0.005 ? pct.toFixed(2) + '%'
+                : '<0.01%';
+
+    // Adaptive font size based on label length
+    const fontSize = label.length <= 4 ? 48
+                   : label.length <= 5 ? 42
+                   : label.length <= 6 ? 36
+                   : 30;
+
+    ctx.fillStyle = 'rgba(255,255,255,0.94)';
+    ctx.font      = `800 ${fontSize}px 'Cabinet Grotesk', sans-serif`;
+    ctx.fillText(label, cx, cy - 12);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.32)';
+    ctx.font      = `600 10px 'Cabinet Grotesk', sans-serif`;
+    ctx.fillText('MARKET CAPTURE', cx, cy + 24);
+  }
+}
+
+function animateToAngle(from, to) {
+  if (animId) cancelAnimationFrame(animId);
+  animStart = null;
+
+  function frame(ts) {
+    if (!animStart) animStart = ts;
+    const t = Math.min((ts - animStart) / ANIM_MS, 1);
+    const ease = easeOutCubic(t);
+    const angle = from + (to - from) * ease;
+    currentAngle = angle;
+    drawDonut(angle);
+    if (t < 1) { animId = requestAnimationFrame(frame); }
+    else { currentAngle = to; drawDonut(to); }
+  }
+
+  animId = requestAnimationFrame(frame);
+}
+
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════════════════
+function fmt(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function median(arr) {
+  const s   = [...arr].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function setLoading(msg) {
+  loadingText.textContent = msg;
+  loadingRow.classList.remove('hidden');
+}
+function clearLoading() { loadingRow.classList.add('hidden'); }
+
+function showErr(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.classList.remove('hidden');
+}
+function clearErr() { errorMsg.classList.add('hidden'); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Starfield
+// ═══════════════════════════════════════════════════════════════════════════
+(function () {
+  const sf     = document.getElementById('starfield');
+  const sctx   = sf.getContext('2d');
+  const SDPR   = Math.min(window.devicePixelRatio || 1, 2);
+  const COUNT  = 110;
+  let   stars  = [];
+  let   W = 0, H = 0;
+
+  function resize() {
+    const rect = sf.parentElement.getBoundingClientRect();
+    W = rect.width;
+    H = rect.height;
+    sf.width  = W * SDPR;
+    sf.height = H * SDPR;
+    sf.style.width  = W + 'px';
+    sf.style.height = H + 'px';
+    sctx.scale(SDPR, SDPR);
+    buildStars();
+  }
+
+  function buildStars() {
+    stars = Array.from({ length: COUNT }, () => {
+      const angle = Math.random() * Math.PI * 2;
+      const spd   = Math.random() * 0.18 + 0.04;     // drift speed 0.04–0.22 px/frame
+      return {
+        x:       Math.random() * W,
+        y:       Math.random() * H,
+        r:       Math.random() * 1.1 + 0.3,           // 0.3–1.4 px
+        vx:      Math.cos(angle) * spd,               // drift velocity x
+        vy:      Math.sin(angle) * spd,               // drift velocity y
+        speed:   Math.random() * 0.6 + 0.25,          // twinkle speed
+        offset:  Math.random() * Math.PI * 2,         // phase offset
+        orange:  Math.random() < 0.18,                // 18% orange-tinted
+      };
+    });
+  }
+
+  function drawStars(ts) {
+    sctx.clearRect(0, 0, W, H);
+    const t = ts / 1000;
+
+    stars.forEach(s => {
+      // Drift
+      s.x += s.vx;
+      s.y += s.vy;
+      // Wrap around edges
+      if (s.x < -2)     s.x = W + 2;
+      if (s.x > W + 2)  s.x = -2;
+      if (s.y < -2)     s.y = H + 2;
+      if (s.y > H + 2)  s.y = -2;
+
+      const alpha   = (Math.sin(t * s.speed + s.offset) + 1) / 2; // 0–1
+      const opacity = 0.08 + alpha * 0.55;                         // 0.08–0.63
+
+      sctx.beginPath();
+      sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+
+      if (s.orange) {
+        sctx.fillStyle = `rgba(255, 110, 30, ${opacity * 0.85})`;
+      } else {
+        sctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+      }
+      sctx.fill();
+    });
+
+    requestAnimationFrame(drawStars);
+  }
+
+  window.addEventListener('resize', () => {
+    sctx.setTransform(1, 0, 0, 1, 0, 0);
+    resize();
+  });
+
+  resize();
+  requestAnimationFrame(drawStars);
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Go
+// ═══════════════════════════════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
