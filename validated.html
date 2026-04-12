@@ -820,17 +820,12 @@
       width:min(58vw,680px);
       height:min(58vw,680px);
       border-radius:50%;
-      background:linear-gradient(145deg, #ff8c4a 0%, #FF5F00 45%, #cc3d00 100%);
+      overflow:hidden;
       box-shadow:0 0 120px 40px rgba(255,95,0,0.28), 0 0 260px 80px rgba(255,95,0,0.10);
       z-index:0;
       pointer-events:none;
     ">
-      <!-- Inner radial highlight (top-left shine) -->
-      <div style="position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.22) 0%, transparent 55%);"></div>
-      <!-- Subtle "C" monogram -->
-      <div style="position:absolute; inset:0; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-        <span style="font-family:'Cormorant Garamond',serif; font-size:min(14vw,160px); font-weight:600; color:rgba(255,255,255,0.14); line-height:1; user-select:none;">C</span>
-      </div>
+      <img src="founders.jpg" alt="Cameron and Ayla" style="width:100%; height:100%; object-fit:cover; object-position:center 40%;">
     </div>
 
     <!-- \u2500\u2500 Right-side text block \u2014 pushed past the circle \u2500\u2500 -->
@@ -1046,7 +1041,7 @@
     <a href="#" style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:600; letter-spacing:0.01em; text-transform:lowercase; color:rgba(229,226,225,0.28); text-decoration:none; transition:color 0.2s;"
        onmouseenter="this.style.color='rgba(229,226,225,0.65)'" onmouseleave="this.style.color='rgba(229,226,225,0.28)'">privacy</a>
 
-    <span style="margin-left:auto; font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:500; letter-spacing:0.01em; color:rgba(229,226,225,0.28); white-space:nowrap;">\u00a9 2026 The Curve.Media. All Rights Reserved.</span>
+    <span style="margin-left:auto; font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:500; letter-spacing:0.01em; color:rgba(229,226,225,0.28); white-space:nowrap;">© 2026 @TheCurve.Media. All Rights Reserved.</span>
 
   </div>
 
@@ -1087,7 +1082,7 @@
   // Chart line fully draws at 85% of 7s = 5950ms (= December)
   function runGrowthCounter() {
     runCounter('counter-growth', 400, 1000, 5950, function(v) {
-      return '+' + Math.round(v).toLocaleString() + '%';
+      return '+' + Math.round(v) + '%';
     });
   }
   runGrowthCounter();
@@ -1564,8 +1559,8 @@
   // ── Founder profile — Superwhisper-style zoom-in on scroll ───────────────
   // Starts as a slightly scaled-down rounded card; expands to fill on scroll
   gsap.fromTo('#founder-profile',
-    { scale: 0.88, borderRadius: '28px' },
-    { scale: 1,    borderRadius: '0px',
+    { scale: 0.88 },
+    { scale: 1,
       ease: 'none',
       scrollTrigger: {
         trigger: '#founder-profile',
@@ -1709,32 +1704,81 @@
       setTimeout(function() { window.location.href = dest; }, 440);
     });
   });
-  // Graph marker — tracks the animated line endpoint in real time
+  // Graph marker — piggybacked on GSAP ticker (same RAF as Lenis, zero loop competition)
+  // Geometry pre-sampled once at init; timing synced to CSS animation on first tick only.
   (function () {
     var marker = document.getElementById('graph-marker');
     var path   = document.getElementById('graph-path');
     if (!marker || !path) return;
+
+    var CYCLE    = 7000;
     var totalLen = path.getTotalLength();
 
-    function update() {
-      var style = window.getComputedStyle(path);
-      var dashOffset = parseFloat(style.strokeDashoffset) || 0;
-      var dashArray  = parseFloat(style.strokeDasharray)  || totalLen;
-      var drawnLen   = Math.max(0, dashArray - dashOffset);
-      var t = drawnLen / totalLen; // 0 → 1
+    // Pre-sample path geometry once — no DOM reads in the hot path
+    var SAMPLES = 240;
+    var pts = new Float32Array(SAMPLES * 2);
+    for (var i = 0; i < SAMPLES; i++) {
+      var sp = path.getPointAtLength((i / (SAMPLES - 1)) * totalLen);
+      pts[i * 2]     = sp.x;
+      pts[i * 2 + 1] = sp.y;
+    }
 
-      if (t > 0.04 && t < 0.98) {
-        var pt = path.getPointAtLength(drawnLen);
-        // SVG viewBox is 1000×300; graph-area is the containing div
-        marker.style.left    = (pt.x / 1000 * 100) + '%';
-        marker.style.top     = (pt.y / 300 * 100) + '%';
-        marker.style.opacity = String(Math.min(1, (t - 0.04) / 0.06));
+    function lerpPt(frac) {
+      var f  = Math.max(0, Math.min(1, frac)) * (SAMPLES - 1);
+      var i0 = Math.floor(f);
+      var i1 = Math.min(i0 + 1, SAMPLES - 1);
+      var a  = f - i0;
+      i0 *= 2; i1 *= 2;
+      return {
+        x: pts[i0]     + (pts[i1]     - pts[i0])     * a,
+        y: pts[i0 + 1] + (pts[i1 + 1] - pts[i0 + 1]) * a
+      };
+    }
+
+    var syncOffset = null; // resolved once on first tick
+
+    // Add to GSAP ticker — shares the same RAF loop as Lenis, no separate loop
+    gsap.ticker.add(function (time) {
+      var nowMs = time * 1000;
+
+      // One-time sync: read CSS animation phase via getComputedStyle (first tick only)
+      if (syncOffset === null) {
+        var s        = window.getComputedStyle(path);
+        var cssDrawn = Math.max(0, (parseFloat(s.strokeDasharray) || totalLen) - (parseFloat(s.strokeDashoffset) || 0));
+        var cssFrac  = cssDrawn / totalLen;
+        var frac0    = 120 / totalLen;
+        var cssT     = cssFrac < frac0 ? (cssFrac / frac0) * 0.10
+                     : cssFrac < 1    ? 0.10 + ((cssFrac - frac0) / (1 - frac0)) * 0.75
+                     : 0.85;
+        syncOffset = nowMs - cssT * CYCLE;
+      }
+
+      var t = ((nowMs - syncOffset) % CYCLE) / CYCLE;
+
+      var frac, opacity;
+      if (t < 0.10) {
+        frac    = (t / 0.10) * (120 / totalLen);
+        opacity = t / 0.10;
+      } else if (t < 0.85) {
+        frac    = 120 / totalLen + ((t - 0.10) / 0.75) * (1 - 120 / totalLen);
+        opacity = 1;
+      } else if (t < 0.92) {
+        frac    = 1;
+        opacity = 1 - (t - 0.85) / 0.07;
+      } else {
+        frac    = 0;
+        opacity = 0;
+      }
+
+      if (opacity > 0.01) {
+        var p = lerpPt(frac);
+        marker.style.left    = (p.x / 1000 * 100) + '%';
+        marker.style.top     = (p.y / 300  * 100) + '%';
+        marker.style.opacity = opacity < 0.999 ? opacity.toFixed(3) : '1';
       } else {
         marker.style.opacity = '0';
       }
-      requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
+    });
   })();
 
 </script>

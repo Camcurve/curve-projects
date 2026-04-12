@@ -198,8 +198,9 @@
     color: #FF5F00;
   }
   .scale-wrap label:hover {
-    border-color: rgba(255,95,0,0.25);
-    color: rgba(229,226,225,0.65);
+    border-color: rgba(255,95,0,0.6);
+    color: #FF5F00;
+    box-shadow: 0 0 14px 4px rgba(255,95,0,0.35);
   }
 
   /* ── Divider ── */
@@ -296,13 +297,71 @@
     .scale-wrap { gap: 0.35rem; }
     .scale-wrap label { height: 42px; font-size: 0.82rem; }
   }
+
+/* ── Starfield canvas ─────────────────────────────────────────────── */
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Animated orange glow blobs ───────────────────────────────────── */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.glow-blob-1 {
+  width: 620px; height: 420px;
+  bottom: -80px; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(255,95,0,0.09) 0%, rgba(255,80,0,0.035) 45%, transparent 70%);
+  filter: blur(55px);
+  animation: glow-breathe-1 4s ease-in-out infinite;
+}
+.glow-blob-2 {
+  width: 400px; height: 360px;
+  bottom: 10%; left: 10%;
+  background: radial-gradient(ellipse, rgba(255,70,0,0.055) 0%, transparent 65%);
+  filter: blur(70px);
+  animation: glow-breathe-2 6s ease-in-out infinite;
+}
+.glow-blob-3 {
+  width: 360px; height: 300px;
+  top: 8%; right: 8%;
+  background: radial-gradient(ellipse, rgba(255,95,0,0.035) 0%, transparent 60%);
+  filter: blur(80px);
+  animation: glow-breathe-3 8s ease-in-out infinite;
+}
+@keyframes glow-breathe-1 {
+  0%, 100% { transform: translateX(-50%) scale(1);    opacity: 0.375; }
+  50%       { transform: translateX(-50%) scale(1.12); opacity: 0.5;  }
+}
+@keyframes glow-breathe-2 {
+  0%, 100% { transform: scale(0.92) translate(0, 0);        opacity: 0.275; }
+  40%      { transform: scale(1.08) translate(18px, -14px);  opacity: 0.45; }
+  70%      { transform: scale(0.98) translate(-10px, 8px);   opacity: 0.35; }
+}
+@keyframes glow-breathe-3 {
+  0%, 100% { transform: scale(1)    translate(0, 0);        opacity: 0.25; }
+  35%      { transform: scale(1.1)  translate(-12px, 16px); opacity: 0.425; }
+  65%      { transform: scale(0.94) translate(8px, -8px);   opacity: 0.3;  }
+}
 </style>
 </head>
 <body>
 
 <div class="atm-bg">
+  <canvas id="starfield" aria-hidden="true"></canvas>
   <span class="g1"></span>
   <span class="g2"></span>
+  <div class="glow-blob glow-blob-1"></div>
+  <div class="glow-blob glow-blob-2"></div>
+  <div class="glow-blob glow-blob-3"></div>
 </div>
 
 <div class="page">
@@ -350,6 +409,16 @@
       </div>
 
       <div class="divider"></div>
+
+      <!-- Creator or Brand -->
+      <div class="field">
+        <label for="type">Are you a creator or a brand?</label>
+        <select id="type" name="type" required>
+          <option value="" disabled selected></option>
+          <option value="Creator">Creator</option>
+          <option value="Brand">Brand</option>
+        </select>
+      </div>
 
       <!-- Channel size -->
       <div class="field">
@@ -490,6 +559,7 @@ form.addEventListener('submit', async e => {
   const lastName   = val('last-name');
   const email      = val('email');
   const channel    = val('channel');
+  const type        = val('type');
   const subscribers = val('subscribers');
   const revenue    = val('revenue');
   const commitment = radioVal('commitment');
@@ -519,14 +589,20 @@ form.addEventListener('submit', async e => {
       {
         type: 'section',
         fields: [
-          { type: 'mrkdwn', text: `*Channel*\n${channel || '_Not provided_'}` },
-          { type: 'mrkdwn', text: `*Subscribers*\n${subscribers || '_Not provided_'}` }
+          { type: 'mrkdwn', text: `*Type*\n${type || '_Not provided_'}` },
+          { type: 'mrkdwn', text: `*Channel*\n${channel || '_Not provided_'}` }
         ]
       },
       {
         type: 'section',
         fields: [
-          { type: 'mrkdwn', text: `*Monthly Revenue / Budget*\n${revenue || '_Not provided_'}` },
+          { type: 'mrkdwn', text: `*Subscribers*\n${subscribers || '_Not provided_'}` },
+          { type: 'mrkdwn', text: `*Monthly Revenue / Budget*\n${revenue || '_Not provided_'}` }
+        ]
+      },
+      {
+        type: 'section',
+        fields: [
           { type: 'mrkdwn', text: `*Commitment (1–10)*\n${commitment}` }
         ]
       },
@@ -566,6 +642,76 @@ form.addEventListener('submit', async e => {
     setLoading(false);
   }
 });
+</script>
+<script>
+/* Starfield particle system — matches curve-market-capture */
+(function () {
+  const sf    = document.getElementById('starfield');
+  const sctx  = sf.getContext('2d');
+  const SDPR  = Math.min(window.devicePixelRatio || 1, 2);
+  const COUNT = 110;
+  let   stars = [];
+  let   W = 0, H = 0;
+
+  function resize() {
+    const rect = sf.parentElement.getBoundingClientRect();
+    W = rect.width;
+    H = rect.height;
+    sf.width        = W * SDPR;
+    sf.height       = H * SDPR;
+    sf.style.width  = W + 'px';
+    sf.style.height = H + 'px';
+    sctx.scale(SDPR, SDPR);
+    buildStars();
+  }
+
+  function buildStars() {
+    stars = Array.from({ length: COUNT }, () => {
+      const angle = Math.random() * Math.PI * 2;
+      const spd   = Math.random() * 0.18 + 0.04;
+      return {
+        x:      Math.random() * W,
+        y:      Math.random() * H,
+        r:      Math.random() * 1.1 + 0.3,
+        vx:     Math.cos(angle) * spd,
+        vy:     Math.sin(angle) * spd,
+        speed:  Math.random() * 0.6 + 0.25,
+        offset: Math.random() * Math.PI * 2,
+        orange: Math.random() < 0.18,
+      };
+    });
+  }
+
+  function drawStars(ts) {
+    sctx.clearRect(0, 0, W, H);
+    const t = ts / 1000;
+    stars.forEach(s => {
+      s.x += s.vx;
+      s.y += s.vy;
+      if (s.x < -2)    s.x = W + 2;
+      if (s.x > W + 2) s.x = -2;
+      if (s.y < -2)    s.y = H + 2;
+      if (s.y > H + 2) s.y = -2;
+      const alpha   = (Math.sin(t * s.speed + s.offset) + 1) / 2;
+      const opacity = 0.04 + alpha * 0.275;
+      sctx.beginPath();
+      sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      sctx.fillStyle = s.orange
+        ? `rgba(255,110,30,${(opacity * 0.85).toFixed(3)})`
+        : `rgba(255,255,255,${opacity.toFixed(3)})`;
+      sctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  window.addEventListener('resize', () => {
+    sctx.setTransform(1, 0, 0, 1, 0, 0);
+    resize();
+  });
+
+  resize();
+  requestAnimationFrame(drawStars);
+})();
 </script>
 </body>
 </html>

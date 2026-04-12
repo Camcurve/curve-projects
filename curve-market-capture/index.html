@@ -566,6 +566,11 @@ html, body {
 .empty-icon {
   width: 44px;
   height: 44px;
+  animation: key-ignite 4s linear both;
+}
+@keyframes key-ignite {
+  0%   { filter: saturate(0) brightness(0.5)  drop-shadow(0 0 0px  rgba(255,95,0,0)); }
+  100% { filter: saturate(1) brightness(1)    drop-shadow(0 0 8px rgba(255,95,0,0.7)) drop-shadow(0 0 18px rgba(255,95,0,0.35)); }
 }
 .empty-title {
   font-size: 15px;
@@ -912,7 +917,7 @@ html, body {
 
       <!-- Empty state -->
       <div class="empty-state" id="emptyState">
-        <svg class="empty-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:1;filter:drop-shadow(0 0 8px rgba(255,95,0,0.7)) drop-shadow(0 0 18px rgba(255,95,0,0.35));">
+        <svg class="empty-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g transform="rotate(-45 22 22)">
             <!-- Door key: round head with hole, long shaft, two teeth -->
             <circle cx="13" cy="13" r="8" stroke="#FF5F00" stroke-width="1.8"/>
@@ -1343,7 +1348,8 @@ function selectVideo(idx, el) {
 
 function setAvatar(channelName, imgUrl) {
   if (imgUrl) {
-    vpAvatar.innerHTML = `<img src="${esc(imgUrl)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" alt="">`;
+    const letter = channelName.charAt(0).toUpperCase();
+    vpAvatar.innerHTML = `<img src="${esc(imgUrl)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" alt="" onerror="this.parentElement.innerHTML='${letter}';this.parentElement.style.background='';">`;
     vpAvatar.style.background = 'transparent';
   } else {
     vpAvatar.innerHTML = channelName.charAt(0).toUpperCase();
