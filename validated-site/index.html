@@ -248,6 +248,340 @@
     background: rgba(255,255,255,0.025);
     backdrop-filter: blur(8px);
   }
+
+  /* ── Dashboard mobile ───────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    /* Reduce outer section padding */
+    #dashboard-section {
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+      padding-bottom: 3.5rem !important;
+    }
+    /* Reduce inner card padding */
+    #dashboard-card .px-8 {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1rem !important;
+      padding-bottom: 1.25rem !important;
+    }
+    /* Scale down stats numbers */
+    #dashboard-card .grid.grid-cols-3 p[style*="2.2rem"] {
+      font-size: 1.35rem !important;
+    }
+    /* Reduce column gap padding */
+    #dashboard-card .grid.grid-cols-3 > div:first-child { padding-right: 0.6rem !important; }
+    #dashboard-card .grid.grid-cols-3 > div:nth-child(2) { padding-left: 0.6rem !important; padding-right: 0.6rem !important; }
+    #dashboard-card .grid.grid-cols-3 > div:last-child { padding-left: 0.6rem !important; }
+    /* Reduce graph height */
+    #graph-area { height: 160px !important; }
+    /* Scale down percentage text */
+    #dashboard-card .text-\[0\.58rem\] { font-size: 0.5rem !important; }
+    /* Header row — shrink live badge text */
+    #dashboard-card .font-mono { font-size: 0.48rem !important; }
+  }
+
+  /* ── Board section mobile — investigative vertical reveal ─────────── */
+  @media (max-width: 640px) {
+    #board-section {
+      height: auto !important;
+      padding: 0 0 5rem;
+    }
+    #board-inner {
+      position: relative !important;
+      height: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      padding: 0;
+      overflow: visible !important;
+    }
+    /* Title */
+    #board-inner > div:first-child {
+      position: relative !important;
+      top: auto !important; left: auto !important;
+      transform: none !important;
+      white-space: normal !important;
+      text-align: center !important;
+      padding: 3rem 1.5rem 0.75rem !important;
+      flex-shrink: 0;
+      width: 100%;
+    }
+    /* Hide everything from desktop layout */
+    #board-svg         { display: none !important; }
+    #board-swipe-hint  { display: none !important; }
+    #board-prev,
+    #board-next        { display: none !important; }
+    /* Hide bottom fade — section is now content-height */
+    #board-inner > div[aria-hidden="true"] { display: none !important; }
+
+    /* Vertical card track — transparent, blends with site */
+    #board-cards {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      overflow: visible !important;
+      padding: 0.5rem 1.5rem 1rem !important;
+      gap: 0 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      background: transparent !important;
+      border: none !important;
+      scroll-snap-type: none !important;
+    }
+
+    /* Injected connector lines — always 50px tall, scaleY draws them */
+    .bm-connector {
+      width: 2px !important;
+      height: 50px !important;      /* fixed height — no layout shift on scrub */
+      align-self: center !important;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 95, 0, 0.7) 0%,
+        rgba(255, 95, 0, 0.25) 100%
+      ) !important;
+      border-radius: 2px !important;
+      flex-shrink: 0 !important;
+      transform-origin: top center;
+    }
+
+    /* Cards: vertical, full-width, GSAP controls reveal */
+    .board-note {
+      position: relative !important;
+      left: auto !important; right: auto !important;
+      top: auto !important; bottom: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      flex-shrink: 0 !important;
+      margin: 0 !important;
+      padding-top: 28px !important; /* headroom for pin above card */
+      scroll-snap-align: unset !important;
+      will-change: transform, opacity;
+    }
+    .board-note.is-active { opacity: 1; }
+    /* Pin centred at top of card, sits where the connector terminates */
+    .board-pin {
+      position: absolute !important;
+      top: 4px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+
+  /* ── Testimonials mobile 3D flip ────────────────────────────────────── */
+  @media (max-width: 767px) {
+    #testimonial-stack {
+      width: min(300px, 86vw) !important;
+      height: 390px !important;
+      cursor: pointer !important;
+      overflow: visible !important;
+      perspective: 1200px !important;
+    }
+    /* Show mobile client strip below */
+    #mobile-client-strip {
+      display: flex !important;
+    }
+    /* Column layout: stack then client strip */
+    #testimonials .flex.items-start.justify-center {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 0 !important;
+      width: 100% !important;
+    }
+  }
+
+  /* ── Infinite marquee ─────────────────────────────────────────────── */
+  #more-clients-track:hover { animation-play-state: paused; }
+
+  /* ══════════════════════════════════════════════════════════════════
+     MOBILE — additional section fixes
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* ── 1. Header/logo — always pinned and visible on mobile ─────────── */
+  @media (max-width: 767px) {
+    header {
+      padding: 1rem 1.5rem !important;
+      background: linear-gradient(to bottom, rgba(19,19,19,0.92) 55%, transparent) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      backdrop-filter: blur(12px) !important;
+      z-index: 200 !important;
+    }
+    header a {
+      font-size: 1.3rem !important;
+    }
+  }
+
+  /* ── 2. Cameron & Ayla — vertical stack on mobile ─────────────────── */
+  @media (max-width: 767px) {
+    #founder-profile {
+      flex-direction: column !important;
+      align-items: center !important;
+      padding: 4rem 1.5rem 3.5rem !important;
+      min-height: unset !important;
+      overflow: visible !important;
+    }
+    /* Image: from left-bleeding circle → centred circle */
+    #founder-profile > div:first-child {
+      position: relative !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      width: min(88vw, 340px) !important;
+      height: min(88vw, 340px) !important;
+      border-radius: 50% !important;
+      box-shadow:
+        0 0 0 2px rgba(255,95,0,0.35),
+        0 0 60px 12px rgba(255,95,0,0.20),
+        0 0 140px 50px rgba(255,95,0,0.08) !important;
+      margin: 0 auto 2.8rem !important;
+      flex-shrink: 0;
+    }
+    #founder-profile > div:first-child img {
+      border-radius: 50% !important;
+      object-position: center 35% !important;
+    }
+    /* Text block: full-width, no left push */
+    #founder-profile > div:last-child {
+      position: relative !important;
+      margin-left: 0 !important;
+      padding-right: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    /* Remove the two backstory paragraphs on mobile */
+    #founder-p2,
+    #founder-p3 {
+      display: none !important;
+    }
+    /* Stats grid full width */
+    #founder-profile .grid {
+      max-width: 100% !important;
+    }
+  }
+
+  /* ── 3. Footer — mobile layout ───────────────────────────────────── */
+  @media (max-width: 767px) {
+    /* Top strip: wrap so copyright drops to its own row */
+    footer > div:first-child {
+      flex-wrap: wrap !important;
+      align-items: center !important;
+      padding: 2rem 1.5rem 1rem !important;
+      gap: 0.75rem 1rem !important;
+    }
+    /* Social icon circles — prevent distortion */
+    footer a[aria-label="LinkedIn"],
+    footer a[aria-label="Instagram"] {
+      flex-shrink: 0 !important;
+      width: 34px !important;
+      height: 34px !important;
+      min-width: 34px !important;
+      min-height: 34px !important;
+      box-sizing: border-box !important;
+    }
+    /* Copyright text: full-width row, centred, nudged down */
+    footer > div:first-child > span {
+      flex-basis: 100% !important;
+      width: 100% !important;
+      margin-left: 0 !important;
+      text-align: center !important;
+      white-space: normal !important;
+      line-height: 1.55 !important;
+      margin-top: 0.6rem !important;
+      padding-bottom: 0.4rem !important;
+    }
+    /* Wordmark: edge-to-edge, no padding */
+    footer > div:nth-child(2) {
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100vw !important;
+      overflow: hidden !important;
+      line-height: 0.82 !important;
+    }
+    footer > div:nth-child(2) > span {
+      /* ~34vw makes "curve" fill exactly the viewport width in Cabinet Grotesk 800 */
+      font-size: 34vw !important;
+      display: block !important;
+      white-space: nowrap !important;
+      text-align: left !important;
+      padding: 0 !important;
+      letter-spacing: -0.04em !important;
+    }
+  }
+
+
+
+  /* ── Header auto-hide transition ─────────────────────────────────────── */
+  header {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  header.nav-hidden {
+    opacity: 0 !important;
+    transform: translateY(-12px) !important;
+    pointer-events: none !important;
+  }
+  html, body {
+    overscroll-behavior: none;
+  }
+  @keyframes badge-dot-float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-4px); }
+  }
+  #hero-badge-dot {
+    animation: badge-dot-float 1.8s ease-in-out infinite;
+  }
+  @keyframes badge-glow-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(255,95,0,0.25), 0 0 28px rgba(255,95,0,0.1), inset 0 1px 0 rgba(255,255,255,0.06); }
+    50%       { box-shadow: 0 0 20px rgba(255,95,0,0.35), 0 0 48px rgba(255,95,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06); }
+  }
+  #hero-badge {
+    animation: badge-glow-pulse 2.8s ease-in-out infinite;
+  }
+  #hero-starfield {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+/* ── VOLT card section ──────────────────────────────────────────────── */
+#volt-cards-row {
+  /* perspective moved onto each card via GSAP transformPerspective — eliminates 3D GPU compositing artefacts on the background */
+}
+.volt-card {
+  will-change: transform;
+}
+.volt-card-back,
+.volt-card-front {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
+.volt-card-back {
+  background: #0d0d0d;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.07),
+    0 16px 40px rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.volt-card-front {
+  background: #111111;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,95,0,0.14),
+    0 16px 40px rgba(0,0,0,0.45);
+}
+@media (max-width: 768px) {
+  #volt-section      { height: auto !important; }
+  #volt-inner        { position: relative !important; height: auto !important; padding: 5rem 1.5rem 4rem; }
+  #volt-cards-row    { flex-wrap: wrap !important; gap: 16px !important; justify-content: center !important; }
+  .volt-card         { width: 178px !important; height: 250px !important; }
+  .volt-card-back    { display: none !important; }
+  .volt-card-front   { position: relative !important; inset: auto !important; transform: none !important; width: 100% !important; height: 100% !important; }
+  #volt-arcs-svg     { display: none !important; }
+  #volt-cta          { opacity: 1 !important; transform: none !important; }
+}
 </style>
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-fixed">
@@ -301,26 +635,16 @@
   <a href="#" style="pointer-events:all; text-decoration:none; font-family:'Cabinet Grotesk',sans-serif; font-weight:800; font-size:1.45rem; color:#F0EFEB; letter-spacing:-0.04em; text-transform:lowercase; display:inline-block; line-height:1;">curve</a>
 </header>
 
-<main class="relative overflow-x-hidden pt-32 lg:pt-48">
+<main class="relative pt-32 lg:pt-48" style="overflow-x: clip;">
 
   <!-- ═══ GLOBAL ATMOSPHERIC BACKGROUND — flows across the entire page ═══ -->
-  <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:0; will-change:transform;">
-
-    <!-- 1: Bottom anchor — primary warmth pool -->
-    <div style="position:absolute; bottom:-10%; left:50%; transform:translateX(-50%); width:140%; height:80vh; background:radial-gradient(ellipse 70% 60% at 50% 90%, rgba(255,95,0,0.20) 0%, rgba(255,100,0,0.07) 50%, transparent 75%); filter:blur(120px); transform:translateZ(0);"></div>
-    <!-- 2: Top veil — soft warm ceiling -->
-    <div style="position:absolute; top:-5%; left:50%; transform:translateX(-50%); width:100%; height:45vh; background:radial-gradient(ellipse 75% 65% at 50% 0%, rgba(255,80,0,0.07) 0%, transparent 70%); filter:blur(100px); transform:translateZ(0);"></div>
-    <!-- 3: Left edge bleed -->
-    <div style="position:absolute; top:20%; left:-10%; width:50%; height:70vh; background:radial-gradient(ellipse 65% 55% at 15% 55%, rgba(255,75,0,0.09) 0%, transparent 65%); filter:blur(130px); transform:translateZ(0);"></div>
-    <!-- 4: Right edge bleed -->
-    <div style="position:absolute; top:25%; right:-10%; width:45%; height:65vh; background:radial-gradient(ellipse 65% 55% at 85% 55%, rgba(255,110,0,0.08) 0%, transparent 65%); filter:blur(130px); transform:translateZ(0);"></div>
-    <!-- 5: Centre ambient -->
-    <div style="position:absolute; top:30%; left:50%; transform:translateX(-50%); width:85%; height:70vh; background:radial-gradient(ellipse 70% 55% at 50% 50%, rgba(255,95,0,0.06) 0%, transparent 70%); filter:blur(140px); transform:translateZ(0);"></div>
-    </div>
+  <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:0; background: radial-gradient(ellipse 160% 110% at 50% 104%, rgba(255,93,0,0.10) 0%, rgba(255,85,0,0.04) 42%, transparent 65%);"></div>
   <!-- ══════════════════════════════════════════════════════ -->
 
   <!-- ─── HERO ─────────────────────────────────────────────────────────── -->
   <section id="hero" class="max-w-7xl mx-auto px-8 pb-16 flex flex-col items-center justify-center text-center min-h-[calc(100vh-8rem)] lg:min-h-[calc(100vh-12rem)]" style="position:relative;">
+
+    <canvas id="hero-starfield" aria-hidden="true"></canvas>
 
     <!-- Floating YouTube arrows — first in DOM so all content renders above -->
     <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; z-index:0;">
@@ -334,9 +658,16 @@
     </div>
 
     <!-- Badge -->
-    <div id="hero-badge" class="inline-flex items-center space-x-2 mb-8">
-      <span class="w-2 h-2 rounded-full bg-primary-container"></span>
-      <span class="text-[0.7rem] uppercase tracking-[0.2em] text-primary" style="font-family:'Cabinet Grotesk',sans-serif; font-weight:600;">YouTube strategy to make bangers.</span>
+    <div id="hero-badge" class="inline-flex items-center mb-8"
+         style="gap:8px; padding:0.38rem 1rem 0.38rem 0.65rem;
+                background:rgba(255,95,0,0.07);
+                border:1px solid rgba(255,95,0,0.28);
+                border-radius:9999px;
+                -webkit-backdrop-filter:blur(8px);
+                backdrop-filter:blur(8px);">
+      <!-- Pulsing dot -->
+      <span id="hero-badge-dot" style="width:8px; height:8px; border-radius:50%; background:#FF5F00; flex-shrink:0; display:inline-block;"></span>
+      <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:#FF5F00;">YouTube First Strategies</span>
     </div>
 
     <!-- H1 -->
@@ -346,7 +677,7 @@
 
     <!-- Sub -->
     <div id="hero-sub" class="max-w-2xl mb-10">
-      <p class="text-[1.2rem] leading-relaxed text-secondary font-body">
+      <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1.2rem; line-height:1.6; color:#c8c6c5;">
         We help creators and brands become top 1% on YouTube, with strategies that 2x growth before you even press record.
       </p>
     </div>
@@ -385,7 +716,7 @@
       <!-- Heading -->
       <div class="flex flex-col items-center text-center mb-14 md:mb-20">
         <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(2.2rem,4.5vw,4rem); line-height:1.08; color:#E5E2E1; letter-spacing:-0.02em;">
-          Trusted by channels who<br>take growth <span style="position:relative; display:inline-block;">
+          Trusted by channels<br>who take growth <br class="md:hidden"><span style="position:relative; display:inline-block;">
             <svg id="seriously-ring" aria-hidden="true" viewBox="0 0 210 68" fill="none" xmlns="http://www.w3.org/2000/svg"
                  style="position:absolute; left:-7%; top:-28%; width:114%; height:155%; overflow:visible; pointer-events:none; z-index:0;">
               <path d="M 8,36 C 10,16 44,5 105,5 C 166,4 200,16 203,36 C 202,56 166,64 105,65 C 44,66 8,57 8,36 Z"
@@ -415,7 +746,7 @@
             <div style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px 14px;">
               <img src="data:image/jpeg;base64,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" style="width:34px; height:34px; border-radius:50%; flex-shrink:0; object-fit:cover; margin-top:1px;">
               <div style="flex:1; min-width:0;">
-                <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.82rem; font-weight:700; color:#111111; line-height:1.3; margin-bottom:4px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">Attention Is Dead</p>
+                <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.82rem; font-weight:700; color:#111111; line-height:1.3; margin-bottom:4px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">The Quiet Rise Of $1M Knowledge Creators</p>
                 <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.68rem; color:rgba(0,0,0,0.45); line-height:1.4;">Sunny Lenarduzzi &nbsp;·&nbsp; 80K views</p>
               </div>
             </div>
@@ -524,6 +855,33 @@
           </div>
 
         </div><!-- /sidebar -->
+        <!-- Mobile client strip — shown below thumbnails on mobile -->
+        <div id="mobile-client-strip" class="md:hidden" style="display:none; flex-direction:row; justify-content:center; gap:0.75rem; padding:1.25rem 1rem 0; width:100%;">
+          <div class="mob-client-btn" data-target="0" style="display:flex; flex-direction:column; align-items:center; gap:0.4rem; cursor:pointer; opacity:1;">
+            <div style="width:44px; height:44px; border-radius:50%; overflow:hidden; border:2px solid #FF5F00; box-shadow:0 0 12px rgba(255,95,0,0.4);">
+              <img src="chunkz-avatar.jpg" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.6rem; color:#FF5F00; font-weight:600;">Chunkz</span>
+          </div>
+          <div class="mob-client-btn" data-target="1" style="display:flex; flex-direction:column; align-items:center; gap:0.4rem; cursor:pointer; opacity:0.45;">
+            <div style="width:44px; height:44px; border-radius:50%; overflow:hidden; border:2px solid rgba(229,226,225,0.2);">
+              <img src="noah-avatar.jpg" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.6rem; color:rgba(229,226,225,0.5); font-weight:600;">Noah</span>
+          </div>
+          <div class="mob-client-btn" data-target="2" style="display:flex; flex-direction:column; align-items:center; gap:0.4rem; cursor:pointer; opacity:0.45;">
+            <div style="width:44px; height:44px; border-radius:50%; overflow:hidden; border:2px solid rgba(229,226,225,0.2);">
+              <img src="hubspot-avatar.jpg" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.6rem; color:rgba(229,226,225,0.5); font-weight:600;">HubSpot</span>
+          </div>
+          <div class="mob-client-btn" data-target="3" style="display:flex; flex-direction:column; align-items:center; gap:0.4rem; cursor:pointer; opacity:0.45;">
+            <div style="width:44px; height:44px; border-radius:50%; overflow:hidden; border:2px solid rgba(229,226,225,0.2);">
+              <img src="sunny-avatar.jpg" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.6rem; color:rgba(229,226,225,0.5); font-weight:600;">Sunny</span>
+          </div>
+        </div>
 
   
 
@@ -535,226 +893,270 @@
   <!-- ─── MORE HAPPY CLIENTS ──────────────────────────────────────────── -->
   <section id="more-clients" style="position:relative; padding:clamp(1rem,3vw,2rem) 0 clamp(5rem,12vw,9rem); background:#131313;">
     <!-- Top fade — blends seamlessly with section above -->
-    <div style="position:absolute; top:0; left:0; right:0; height:120px; background:linear-gradient(to bottom, #131313 0%, rgba(19,19,19,0) 100%); pointer-events:none; z-index:1;"></div>
+    <div style="position:absolute; top:0; left:0; right:0; height:220px; background:linear-gradient(to bottom, #131313 0%, rgba(19,19,19,0) 100%); pointer-events:none; z-index:1;"></div>
     <!-- Bottom fade — blends seamlessly with section below -->
-    <div style="position:absolute; bottom:0; left:0; right:0; height:120px; background:linear-gradient(to top, #131313 0%, rgba(19,19,19,0) 100%); pointer-events:none; z-index:1;"></div>
+    <div style="position:absolute; bottom:0; left:0; right:0; height:220px; background:linear-gradient(to top, #131313 0%, rgba(19,19,19,0) 100%); pointer-events:none; z-index:1;"></div>
 
     <div style="position:relative; z-index:2; max-width:860px; margin:0 auto; padding:0 2rem; text-align:center;">
 
       <!-- Heading — matches "Frameworks powering our approach" style -->
       <h2 id="more-clients-label" style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(2.2rem,4.5vw,4rem); line-height:1.08; color:#E5E2E1; letter-spacing:-0.02em; margin-bottom:3rem;">Clients we previously served.</h2>
 
-      <!-- Circles row — add your client images as more-client-1.jpg … more-client-5.jpg -->
-      <div id="more-clients-row" style="position:relative; display:flex; gap:clamp(1rem,2.5vw,2rem); align-items:center; justify-content:center;">
-
-        <div class="more-client-circle" style="width:clamp(80px,9vw,120px); height:clamp(80px,9vw,120px); border-radius:50%; overflow:hidden; flex-shrink:0; background:transparent; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); will-change:transform; cursor:default;">
-          <img src="circle-aj.jpg" style="width:100%; height:100%; object-fit:cover;">
+      <!-- Infinite marquee — circles scroll left to right on a loop -->
+      <div id="more-clients-marquee" style="position:relative; overflow:hidden; width:100%; -webkit-mask:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%); mask:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);">
+        <div id="more-clients-track" style="display:flex; gap:clamp(1.5rem,3vw,2.5rem); align-items:center; width:max-content; animation:marquee-scroll 22s linear infinite;">
+          <!-- Set A -->
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;">
+            <img src="circle-aj.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;">
+            <img src="circle-keltie.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;">
+            <img src="circle-mfm.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;">
+            <img src="circle-room.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;">
+            <img src="circle-welltech.jpeg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <!-- Set B (duplicate for seamless loop) -->
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;" aria-hidden="true">
+            <img src="circle-aj.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;" aria-hidden="true">
+            <img src="circle-keltie.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;" aria-hidden="true">
+            <img src="circle-mfm.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;" aria-hidden="true">
+            <img src="circle-room.jpg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="more-client-circle" style="width:clamp(72px,8vw,110px); height:clamp(72px,8vw,110px); border-radius:50%; overflow:hidden; flex-shrink:0;" aria-hidden="true">
+            <img src="circle-welltech.jpeg" style="width:100%; height:100%; object-fit:cover;">
+          </div>
         </div>
-        <div class="more-client-circle" style="width:clamp(80px,9vw,120px); height:clamp(80px,9vw,120px); border-radius:50%; overflow:hidden; flex-shrink:0; background:transparent; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); will-change:transform; cursor:default;">
-          <img src="data:image/jpeg;base64,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" style="width:100%; height:100%; object-fit:contain;">
-        </div>
-        <div class="more-client-circle" style="width:clamp(80px,9vw,120px); height:clamp(80px,9vw,120px); border-radius:50%; overflow:hidden; flex-shrink:0; background:transparent; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); will-change:transform; cursor:default;">
-          <img src="circle-mfm.jpg" style="width:100%; height:100%; object-fit:cover;">
-        </div>
-        <div class="more-client-circle" style="width:clamp(80px,9vw,120px); height:clamp(80px,9vw,120px); border-radius:50%; overflow:hidden; flex-shrink:0; background:transparent; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); will-change:transform; cursor:default;">
-          <img src="data:image/jpeg;base64,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" style="width:100%; height:100%; object-fit:cover;">
-        </div>
-        <div class="more-client-circle" style="width:clamp(80px,9vw,120px); height:clamp(80px,9vw,120px); border-radius:50%; overflow:hidden; flex-shrink:0; background:transparent; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); will-change:transform; cursor:default;">
-          <img src="circle-welltech.jpeg" style="width:100%; height:100%; object-fit:cover;">
-        </div>
-
-        <!-- Bottom feather — melts circles into page background -->
-        <div style="position:absolute; bottom:-2px; left:-5%; right:-5%; height:55%; background:linear-gradient(to top, #131313 0%, rgba(19,19,19,0) 100%); pointer-events:none; z-index:2;"></div>
-
       </div>
     </div>
   </section>
 
-  <!-- ─── WHEEL SECTION ────────────────────────────────────────────────── -->
-  <!-- Outer wrapper is tall so sticky inner scrolls through 4 steps -->
-  <section id="wheel-section" style="position:relative; height:380vh;">
-  <div id="wheel-inner" style="height:100vh; display:flex; flex-direction:column; justify-content:flex-start; padding-top:clamp(2.5rem,5vw,4rem); padding-bottom:1rem; will-change:transform;">
+  <!-- ─── VOLT SECTION ─────────────────────────────────────────────────── -->
+  <section id="volt-section" style="position:relative; height:600vh;">
+    <div id="volt-inner" style="height:100vh; position:sticky; top:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; overflow:hidden;">
 
-    <!-- Fade top edge into the page background -->
-    <div style="position:absolute; top:0; left:0; right:0; height:300px; background:linear-gradient(to bottom, #131313 0%, rgba(19,19,19,0) 100%); pointer-events:none; z-index:1;"></div>
+      <!-- Fade top edge -->
+      <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:220px; background:linear-gradient(to bottom,#131313 0%,transparent 100%); pointer-events:none; z-index:1;"></div>
 
-    <!-- Centred heading — matches testimonials heading style & spacing -->
-    <div id="wheel-heading" style="text-align:center; flex-shrink:0; margin-bottom:clamp(2rem,4vw,3rem); position:relative; z-index:20;">
-      <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(2.2rem,4.5vw,4rem); line-height:1.08; color:#E5E2E1; letter-spacing:-0.02em;">Frameworks powering<br>our approach.</p>
-    </div>
-
-    <!-- Wheel visual — overflow:hidden clips items outside the arc -->
-    <div id="wheel-visual" style="position:relative; width:100%; height:460px; overflow:hidden; flex-shrink:0;">
-
-      <!-- Background arc ring — 1080px diameter, shows top 50% -->
-      <!-- Circle centre = rotor centre = y:620. Circle top edge = 620-540 = 80px -->
-      <div style="position:absolute; left:50%; transform:translateX(-50%);
-                  top:80px; width:1080px; height:1080px; border-radius:50%;
-                  border:1px solid rgba(255,181,153,0.2);
-                  clip-path:inset(0 0 50% 0); pointer-events:none;"></div>
-
-      <!-- Rotor — wheel centre sits 40px below visual bottom so items at 90° hide -->
-      <div id="wheel-rotor" style="position:absolute; left:50%; top:620px; width:0; height:0;">
-
-        <!-- Step 0 · 0° (top) — centre at y=620-540=80, top edge 80-36=44px ✓ -->
-        <div class="wheel-item" data-step="0"
-             style="position:absolute; width:72px; height:72px; border-radius:50%;
-                    display:flex; align-items:center; justify-content:center;
-                    left:-36px; top:-576px;
-                    background:transparent; border:2px solid #FF5F00; box-shadow:0 0 20px rgba(255,95,0,0.85), 0 0 8px rgba(255,95,0,0.4);">
-          <span style="font-size:1.85rem; font-family:'Cabinet Grotesk',sans-serif; font-weight:700; color:#FF5F00; line-height:1; user-select:none;">1</span>
-        </div>
-
-        <!-- Step 1 · 90° — x=540, y=0 → centre at y=620 (below visual ✓) -->
-        <div class="wheel-item" data-step="1"
-             style="position:absolute; width:72px; height:72px; border-radius:50%;
-                    display:flex; align-items:center; justify-content:center;
-                    left:504px; top:-36px;
-                    background:transparent; border:2px solid rgba(255,255,255,0.14); opacity:0.3;">
-          <span style="font-size:1.85rem; font-family:'Cabinet Grotesk',sans-serif; font-weight:700; color:rgba(229,226,225,0.38); line-height:1; user-select:none;">2</span>
-        </div>
-
-        <!-- Step 2 · 180° — x=0, y=540 → centre at y=1160 (well below visual ✓) -->
-        <div class="wheel-item" data-step="2"
-             style="position:absolute; width:72px; height:72px; border-radius:50%;
-                    display:flex; align-items:center; justify-content:center;
-                    left:-36px; top:504px;
-                    background:transparent; border:2px solid rgba(255,255,255,0.14); opacity:0.3;">
-          <span style="font-size:1.85rem; font-family:'Cabinet Grotesk',sans-serif; font-weight:700; color:rgba(229,226,225,0.38); line-height:1; user-select:none;">3</span>
-        </div>
-
-        <!-- Step 3 · 270° — x=-540, y=0 → centre at y=620 (below visual ✓) -->
-        <div class="wheel-item" data-step="3"
-             style="position:absolute; width:72px; height:72px; border-radius:50%;
-                    display:flex; align-items:center; justify-content:center;
-                    left:-576px; top:-36px;
-                    background:transparent; border:2px solid rgba(255,255,255,0.14); opacity:0.3;">
-          <span style="font-size:1.85rem; font-family:'Cabinet Grotesk',sans-serif; font-weight:700; color:rgba(229,226,225,0.38); line-height:1; user-select:none;">4</span>
-        </div>
-
-      </div><!-- /rotor -->
-
-      <!-- Guide line: from item bottom (y=116) down to icon top (y=396) -->
-      <div style="position:absolute; left:50%; top:116px; transform:translateX(-50%);
-                  width:2px; height:280px; z-index:14;
-                  background:linear-gradient(to bottom, rgba(255,95,0,0.08) 0%, #FF5F00 100%);"></div>
-
-      <!-- Hub icon: changes per step — circle / diamond / triangle / cross -->
-      <div id="hub-icon" style="position:absolute; left:50%; top:396px; transform:translateX(-50%); z-index:15;
-                  background:#131313; padding:8px 6px; display:flex; align-items:center; justify-content:center;">
-        <!-- Step 0 default: magnifying glass (Validate) -->
-        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI3IiBzdHJva2U9IiNGRjVGMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48bGluZSB4MT0iMTciIHkxPSIxNyIgeDI9IjIxIiB5Mj0iMjEiIHN0cm9rZT0iI0ZGNUYwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" width="40" height="40" style="filter:drop-shadow(0 0 5px rgba(255,95,0,.95)) drop-shadow(0 0 14px rgba(255,95,0,.55))" alt="">
+      <!-- Heading -->
+      <div id="volt-heading" style="text-align:center; margin-bottom:clamp(2.2rem,4vw,3.5rem); position:relative; z-index:5; opacity:0; transform:translateY(24px);">
+        <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.68rem; font-weight:700; color:#FF5F00; letter-spacing:0.18em; text-transform:uppercase; margin:0 0 1.1rem;">The VOLT System</p>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(2.2rem,4.5vw,4rem); line-height:1.08; color:#E5E2E1; letter-spacing:-0.02em;">Frameworks powering<br>our approach.</h2>
       </div>
 
-    </div><!-- /wheel-visual -->
+      <!-- Cards row -->
+      <div id="volt-cards-row" style="position:relative; display:flex; gap:32px; align-items:center; justify-content:center; z-index:5; flex-shrink:0;">
 
-    <!-- Step content (below wheel, changes per step) -->
-    <div style="text-align:center; max-width:600px; margin:0 auto; padding:2rem 2rem 0; flex-shrink:0;">
-      <h3 id="wheel-title"
-          style="font-family:'Cormorant Garamond',serif; font-weight:600;
-                 font-size:clamp(2.2rem,4vw,3.8rem); color:#E5E2E1;
-                 line-height:1.08; margin-bottom:1rem; letter-spacing:-0.02em;">Validate</h3>
-      <p id="wheel-desc"
-         style="font-family:'Cabinet Grotesk',sans-serif; font-size:clamp(0.9rem,1.1vw,1.05rem);
-                color:rgba(229,226,225,0.5); line-height:1.72; max-width:500px; margin:0 auto;">
-        We audit your channel top to bottom — thumbnails, hooks, titles, watch time — and pinpoint exactly where the algorithm is costing you growth.
-      </p>
-    </div>
+        <!-- Card 0 — Strategy -->
+        <div class="volt-card" data-idx="0" style="width:245px; height:343px; transform-style:preserve-3d; position:relative; flex-shrink:0;">
+          <div class="volt-card-back" style="position:absolute; inset:0; border-radius:11px;"></div>
+          <div class="volt-card-front" style="position:absolute; inset:0; border-radius:11px; transform:rotateY(180deg); background:#111111; padding:22px 26px;">
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em;">01</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,95,0,0.55)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="21" y2="21"/></svg>
+              </div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:800; color:#E5E2E1; letter-spacing:-0.01em; margin:0 0 8px; line-height:1.1;">Validate</p>
+              <div style="width:100%; height:1px; background:rgba(255,95,0,0.22); margin-bottom:9px; flex-shrink:0;"></div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; font-weight:400; color:rgba(229,226,225,0.62); line-height:1.62; margin:0; flex:1;">We audit your channel top to bottom — thumbnails, hooks, titles, watch time — and pinpoint exactly where the algorithm is costing you growth.</p>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:10px; flex-shrink:0;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.62rem; font-weight:700; color:rgba(229,226,225,0.3); letter-spacing:0.12em; text-transform:uppercase;">Validate</span>
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em; transform:rotate(180deg); display:inline-block;">01</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  </div><!-- /wheel-inner -->
-  </section><!-- /wheel-section -->
+        <!-- Card 1 — Packaging -->
+        <div class="volt-card" data-idx="1" style="width:245px; height:343px; transform-style:preserve-3d; position:relative; flex-shrink:0;">
+          <div class="volt-card-back" style="position:absolute; inset:0; border-radius:11px;"></div>
+          <div class="volt-card-front" style="position:absolute; inset:0; border-radius:11px; transform:rotateY(180deg); background:#111111; padding:22px 26px;">
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em;">02</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,95,0,0.55)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.44-4.22A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.44-4.22A2.5 2.5 0 0 0 14.5 2z"/></svg>
+              </div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:800; color:#E5E2E1; letter-spacing:-0.01em; margin:0 0 8px; line-height:1.1;">Originate</p>
+              <div style="width:100%; height:1px; background:rgba(255,95,0,0.22); margin-bottom:9px; flex-shrink:0;"></div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; font-weight:400; color:rgba(229,226,225,0.62); line-height:1.62; margin:0; flex:1;">We build content concepts engineered to perform — every title, thumbnail and hook designed from data before a single frame is filmed.</p>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:10px; flex-shrink:0;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.62rem; font-weight:700; color:rgba(229,226,225,0.3); letter-spacing:0.12em; text-transform:uppercase;">Originate</span>
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em; transform:rotate(180deg); display:inline-block;">02</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 — Production -->
+        <div class="volt-card" data-idx="2" style="width:245px; height:343px; transform-style:preserve-3d; position:relative; flex-shrink:0;">
+          <div class="volt-card-back" style="position:absolute; inset:0; border-radius:11px;"></div>
+          <div class="volt-card-front" style="position:absolute; inset:0; border-radius:11px; transform:rotateY(180deg); background:#111111; padding:22px 26px;">
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em;">03</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,95,0,0.55)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+              </div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:800; color:#E5E2E1; letter-spacing:-0.01em; margin:0 0 8px; line-height:1.1;">Launch</p>
+              <div style="width:100%; height:1px; background:rgba(255,95,0,0.22); margin-bottom:9px; flex-shrink:0;"></div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; font-weight:400; color:rgba(229,226,225,0.62); line-height:1.62; margin:0; flex:1;">We coordinate uploads, scheduling and distribution so your content hits on the right day, at the right time, every time.</p>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:10px; flex-shrink:0;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.62rem; font-weight:700; color:rgba(229,226,225,0.3); letter-spacing:0.12em; text-transform:uppercase;">Launch</span>
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em; transform:rotate(180deg); display:inline-block;">03</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 — Growth -->
+        <div class="volt-card" data-idx="3" style="width:245px; height:343px; transform-style:preserve-3d; position:relative; flex-shrink:0;">
+          <div class="volt-card-back" style="position:absolute; inset:0; border-radius:11px;"></div>
+          <div class="volt-card-front" style="position:absolute; inset:0; border-radius:11px; transform:rotateY(180deg); background:#111111; padding:22px 26px;">
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em;">04</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,95,0,0.55)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="14" width="4" height="8" rx="0.5"/><rect x="10" y="9" width="4" height="13" rx="0.5"/><rect x="18" y="4" width="4" height="18" rx="0.5"/><line x1="1" y1="22" x2="23" y2="22"/></svg>
+              </div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:800; color:#E5E2E1; letter-spacing:-0.01em; margin:0 0 8px; line-height:1.1;">Track</p>
+              <div style="width:100%; height:1px; background:rgba(255,95,0,0.22); margin-bottom:9px; flex-shrink:0;"></div>
+              <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; font-weight:400; color:rgba(229,226,225,0.62); line-height:1.62; margin:0; flex:1;">We monitor every metric in real time, feeding insights back into the system so your channel compounds week after week.</p>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:10px; flex-shrink:0;">
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.62rem; font-weight:700; color:rgba(229,226,225,0.3); letter-spacing:0.12em; text-transform:uppercase;">Track</span>
+                <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:800; color:#FF5F00; letter-spacing:0.06em; transform:rotate(180deg); display:inline-block;">04</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /volt-cards-row -->
+
+      <!-- CTA after circuit completes -->
+      <div id="volt-cta" style="text-align:center; margin-top:2.8rem; opacity:0; transform:translateY(18px); z-index:5; position:relative;">
+        <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:600; color:rgba(229,226,225,0.4); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:1.1rem;">The system is built.</p>
+        <a href="contact.html" style="display:inline-flex; align-items:center; gap:8px; font-family:'Cabinet Grotesk',sans-serif; font-size:0.9rem; font-weight:700; color:#E5E2E1; border:1px solid rgba(255,95,0,0.32); border-radius:9999px; padding:0.6rem 1.5rem; text-decoration:none; transition:border-color 0.3s,color 0.3s;">Now let&rsquo;s run it &nbsp;&rarr;</a>
+      </div>
+
+      <!-- Bottom fade -->
+      <div aria-hidden="true" style="position:absolute; bottom:0; left:0; right:0; height:320px; background:linear-gradient(to bottom,transparent 0%,#131313 100%); pointer-events:none; z-index:1;"></div>
+
+    </div><!-- /volt-inner -->
+  </section><!-- /volt-section -->
 
 
 
 
   <!-- BOARD SECTION (Things We Do) -->
   <section id="board-section" style="position:relative; height:700vh;">
+    <!-- Mobile prev/next arrows — hidden on desktop -->
+    <button id="board-prev" aria-label="Previous" style="display:none; position:absolute; left:12px; top:50%; transform:translateY(-50%); z-index:100; width:40px; height:40px; border-radius:50%; background:rgba(19,19,19,0.85); border:1.5px solid rgba(255,95,0,0.55); box-shadow:0 0 16px rgba(255,95,0,0.25); cursor:pointer; align-items:center; justify-content:center; transition:all 0.25s ease;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5F00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button id="board-next" aria-label="Next" style="display:none; position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:100; width:40px; height:40px; border-radius:50%; background:rgba(19,19,19,0.85); border:1.5px solid rgba(255,95,0,0.55); box-shadow:0 0 16px rgba(255,95,0,0.25); cursor:pointer; align-items:center; justify-content:center; transition:all 0.25s ease;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5F00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
 
-    <div id="board-inner" style="height:100vh; position:relative;">
+    <div id="board-inner" style="height:100vh; position:sticky; top:0;">
+
+      <!-- Top fade — blends from volt section above -->
+      <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:260px; background:linear-gradient(to bottom,#131313 0%,transparent 100%); pointer-events:none; z-index:1;"></div>
 
       <!-- Title -->
       <div style="position:absolute; top:1.6rem; left:50%; transform:translateX(-50%); z-index:10; text-align:center; white-space:nowrap; pointer-events:none;">
-        <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.58rem; font-weight:700; letter-spacing:0.22em; color:#FF5F00; text-transform:uppercase; display:block; margin-bottom:0.4rem;">Our Process</span>
-        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,2.8vw,2.6rem); color:#E5E2E1; letter-spacing:-0.02em; line-height:1.1; margin:0;">Things We Do</h2>
+        <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.58rem; font-weight:700; letter-spacing:0.22em; color:#FF5F00; text-transform:uppercase; display:block; margin-bottom:0.4rem;">The Work</span>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,2.8vw,2.6rem); color:#E5E2E1; letter-spacing:-0.02em; line-height:1.1; margin:0;">Six things. Every week.</h2>
       </div>
 
+      <!-- Mobile swipe hint -->
+      <p id="board-swipe-hint" style="display:none; font-family:'Cabinet Grotesk',sans-serif; font-size:0.75rem; font-weight:300; color:rgba(229,226,225,0.35); text-align:center; margin-top:-0.5rem; padding-bottom:0.5rem;">Swipe to explore</p>
       <!-- SVG string layer -->
       <svg id="board-svg" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:3; overflow:visible;" xmlns="http://www.w3.org/2000/svg"></svg>
 
+      <div id="board-cards">
       <div class="board-note" data-idx="0" data-rot="-2.8"
-           style="position:absolute; left:calc(50% - 355px); top:25vh; width:clamp(200px,22vw,278px); z-index:4; will-change:transform,opacity; transform-origin:center center;">
+           style="position:absolute; left:calc(50% - 355px); top:25vh; width:clamp(200px,22vw,278px); z-index:4; transform-origin:center center;">
         <div class="board-pin" style="position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:6; text-align:center;">
           <div style="width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 38% 35%, #ff8040 0%, #c44000 100%); box-shadow:0 0 22px rgba(255,95,0,0.95), 0 3px 9px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,200,120,0.45);"></div>
           <div style="width:2.5px; height:12px; background:linear-gradient(#8a2e00, #4a1200); margin:-1px auto 0; border-radius:0 0 2px 2px;"></div>
         </div>
-        <div style="background:#181412; border-radius:10px; border:1.5px solid rgba(255,95,0,0.38); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 0 32px rgba(255,95,0,0.1), 0 10px 40px rgba(0,0,0,0.55); position:relative;">
-          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.56rem; font-weight:700; letter-spacing:0.2em; color:#FF5F00; display:block; margin-bottom:0.5rem;">01</span>
+        <div style="background:#111111; border-radius:11px; border:1px solid rgba(255,95,0,0.18); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 16px 44px rgba(0,0,0,0.55); position:relative;">
+          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:#FF5F00; display:block; margin-bottom:0.5rem;">01</span>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.2rem,1.7vw,1.55rem); color:#E5E2E1; line-height:1.1; margin:0 0 0.55rem; display:flex; align-items:center; gap:0.55rem;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; vertical-align:middle;"><line x1="8" y1="3" x2="8" y2="21" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="3" x2="16" y2="21" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="9" x2="21" y2="9" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="15" x2="21" y2="15" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Strategy</h3>
           <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">We start by understanding your channel's goals, audience, and competitive landscape. Every decision is rooted in a clear strategic direction built for your brand.</p>
         </div>
       </div>
       <div class="board-note" data-idx="1" data-rot="2.2"
-           style="position:absolute; right:calc(50% - 295px); top:20vh; width:clamp(200px,22vw,278px); z-index:4; will-change:transform,opacity; transform-origin:center center;">
+           style="position:absolute; right:calc(50% - 295px); top:20vh; width:clamp(200px,22vw,278px); z-index:4; transform-origin:center center;">
         <div class="board-pin" style="position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:6; text-align:center;">
           <div style="width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 38% 35%, #ff8040 0%, #c44000 100%); box-shadow:0 0 22px rgba(255,95,0,0.95), 0 3px 9px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,200,120,0.45);"></div>
           <div style="width:2.5px; height:12px; background:linear-gradient(#8a2e00, #4a1200); margin:-1px auto 0; border-radius:0 0 2px 2px;"></div>
         </div>
-        <div style="background:#181412; border-radius:10px; border:1.5px solid rgba(255,95,0,0.38); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 0 32px rgba(255,95,0,0.1), 0 10px 40px rgba(0,0,0,0.55); position:relative;">
-          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.56rem; font-weight:700; letter-spacing:0.2em; color:#FF5F00; display:block; margin-bottom:0.5rem;">02</span>
+        <div style="background:#111111; border-radius:11px; border:1px solid rgba(255,95,0,0.18); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 16px 44px rgba(0,0,0,0.55); position:relative;">
+          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:#FF5F00; display:block; margin-bottom:0.5rem;">02</span>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.2rem,1.7vw,1.55rem); color:#E5E2E1; line-height:1.1; margin:0 0 0.55rem; display:flex; align-items:center; gap:0.55rem;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; vertical-align:middle;"><path d="M9 18h6M10.5 21h3M12 3a6 6 0 0 1 6 6c0 2.5-1.4 4.65-3.5 5.75L14 16h-4l-.5-1.25C7.4 13.65 6 11.5 6 9a6 6 0 0 1 6-6z" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Ideation</h3>
-          <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">We generate a steady pipeline of video ideas at the intersection of what your audience craves and what your brand stands for — concepts designed to travel.</p>
+          <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">We generate a steady pipeline of ideas rooted in what your audience wants and what your brand can credibly own — built to earn attention, not just fill a calendar.</p>
         </div>
       </div>
       <div class="board-note" data-idx="2" data-rot="-1.5"
-           style="position:absolute; left:calc(50% - 305px); top:50vh; width:clamp(200px,22vw,278px); z-index:4; will-change:transform,opacity; transform-origin:center center;">
+           style="position:absolute; left:calc(50% - 305px); top:50vh; width:clamp(200px,22vw,278px); z-index:4; transform-origin:center center;">
         <div class="board-pin" style="position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:6; text-align:center;">
           <div style="width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 38% 35%, #ff8040 0%, #c44000 100%); box-shadow:0 0 22px rgba(255,95,0,0.95), 0 3px 9px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,200,120,0.45);"></div>
           <div style="width:2.5px; height:12px; background:linear-gradient(#8a2e00, #4a1200); margin:-1px auto 0; border-radius:0 0 2px 2px;"></div>
         </div>
-        <div style="background:#181412; border-radius:10px; border:1.5px solid rgba(255,95,0,0.38); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 0 32px rgba(255,95,0,0.1), 0 10px 40px rgba(0,0,0,0.55); position:relative;">
-          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.56rem; font-weight:700; letter-spacing:0.2em; color:#FF5F00; display:block; margin-bottom:0.5rem;">03</span>
+        <div style="background:#111111; border-radius:11px; border:1px solid rgba(255,95,0,0.18); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 16px 44px rgba(0,0,0,0.55); position:relative;">
+          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:#FF5F00; display:block; margin-bottom:0.5rem;">03</span>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.2rem,1.7vw,1.55rem); color:#E5E2E1; line-height:1.1; margin:0 0 0.55rem; display:flex; align-items:center; gap:0.55rem;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; vertical-align:middle;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="22.08" x2="12" y2="12" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Packaging</h3>
           <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">A great idea lives or dies on its packaging. We craft titles and thumbnails that earn the click — headline precision with visual contrast that stops the scroll.</p>
         </div>
       </div>
       <div class="board-note" data-idx="3" data-rot="1.8"
-           style="position:absolute; right:calc(50% - 368px); top:46vh; width:clamp(200px,22vw,278px); z-index:4; will-change:transform,opacity; transform-origin:center center;">
+           style="position:absolute; right:calc(50% - 368px); top:46vh; width:clamp(200px,22vw,278px); z-index:4; transform-origin:center center;">
         <div class="board-pin" style="position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:6; text-align:center;">
           <div style="width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 38% 35%, #ff8040 0%, #c44000 100%); box-shadow:0 0 22px rgba(255,95,0,0.95), 0 3px 9px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,200,120,0.45);"></div>
           <div style="width:2.5px; height:12px; background:linear-gradient(#8a2e00, #4a1200); margin:-1px auto 0; border-radius:0 0 2px 2px;"></div>
         </div>
-        <div style="background:#181412; border-radius:10px; border:1.5px solid rgba(255,95,0,0.38); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 0 32px rgba(255,95,0,0.1), 0 10px 40px rgba(0,0,0,0.55); position:relative;">
-          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.56rem; font-weight:700; letter-spacing:0.2em; color:#FF5F00; display:block; margin-bottom:0.5rem;">04</span>
+        <div style="background:#111111; border-radius:11px; border:1px solid rgba(255,95,0,0.18); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 16px 44px rgba(0,0,0,0.55); position:relative;">
+          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:#FF5F00; display:block; margin-bottom:0.5rem;">04</span>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.2rem,1.7vw,1.55rem); color:#E5E2E1; line-height:1.1; margin:0 0 0.55rem; display:flex; align-items:center; gap:0.55rem;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; vertical-align:middle;"><path d="M12 20h9" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Scripting</h3>
           <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">We map out the emotional arc of every video — the hook, the tension, the payoff. Our beat sheets give creators a roadmap that keeps watch time high from first frame to last.</p>
         </div>
       </div>
       <div class="board-note" data-idx="4" data-rot="-1.8"
-           style="position:absolute; left:calc(50% - 375px); top:72vh; width:clamp(200px,22vw,278px); z-index:4; will-change:transform,opacity; transform-origin:center center;">
+           style="position:absolute; left:calc(50% - 375px); top:72vh; width:clamp(200px,22vw,278px); z-index:4; transform-origin:center center;">
         <div class="board-pin" style="position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:6; text-align:center;">
           <div style="width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 38% 35%, #ff8040 0%, #c44000 100%); box-shadow:0 0 22px rgba(255,95,0,0.95), 0 3px 9px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,200,120,0.45);"></div>
           <div style="width:2.5px; height:12px; background:linear-gradient(#8a2e00, #4a1200); margin:-1px auto 0; border-radius:0 0 2px 2px;"></div>
         </div>
-        <div style="background:#181412; border-radius:10px; border:1.5px solid rgba(255,95,0,0.38); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 0 32px rgba(255,95,0,0.1), 0 10px 40px rgba(0,0,0,0.55); position:relative;">
-          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.56rem; font-weight:700; letter-spacing:0.2em; color:#FF5F00; display:block; margin-bottom:0.5rem;">05</span>
+        <div style="background:#111111; border-radius:11px; border:1px solid rgba(255,95,0,0.18); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 16px 44px rgba(0,0,0,0.55); position:relative;">
+          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:#FF5F00; display:block; margin-bottom:0.5rem;">05</span>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.2rem,1.7vw,1.55rem); color:#E5E2E1; line-height:1.1; margin:0 0 0.55rem; display:flex; align-items:center; gap:0.55rem;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; vertical-align:middle;"><rect x="2" y="6" width="20" height="15" rx="2" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11h20" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 6V3M12 6V3M17 6V3" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 3l2 3M12 3l2 3M17 3l2 3" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Edit Reviews</h3>
-          <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">We review every single edit to ensure maximum retention — checking pacing, hooks, and structure so each video performs at its full potential.</p>
+          <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">We review every edit for pacing, hooks and structure before anything goes live. Nothing gets published until it's right.</p>
         </div>
       </div>
       <div class="board-note" data-idx="5" data-rot="1.2"
-           style="position:absolute; right:calc(50% - 300px); top:70vh; width:clamp(200px,22vw,278px); z-index:4; will-change:transform,opacity; transform-origin:center center;">
+           style="position:absolute; right:calc(50% - 300px); top:70vh; width:clamp(200px,22vw,278px); z-index:4; transform-origin:center center;">
         <div class="board-pin" style="position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:6; text-align:center;">
           <div style="width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 38% 35%, #ff8040 0%, #c44000 100%); box-shadow:0 0 22px rgba(255,95,0,0.95), 0 3px 9px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,200,120,0.45);"></div>
           <div style="width:2.5px; height:12px; background:linear-gradient(#8a2e00, #4a1200); margin:-1px auto 0; border-radius:0 0 2px 2px;"></div>
         </div>
-        <div style="background:#181412; border-radius:10px; border:1.5px solid rgba(255,95,0,0.38); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 0 32px rgba(255,95,0,0.1), 0 10px 40px rgba(0,0,0,0.55); position:relative;">
-          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.56rem; font-weight:700; letter-spacing:0.2em; color:#FF5F00; display:block; margin-bottom:0.5rem;">06</span>
+        <div style="background:#111111; border-radius:11px; border:1px solid rgba(255,95,0,0.18); padding:1.4rem 1.65rem 1.7rem; box-shadow:0 16px 44px rgba(0,0,0,0.55); position:relative;">
+          <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.1em; color:#FF5F00; display:block; margin-bottom:0.5rem;">06</span>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.2rem,1.7vw,1.55rem); color:#E5E2E1; line-height:1.1; margin:0 0 0.55rem; display:flex; align-items:center; gap:0.55rem;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; vertical-align:middle;"><rect x="2" y="14" width="4" height="8" rx="0.5" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="10" y="9" width="4" height="13" rx="0.5" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="4" width="4" height="18" rx="0.5" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="1" y1="22" x2="23" y2="22" stroke="#FF5F00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Data Analysis</h3>
           <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; color:rgba(229,226,225,0.55); line-height:1.7; margin:0;">At the end of each month we do a full post-mortem of what worked and what didn't, adjusting strategy going forward based on real performance data.</p>
         </div>
       </div>
+      </div><!-- /board-cards -->
       <!-- Bottom fade to next section -->
-      <div aria-hidden="true" style="position:absolute; bottom:0; left:0; right:0; height:20vh; background:linear-gradient(to bottom, transparent 0%, #131313 100%); pointer-events:none; z-index:50;"></div>
+      <div aria-hidden="true" style="position:absolute; bottom:0; left:0; right:0; height:280px; background:linear-gradient(to bottom, transparent 0%, #131313 100%); pointer-events:none; z-index:50;"></div>
     </div><!-- /board-inner -->
   </section><!-- /board-section -->
 
@@ -765,7 +1167,9 @@
   <section id="meet-partners" style="height:350vh; position:relative;">
 
     <!-- Pinned stage: stays fixed at viewport centre while section scrolls -->
-    <div id="meet-partners-inner" style="height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 2rem; will-change:transform;">
+    <div id="meet-partners-inner" style="height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 2rem; position:relative;">
+      <!-- Top fade — blends from board section above -->
+      <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:260px; background:linear-gradient(to bottom,#131313 0%,transparent 100%); pointer-events:none; z-index:1;"></div>
       <div style="max-width:54rem;">
 
         <h2 id="meet-partners-heading" style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(2.6rem,5.2vw,4.6rem); line-height:1.08; color:#E5E2E1; letter-spacing:-0.02em;">
@@ -880,6 +1284,8 @@
         <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.67rem; font-weight:600; color:rgba(229,226,225,0.45); padding:0.32rem 0.8rem; border:1px solid rgba(229,226,225,0.11); border-radius:100px;">Ideation</span>
         <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.67rem; font-weight:600; color:rgba(229,226,225,0.45); padding:0.32rem 0.8rem; border:1px solid rgba(229,226,225,0.11); border-radius:100px;">Packaging</span>
         <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.67rem; font-weight:600; color:rgba(229,226,225,0.45); padding:0.32rem 0.8rem; border:1px solid rgba(229,226,225,0.11); border-radius:100px;">Storytelling</span>
+        <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.67rem; font-weight:600; color:rgba(229,226,225,0.45); padding:0.32rem 0.8rem; border:1px solid rgba(229,226,225,0.11); border-radius:100px;">Monetization</span>
+        <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.67rem; font-weight:600; color:rgba(229,226,225,0.45); padding:0.32rem 0.8rem; border:1px solid rgba(229,226,225,0.11); border-radius:100px;">Data Analysis</span>
       </div>
 
     </div><!-- /right col -->
@@ -910,12 +1316,14 @@
 
           <div class="flex items-center justify-between mb-7">
             <div style="display:flex; align-items:center; gap:7px;"><svg width="26" height="18" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="26" height="18" rx="4" fill="#FF0000"/><polygon points="10.5,5.5 10.5,12.5 18,9" fill="white"/></svg><span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.01em; color:rgba(229,226,225,0.82);">Studio</span></div>
-            <div class="flex items-center space-x-2">
-              <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-60"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
-              </span>
-              <span class="font-mono text-[0.58rem] uppercase tracking-widest" style="color:rgba(229,226,225,0.38);">Live \u00b7 12 months</span>
+            <div style="display:flex; align-items:center; gap:7px;">
+              <div style="width:24px; height:24px; border-radius:50%; background:#3e3e3e; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="8" r="4" fill="rgba(229,226,225,0.6)"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="rgba(229,226,225,0.6)"/>
+                </svg>
+              </div>
+              <span style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.01em; color:rgba(229,226,225,0.82);">Your Channel</span>
             </div>
           </div>
 
@@ -1041,7 +1449,7 @@
     <a href="#" style="font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:600; letter-spacing:0.01em; text-transform:lowercase; color:rgba(229,226,225,0.28); text-decoration:none; transition:color 0.2s;"
        onmouseenter="this.style.color='rgba(229,226,225,0.65)'" onmouseleave="this.style.color='rgba(229,226,225,0.28)'">privacy</a>
 
-    <span style="margin-left:auto; font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:500; letter-spacing:0.01em; color:rgba(229,226,225,0.28); white-space:nowrap;">© 2026 @TheCurve.Media. All Rights Reserved.</span>
+    <span style="margin-left:auto; font-family:'Cabinet Grotesk',sans-serif; font-size:0.72rem; font-weight:500; letter-spacing:0.01em; color:rgba(229,226,225,0.28); white-space:nowrap;">© 2026 TheCurve.Media. All Rights Reserved.</span>
 
   </div>
 
@@ -1163,98 +1571,6 @@
     }
   );
 
-  // 4. Spinning wheel — scrubbed to Lenis, sticky section
-  (function () {
-    // SVG icon strings for each step
-    var ICONS = [
-      // 0: magnifying glass (Validate)
-      '<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI3IiBzdHJva2U9IiNGRjVGMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48bGluZSB4MT0iMTciIHkxPSIxNyIgeDI9IjIxIiB5Mj0iMjEiIHN0cm9rZT0iI0ZGNUYwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" width="40" height="40" style="filter:drop-shadow(0 0 5px rgba(255,95,0,.95)) drop-shadow(0 0 14px rgba(255,95,0,.55))" alt="">',
-      // 1: brain (Originate)
-      '<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgNUM5LjUgNSA3LjUgNyA3LjUgOS41YzAgLjkuMjUgMS43NS43IDIuNDhDNy4xIDEyLjY3IDYuNSAxMy45IDYuNSAxNS4zIDYuNSAxNy40IDguNiAxOSAxMSAxOWgyYzIuNCAwIDQuNS0xLjYgNC41LTMuNyAwLTEuNC0uNi0yLjYzLTEuNy0zLjMyQTUgNSAwIDAgMCAxNi41IDkuNUMxNi41IDcgMTQuNSA1IDEyIDV6IiBzdHJva2U9IiNGRjVGMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48bGluZSB4MT0iMTIiIHkxPSI5IiB4Mj0iMTIiIHkyPSIxOSIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTkuNSAxMS41Yy42LjQgMS41LjY1IDIuNS42NXMxLjktLjI1IDIuNS0uNjUiIHN0cm9rZT0iI0ZGNUYwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik05LjUgMTQuNWMuNi4zOCAxLjUuNiAyLjUuNnMxLjktLjIyIDIuNS0uNiIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+" width="40" height="40" style="filter:drop-shadow(0 0 5px rgba(255,95,0,.95)) drop-shadow(0 0 14px rgba(255,95,0,.55))" alt="">',
-      // 2: rocket (Launch)
-      '<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC41IDE2LjVjLTEuNSAxLjI2LTIgNS0yIDVzMy43NC0uNSA1LTJjLjcxLS44NC43LTIuMTMtLjA5LTIuOTFhMi4xOCAyLjE4IDAgMCAwLTIuOTEtLjA5eiIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDE1bC0zLTNhMjIgMjIgMCAwIDEgMi0zLjk1QTEyLjg4IDEyLjg4IDAgMCAxIDIyIDJjMCAyLjcyLS43OCA3LjUtNiAxMWEyMi4zNSAyMi4zNSAwIDAgMS00IDJ6IiBzdHJva2U9IiNGRjVGMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNOSAxMkg0cy41NS0zLjAzIDItNGMxLjYyLTEuMDggNSAwIDUgMCIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDE1djVzMy4wMy0uNTUgNC0yYzEuMDgtMS42MiAwLTUgMC01IiBzdHJva2U9IiNGRjVGMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=" width="40" height="40" style="filter:drop-shadow(0 0 5px rgba(255,95,0,.95)) drop-shadow(0 0 14px rgba(255,95,0,.55))" alt="">',
-      // 3: bar chart (Track)
-      '<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIyIiB5PSIxNCIgd2lkdGg9IjQiIGhlaWdodD0iNyIgcng9IjAuNSIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxyZWN0IHg9IjEwIiB5PSI5IiB3aWR0aD0iNCIgaGVpZ2h0PSIxMiIgcng9IjAuNSIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxyZWN0IHg9IjE4IiB5PSI0IiB3aWR0aD0iNCIgaGVpZ2h0PSIxNyIgcng9IjAuNSIgc3Ryb2tlPSIjRkY1RjAwIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxsaW5lIHgxPSIxIiB5MT0iMjEiIHgyPSIyMyIgeTI9IjIxIiBzdHJva2U9IiNGRjVGMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=" width="40" height="40" style="filter:drop-shadow(0 0 5px rgba(255,95,0,.95)) drop-shadow(0 0 14px rgba(255,95,0,.55))" alt="">'
-    ];
-
-    var steps = [
-      { title: 'Validate',  desc: 'We audit your channel top to bottom — thumbnails, hooks, titles, watch time — and pinpoint exactly where the algorithm is costing you growth.' },
-      { title: 'Originate', desc: 'We craft content concepts engineered to perform — titles, thumbnails and hooks built from data before a single frame is filmed.' },
-      { title: 'Launch',    desc: 'We deploy your optimised content system — coordinating uploads, scheduling and distribution for maximum algorithmic impact from day one.' },
-      { title: 'Track',     desc: 'We monitor every metric in real time, feeding insights back into the system so your channel compounds week after week, indefinitely.' }
-    ];
-
-    var rotor   = document.getElementById('wheel-rotor');
-    var items   = Array.from(document.querySelectorAll('.wheel-item'));
-    var titleEl = document.getElementById('wheel-title');
-    var descEl  = document.getElementById('wheel-desc');
-    var iconEl  = document.getElementById('hub-icon');
-    var R       = 540; // orbit radius (matches CSS: top -576 = -(540+36))
-    var curStep = -1;
-
-    function setStep(step, animate) {
-      if (step === curStep) return;
-      curStep = step;
-      if (animate) {
-        gsap.to([titleEl, descEl], {
-          opacity: 0, y: -10, duration: 0.15, ease: 'power1.in',
-          onComplete: function () {
-            titleEl.textContent = steps[step].title;
-            descEl.textContent  = steps[step].desc;
-            iconEl.innerHTML    = ICONS[step];
-            gsap.fromTo([titleEl, descEl],
-              { opacity: 0, y: 14 },
-              { opacity: 1, y: 0, duration: 0.4, stagger: 0.07, ease: 'power2.out' }
-            );
-          }
-        });
-      } else {
-        titleEl.textContent = steps[step].title;
-        descEl.textContent  = steps[step].desc;
-        iconEl.innerHTML    = ICONS[step];
-        gsap.set([titleEl, descEl], { opacity: 1, y: 0 });
-      }
-    }
-
-    ScrollTrigger.create({
-      trigger: '#wheel-section',
-      start: 'top top',
-      end: 'bottom bottom',
-      pin: '#wheel-inner',
-      anticipatePin: 1,
-      scrub: 2,
-      onUpdate: function (self) {
-        var p   = self.progress;      // 0 → 1
-        var deg = -p * 270;           // 0° → -270° CCW (3 × 90° for 4 steps)
-
-        // Rotate the rotor (items orbit with it)
-        gsap.set(rotor, { rotation: deg });
-
-        items.forEach(function (item) {
-          var initDeg = parseInt(item.getAttribute('data-step')) * 90; // 90° spacing
-          var curRad  = (initDeg + deg) * Math.PI / 180;
-          var cosVal  = Math.cos(curRad); // 1 = at top
-
-          // Counter-rotate: keep number upright
-          gsap.set(item, { rotation: -deg });
-
-          // Style: active when within ~28° of top
-          var isActive = cosVal > 0.88;
-          item.style.background  = 'transparent';
-          item.style.borderColor = isActive ? '#FF5F00' : 'rgba(255,255,255,0.14)';
-          item.style.boxShadow   = isActive ? '0 0 20px rgba(255,95,0,0.85), 0 0 8px rgba(255,95,0,0.4)' : 'none';
-          item.style.opacity     = String(isActive ? 1 : Math.max(0.22, Math.max(0, cosVal) * 0.5));
-          item.querySelector('span').style.color = isActive ? '#FF5F00' : 'rgba(229,226,225,0.38)';
-        });
-
-        var step = Math.min(3, Math.floor(p * 4 + 0.05)); // 4 steps
-        setStep(step, true);
-      }
-    });
-
-    setStep(0, false);
-  })();
-
   // ── Testimonial card stack ────────────────────────────────────────────────
   (function () {
     var cards       = Array.from(document.querySelectorAll('.testimonial-card'));
@@ -1282,6 +1598,7 @@
     var fanTl = null;
 
     function buildFanTl() {
+      if (window.innerWidth < 768) return; // no fan on mobile
       // Save progress before killing so we can jump the new timeline to the
       // right position instantly — prevents the 1.8s scrub catch-up lag
       var progress = (fanTl && fanTl.scrollTrigger) ? fanTl.scrollTrigger.progress : 0;
@@ -1369,12 +1686,81 @@
       });
     }
 
-    // Mobile: tap to cycle
-    document.getElementById('testimonial-stack').addEventListener('click', function () {
-      if (window.innerWidth >= 768) return;
-      active = (active + 1) % total;
-      applyStack(active);
-    });
+    // Mobile: simple deck swap — no fan, no flip
+    var stack = document.getElementById('testimonial-stack');
+    if (window.innerWidth < 768) {
+
+      function syncClientStrip(idx) {
+        document.querySelectorAll('.mob-client-btn').forEach(function (btn) {
+          var on = parseInt(btn.getAttribute('data-target')) === idx;
+          btn.style.opacity = on ? '1' : '0.4';
+          var ring = btn.querySelector('div');
+          if (ring) {
+            ring.style.borderColor = on ? '#FF5F00' : 'rgba(229,226,225,0.2)';
+            ring.style.boxShadow   = on ? '0 0 12px rgba(255,95,0,0.4)' : 'none';
+          }
+          var label = btn.querySelector('span');
+          if (label) label.style.color = on ? '#FF5F00' : 'rgba(229,226,225,0.5)';
+        });
+      }
+
+      // Stack positions for mobile — centred, pure Y depth, no X offset
+      var mobileStack = [
+        { x: 0, y:  0,  scale: 1,    opacity: 1,    z: 50 },
+        { x: 0, y:  6,  scale: 0.97, opacity: 0.6,  z: 40 },
+        { x: 0, y: 11,  scale: 0.94, opacity: 0.35, z: 30 },
+        { x: 0, y: 15,  scale: 0.91, opacity: 0.2,  z: 20 }
+      ];
+
+      function mobileSetStack(frontIdx) {
+        cards.forEach(function (card) {
+          var pos = ((parseInt(card.getAttribute('data-index')) - frontIdx) % total + total) % total;
+          var s = mobileStack[pos] || mobileStack[mobileStack.length - 1];
+          gsap.set(card, { x: s.x, y: s.y, scale: s.scale, opacity: s.opacity, zIndex: s.z, rotateX: 0, rotation: 0 });
+        });
+      }
+
+      function deckSwap(nextActive) {
+        if (nextActive === active) return;
+        var frontCard = cards.find(function (c) { return parseInt(c.getAttribute('data-index')) === active; });
+
+        // Briefly scale down the front card then send it to the back
+        gsap.to(frontCard, {
+          scale: 0.88, opacity: 0, y: 20,
+          duration: 0.18, ease: 'power2.in',
+          onComplete: function () {
+            active = nextActive;
+            mobileSetStack(active);
+            // Animate the new front card in cleanly
+            var newFront = cards.find(function (c) { return parseInt(c.getAttribute('data-index')) === active; });
+            gsap.fromTo(newFront,
+              { scale: 0.94, opacity: 0.7 },
+              { scale: 1, opacity: 1, duration: 0.22, ease: 'power2.out' }
+            );
+            syncClientStrip(active);
+          }
+        });
+      }
+
+      mobileSetStack(active);
+
+      stack.addEventListener('click', function () { deckSwap((active + 1) % total); });
+
+      document.querySelectorAll('.mob-client-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          deckSwap(parseInt(this.getAttribute('data-target')));
+        });
+      });
+
+      syncClientStrip(active);
+
+    } else {
+      // Desktop: original tap-to-cycle
+      stack.addEventListener('click', function () {
+        active = (active + 1) % total;
+        applyStack(active);
+      });
+    }
 
     // Desktop sidebar clicks
     sidebarItems.forEach(function (item) {
@@ -1426,80 +1812,39 @@
       }
     );
 
-  // ── More happy clients — scrubbed staggered reveal ─────────────────────────
-  (function () {
-    var moreTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#more-clients',
-        start:   'top 85%',
-        end:     'top 30%',
-        scrub:   1.2
-      }
-    });
-    moreTl.fromTo('#more-clients-label',
-      { y: 28, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'none', duration: 0.3 },
-      0
-    );
-    moreTl.fromTo('.more-client-circle',
-      { y: 50, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'none', stagger: 0.1, duration: 0.5 },
-      0.2
-    );
-  })();
-
-  // ── Client circle hover — slight scale pop ──────────────────────────────
-  document.querySelectorAll('.more-client-circle').forEach(function(el) {
-    el.addEventListener('mouseenter', function() {
-      gsap.to(el, { scale: 1.08, duration: 0.35, ease: 'back.out(1.8)', overwrite: 'auto' });
-    });
-    el.addEventListener('mouseleave', function() {
-      gsap.to(el, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.55)', overwrite: 'auto' });
-    });
-  });
-
   // ── Founders body copy — pinned one-paragraph-per-scroll reveal ─────────────
   (function () {
-    // Start all paragraphs hidden
+    // ── Mobile: no pin — p2/p3 are hidden, just fade p1 in on scroll ──
+    if (window.innerWidth <= 767) {
+      gsap.set('#founder-p1', { opacity: 0, y: 22 });
+      ScrollTrigger.create({
+        trigger: '#founder-p1',
+        start: 'top 85%',
+        once: true,
+        onEnter: function () {
+          gsap.to('#founder-p1', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
+        }
+      });
+      return;
+    }
+
+    // ── Desktop: pin the section, reveal each paragraph per scroll pass ──
     gsap.set(['#founder-p1', '#founder-p2', '#founder-p3'], { opacity: 0, y: 22 });
 
     var founderTl = gsap.timeline({
       scrollTrigger: {
         trigger: '#founder-profile',
         start:   'center center',
-        end:     '+=220%',          // 3 paragraphs × ~73% viewport each
+        end:     '+=220%',
         pin:     true,
         scrub:   1.4
       }
     });
 
-    // Each paragraph fades in over ~1/3 of the total scroll distance
     founderTl
       .to('#founder-p1', { opacity: 1, y: 0, ease: 'none', duration: 1 }, 0)
       .to('#founder-p2', { opacity: 1, y: 0, ease: 'none', duration: 1 }, 1)
       .to('#founder-p3', { opacity: 1, y: 0, ease: 'none', duration: 1 }, 2);
-  })();
-
-  // ── Frameworks section — fade + slide up on first scroll into view ──────────
-  (function () {
-    var wheelTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#wheel-section',
-        start:   'top 85%',
-        end:     'top 30%',
-        scrub:   1.2
-      }
-    });
-    wheelTl.fromTo('#wheel-heading',
-      { y: 40, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'none', duration: 0.4 },
-      0
-    );
-    wheelTl.fromTo('#wheel-visual',
-      { y: 60, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'none', duration: 0.5 },
-      0.15
-    );
   })();
 
   // ── "Meet your agency → partners" — pinned, 3-chapter scroll sequence ───────
@@ -1537,20 +1882,13 @@
     });
 
     swapTl
-      // Hold: heading sits alone, fully visible — user "reads" it
       .to({}, { duration: 0.7 })
-      // Chapter 1: strikethrough draws left → right across "agency"
       .to(strikePath, { attr: { 'stroke-dashoffset': 0 }, ease: 'none', duration: 1.2 })
-      // Pause: struck-through word hangs in the air
       .to({}, { duration: 0.6 })
-      // Chapter 2: "agency" slides out + fades; "partners" slides in from below
       .to(inner, { y: -lineH, ease: 'power2.inOut', duration: 1.4 }, 'swap')
       .to(agencySpan, { opacity: 0, ease: 'power2.in', duration: 0.5 }, 'swap')
-      // Pause: "partners" sits clean, no underline yet
       .to({}, { duration: 0.6 })
-      // Chapter 3: underline draws under "partners"
       .to(partnersPath, { attr: { 'stroke-dashoffset': 0 }, ease: 'none', duration: 1.2 })
-      // Final hold: underlined "partners" — user scrolls on into the founder section
       .to({}, { duration: 0.7 });
   })();
 
@@ -1663,6 +2001,7 @@
     duration: 1.4,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
+    smoothTouch: false,   // let iOS handle touch momentum natively — prevents bottom-of-page stutter
   });
 
   // Keep GSAP ScrollTrigger in sync with Lenis
@@ -1682,6 +2021,118 @@
       }
     });
   });
+
+  // ── VOLT card flip section ────────────────────────────────────────────────
+  (function () {
+    var section  = document.getElementById('volt-section');
+    var inner    = document.getElementById('volt-inner');
+    var heading  = document.getElementById('volt-heading');
+    var cards    = Array.from(document.querySelectorAll('.volt-card'));
+    var cta      = document.getElementById('volt-cta');
+    if (!section || !cards.length) return;
+
+    var isMobile = window.innerWidth <= 768;
+    if (isMobile) return; // CSS handles mobile
+
+    // ── Inject card back faces ──────────────────────────────────────────────
+    var voltLetters = ['V','O','L','T'];
+    cards.forEach(function (card, i) {
+      var back = card.querySelector('.volt-card-back');
+      back.innerHTML =
+        '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:0;">' +
+          '<span class="volt-letter" style="font-family:\'Cormorant Garamond\',serif;font-size:9rem;font-weight:300;line-height:1;color:rgba(229,226,225,0.13);letter-spacing:-0.02em;user-select:none;">' + voltLetters[i] + '</span>' +
+          '<div class="volt-letter-rule" style="width:22px;height:1px;background:rgba(255,95,0,0.3);margin-top:0.6rem;"></div>' +
+        '</div>';
+    });
+
+    // ── Initial states ──────────────────────────────────────────────────────
+    var fanRots = [-11, -3.5, 3.5, 11];
+    var fanX    = [-175, -58, 58, 175];
+    gsap.set(heading, { opacity: 0, y: 24 });
+    gsap.set(cta,     { opacity: 0, y: 18 });
+    cards.forEach(function (card, i) {
+      gsap.set(card, { rotateY: 0, rotateZ: fanRots[i], x: fanX[i], y: 18, scale: 0.94, transformPerspective: 1400 });
+    });
+
+    // ── Master timeline ─────────────────────────────────────────────────────
+    var masterTl;
+
+    function buildTimeline() {
+      if (masterTl) masterTl.kill();
+      masterTl = gsap.timeline({ paused: true });
+
+      var letters = Array.from(document.querySelectorAll('.volt-letter'));
+      var rules   = Array.from(document.querySelectorAll('.volt-letter-rule'));
+
+      // Heading fades in
+      masterTl.to(heading, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.1 }, 0);
+
+      // Fan spreads to row (0 → 0.13)
+      cards.forEach(function (card) {
+        masterTl.to(card, { rotateZ: 0, x: 0, y: 0, scale: 1, ease: 'power2.out', duration: 0.13 }, 0);
+      });
+
+      // Card flip helper — face-up (rotateY: -180)
+      function addFlip(idx, start) {
+        var card = cards[idx];
+        masterTl.to(card, { rotateY: -90,  y: -16, ease: 'power1.in',  duration: 0.05 }, start);
+        masterTl.to(card, { rotateY: -180, y:   0, ease: 'power1.out', duration: 0.05 }, start + 0.05);
+      }
+
+      // ── Letters ignite the moment cards are together (0.15 → 0.22) ──────────
+      // Cards just landed in a row — VOLT glows before anything flips
+      masterTl.to(letters, {
+        color:      '#FF5F00',
+        textShadow: '0 0 24px rgba(255,95,0,1), 0 0 60px rgba(255,95,0,0.65), 0 0 120px rgba(255,95,0,0.3)',
+        ease:       'power2.out',
+        duration:   0.07,
+      }, 0.15);
+      masterTl.to(rules, {
+        backgroundColor: 'rgba(255,95,0,0.9)',
+        ease:            'power2.out',
+        duration:        0.07,
+      }, 0.15);
+
+      // ── Four cards flip face-up, evenly spaced (0.24 → 0.72) ───────────────
+      addFlip(0, 0.24);
+      addFlip(1, 0.36);
+      addFlip(2, 0.50);
+      addFlip(3, 0.63);
+
+      // ── CTA rises beneath (0.78 → 1.0) ─────────────────────────────────────
+      masterTl.to(cta, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.08 }, 0.78);
+
+      // ScrollTrigger — CSS sticky handles the pin, no GSAP pin needed
+      ScrollTrigger.create({
+        trigger:   section,
+        start:     'top top',
+        end:       'bottom bottom',
+        scrub:     1.8,
+        animation: masterTl,
+      });
+    }
+
+    // ── Init ────────────────────────────────────────────────────────────────
+    function init() {
+      buildTimeline();
+      ScrollTrigger.refresh();
+    }
+
+    if (document.readyState === 'complete') { init(); }
+    else { window.addEventListener('load', init); }
+
+    // Rebuild on resize
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (window.innerWidth <= 768) return;
+        buildTimeline();
+        ScrollTrigger.refresh();
+      }, 300);
+    });
+
+  })();
 </script>
 
 <!-- ── Page transition: exit ── -->
@@ -1806,6 +2257,54 @@
 
       // BOARD SECTION
       (function () {
+        // ── Mobile: investigative vertical reveal — line draws → card appears ──
+        if (window.innerWidth <= 640) {
+          var notes = Array.from(document.querySelectorAll('.board-note'));
+          var track = document.getElementById('board-cards');
+
+          // Inject a connector line element before every card, set initial states
+          notes.forEach(function (note) {
+            var rot = parseFloat(note.getAttribute('data-rot')) || 0;
+
+            var connector = document.createElement('div');
+            connector.className = 'bm-connector';
+            track.insertBefore(connector, note);
+
+            // Cards start invisible, shifted down slightly — GSAP will reveal them
+            gsap.set(note, {
+              opacity: 0,
+              y: 20,
+              rotation: rot * 0.6,
+              transformOrigin: '50% 0%'
+            });
+          });
+
+          // Scrub each connector + card directly to scroll position
+          var connectors = Array.from(document.querySelectorAll('.bm-connector'));
+          connectors.forEach(function (connector, i) {
+            var note = notes[i];
+
+            // scaleY draws the line without changing layout height (no reflow)
+            gsap.set(connector, { scaleY: 0, transformOrigin: 'top center' });
+
+            var tl = gsap.timeline({ defaults: { ease: 'none' } });
+            // Line scales in from top
+            tl.to(connector, { scaleY: 1, duration: 1 });
+            // Card rises and fades in — y keeps motion axis same as scroll
+            tl.to(note, { opacity: 1, y: 0, rotation: 0, duration: 1.6 }, '-=0.35');
+
+            ScrollTrigger.create({
+              trigger: connector,
+              start: 'top 88%',
+              end: '+=300',
+              scrub: 0.4,
+              animation: tl
+            });
+          });
+
+          return;
+        }
+
         var section = document.getElementById('board-section');
         var inner   = document.getElementById('board-inner');
         var svg     = document.getElementById('board-svg');
@@ -1906,12 +2405,11 @@
 
           st = ScrollTrigger.create({
             trigger:   section,
-            pin:       inner,
             start:     'top top',
             end:       'bottom bottom',
             scrub:     1.2,
             animation: tl,
-            onUpdate:  onSTUpdate
+            onUpdate:  onSTUpdate,
           });
         }
 
@@ -1953,16 +2451,190 @@
         window.addEventListener('resize', function () {
           clearTimeout(resizeTimer);
           resizeTimer = setTimeout(function () {
+            if (window.innerWidth <= 640) {
+              swingTweens.forEach(function (t) { if (t) t.kill(); });
+              if (tl) tl.kill();
+              if (st) st.kill();
+              notes.forEach(function (n) { gsap.set(n, { clearProps: 'all' }); });
+              return;
+            }
+            // Lines depend on pin positions (vh-relative) so must be rebuilt on resize.
+            // Timeline references the new line elements so it must also be rebuilt.
+            // No pin spacer involved — no glitch possible.
             swingTweens.forEach(function (t) { if (t) t.kill(); });
             swingTweens = [null,null,null,null,null,null];
             swingDone   = [false,false,false,false,false,false];
-            buildLines(); buildTimeline(); ScrollTrigger.refresh();
-          }, 150);
+            buildLines();
+            buildTimeline();
+            ScrollTrigger.refresh();
+          }, 300);
         });
+
+        document.addEventListener('visibilitychange', function () {
+          if (!document.hidden) { ScrollTrigger.refresh(); }
+        });
+        window.addEventListener('focus', function () { ScrollTrigger.refresh(); });
       })();
 
 
   </script>
+
+<!-- ── Header auto-hide on scroll inactivity ──────────────────────────── -->
+<script>
+(function () {
+  var header    = document.querySelector('header');
+  var hideTimer = null;
+  var hidden    = false;
+  var started   = false;  // don't start until preloader is gone
+
+  function showHeader() {
+    if (!started) return;
+    clearTimeout(hideTimer);
+    if (hidden) {
+      hidden = false;
+      header.classList.remove('nav-hidden');
+    }
+    // Schedule next hide after 2.5 s of inactivity
+    hideTimer = setTimeout(function () {
+      hidden = true;
+      header.classList.add('nav-hidden');
+    }, 2500);
+  }
+
+  // Wait for preloader to finish before activating (~3.8 s matches preloader duration)
+  setTimeout(function () {
+    started = true;
+    // Kick off first hide timer right away
+    hideTimer = setTimeout(function () {
+      hidden = true;
+      header.classList.add('nav-hidden');
+    }, 2500);
+
+    // Show on any scroll or touch activity
+    window.addEventListener('scroll',     showHeader, { passive: true });
+    window.addEventListener('touchstart', showHeader, { passive: true });
+    window.addEventListener('touchmove',  showHeader, { passive: true });
+    window.addEventListener('mousemove',  showHeader, { passive: true });
+  }, 3800);
+})();
+
+// ── Hero starfield particles ───────────────────────────────────────────────
+(function () {
+  var sf   = document.getElementById('hero-starfield');
+  if (!sf) return;
+  var sctx = sf.getContext('2d');
+  var SDPR  = Math.min(window.devicePixelRatio || 1, 2);
+  var COUNT = 130;
+  var stars = [];
+  var W = 0, H = 0;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    sf.width        = W * SDPR;
+    sf.height       = H * SDPR;
+    sf.style.width  = W + 'px';
+    sf.style.height = H + 'px';
+    sctx.scale(SDPR, SDPR);
+    buildStars();
+  }
+
+  function buildStars() {
+    stars = Array.from({ length: COUNT }, function () {
+      var angle = Math.random() * Math.PI * 2;
+      var spd   = Math.random() * 0.18 + 0.04;
+      return {
+        x:      Math.random() * W,
+        y:      Math.random() * H,
+        r:      Math.random() * 1.1 + 0.3,
+        vx:     Math.cos(angle) * spd,
+        vy:     Math.sin(angle) * spd,
+        speed:  Math.random() * 0.6 + 0.25,
+        offset: Math.random() * Math.PI * 2,
+        orange: Math.random() < 0.18,
+      };
+    });
+  }
+
+  function drawStars(ts) {
+    sctx.clearRect(0, 0, W, H);
+    var t = ts / 1000;
+    stars.forEach(function (s) {
+      s.x += s.vx;
+      s.y += s.vy;
+      if (s.x < -2)    s.x = W + 2;
+      if (s.x > W + 2) s.x = -2;
+      if (s.y < -2)    s.y = H + 2;
+      if (s.y > H + 2) s.y = -2;
+      var alpha   = (Math.sin(t * s.speed + s.offset) + 1) / 2;
+      var opacity = 0.04 + alpha * 0.275;
+      sctx.beginPath();
+      sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      sctx.fillStyle = s.orange
+        ? 'rgba(255,110,30,' + (opacity * 0.85).toFixed(3) + ')'
+        : 'rgba(255,255,255,' + opacity.toFixed(3) + ')';
+      sctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  window.addEventListener('resize', function () {
+    sctx.setTransform(1, 0, 0, 1, 0, 0);
+    resize();
+  });
+
+  resize();
+  requestAnimationFrame(drawStars);
+})();
+
+// ── Canvas favicon — "curve" preloader style (dark bg + orange arc) ───────
+(function () {
+  var cv  = document.createElement('canvas');
+  cv.width = 128; cv.height = 128;
+  var ctx = cv.getContext('2d');
+
+  // Dark rounded square background
+  ctx.fillStyle = '#131313';
+  if (ctx.roundRect) {
+    ctx.beginPath(); ctx.roundRect(0, 0, 128, 128, 22); ctx.fill();
+  } else {
+    ctx.fillRect(0, 0, 128, 128);
+  }
+
+  // Orange exponential growth arc — mirrors the preloader curve
+  ctx.shadowColor = 'rgba(255,95,0,0.65)';
+  ctx.shadowBlur  = 12;
+  ctx.strokeStyle = '#FF5F00';
+  ctx.lineWidth   = 5;
+  ctx.lineCap     = 'round';
+  ctx.beginPath();
+  // Cubic bezier: starts bottom-left, sweeps up steeply to top-right
+  ctx.moveTo(8, 118);
+  ctx.bezierCurveTo(72, 118, 90, 18, 120, 8);
+  ctx.stroke();
+
+  // Subtle glow fill under the curve
+  ctx.shadowBlur = 0;
+  var grad = ctx.createLinearGradient(8, 118, 120, 8);
+  grad.addColorStop(0, 'rgba(255,95,0,0)');
+  grad.addColorStop(1, 'rgba(255,95,0,0.18)');
+  ctx.beginPath();
+  ctx.moveTo(8, 128);
+  ctx.lineTo(8, 118);
+  ctx.bezierCurveTo(72, 118, 90, 18, 120, 8);
+  ctx.lineTo(128, 8);
+  ctx.lineTo(128, 128);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  var link = document.querySelector('link[rel~="icon"]') || document.createElement('link');
+  link.rel  = 'icon';
+  link.type = 'image/png';
+  link.href = cv.toDataURL('image/png');
+  document.head.appendChild(link);
+})();
+</script>
 
 </body>
 </html>
