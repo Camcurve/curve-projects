@@ -1,0 +1,22 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'validated-site/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy thecurve.media
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: e7ca2e379c03b34eb45410430ffa746d
+          command: pages deploy validated-site --project-name curvemedia --commit-dirty=true
