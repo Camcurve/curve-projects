@@ -133,8 +133,6 @@
     stroke-width: 5;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
   }
   @keyframes draw-circle {
     to { stroke-dashoffset: 0; }
@@ -1520,17 +1518,17 @@
   // 0. Hero "growth" underline — draws as user starts scrolling
   const circlePath = document.querySelector('.circle-path');
   if (circlePath) {
-    gsap.fromTo(circlePath,
-      { strokeDashoffset: 200 },
-      { strokeDashoffset: 0, ease: 'none',
-        scrollTrigger: {
-          trigger: 'main',
-          start: 'top top',
-          end: '+=320',
-          scrub: 1.2
-        }
+    const cLen = circlePath.getTotalLength();
+    gsap.set(circlePath, { strokeDasharray: cLen, strokeDashoffset: cLen });
+    gsap.to(circlePath, {
+      strokeDashoffset: 0, ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero-h1',
+        start: 'top 75%',
+        end: 'bottom 25%',
+        scrub: 1.2
       }
-    );
+    });
   }
 
   // 1. Statement lines — scrub reveal
