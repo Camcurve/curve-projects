@@ -951,6 +951,43 @@ html, body {
   margin-left: 6px;
 }
 
+/* Show more / Show less toggle */
+.adj-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+.adj-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.adj-more-btn:hover {
+  color: var(--text);
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+}
+.adj-more-chev {
+  width: 10px;
+  height: 10px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.adj-more-btn.expanded .adj-more-chev { transform: rotate(180deg); }
+
 /* Keyword Ideas — distinct emerald accent so they read as "next searches", not "title patterns" */
 #ideasSection {
   width: 100%;
@@ -2096,6 +2133,14 @@ html, body {
             </div>
             <div class="adj-hero" id="adjHero"></div>
             <div class="adj-grid" id="adjGrid"></div>
+            <div class="adj-more-wrap hidden" id="adjMoreWrap">
+              <button class="adj-more-btn" id="adjMoreBtn" type="button">
+                <span id="adjMoreLabel">Show more</span>
+                <svg class="adj-more-chev" viewBox="0 0 10 10" aria-hidden="true">
+                  <path d="M2 4L5 7L8 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- Keyword Ideas — lateral suggestions from breakout videos by niche channels -->
@@ -2190,6 +2235,7 @@ let   strictMatch = true;                    // default: strict keyword matching
 let   lastPulledCount = 0;                   // how many videos YouTube returned before filter
 let   activePhraseFilter = '';                // active Adjacent-Keyword filter applied to video list
 let   angleOpportunityPhrases = new Set();    // phrases tagged Angle Opportunity (fatigued/saturated + recent breakouts)
+let   adjacentExpanded = false;                // collapsed = 12 phrases, expanded = 20
 let apiKey = localStorage.getItem(STORAGE_KEY) || '';
 let videos = [];
 let totalMarket = 0;
@@ -2373,6 +2419,15 @@ function bindEvents() {
 
   // Clear adjacent-keyword filter
   btnClearFilter.addEventListener('click', () => applyPhraseFilter(''));
+
+  // Adjacent Keywords show more / show less toggle
+  const adjMoreBtn = document.getElementById('adjMoreBtn');
+  if (adjMoreBtn) {
+    adjMoreBtn.addEventListener('click', () => {
+      adjacentExpanded = !adjacentExpanded;
+      renderAdjacentStrength();
+    });
+  }
 
   // Date window segmented control
   dateWindowBtns.forEach(btn => {
@@ -2826,6 +2881,7 @@ function renderResults(keyword, fromCache) {
   if (sampleSizeLabel) sampleSizeLabel.textContent = videos.length;
 
   activePhraseFilter = '';
+  adjacentExpanded   = false;
   renderVideoList();
 
   // Show/hide panels
@@ -3460,18 +3516,39 @@ function scoreVitality(phraseData, allVideos, allOutlierCount) {
 function renderAdjacentStrength() {
   if (!videos.length) { adjacentSection.classList.add('hidden'); return; }
 
-  const ngrams = extractNgrams(videos, keywordA || (searchInput && searchInput.value) || '');
-  const top = ngrams.slice(0, 8);
+  const ngrams        = extractNgrams(videos, keywordA || (searchInput && searchInput.value) || '');
+  const DEFAULT_LIMIT = 12;
+  const EXPANDED_LIMIT = 20;
+  const limit         = adjacentExpanded ? EXPANDED_LIMIT : DEFAULT_LIMIT;
+  const top           = ngrams.slice(0, limit);
+  const hasMore       = ngrams.length > DEFAULT_LIMIT;
 
   if (!top.length) { adjacentSection.classList.add('hidden'); return; }
 
   adjacentSection.classList.remove('hidden');
-  const countEl = document.getElementById('adjCount');
-  const heroEl  = document.getElementById('adjHero');
-  const gridEl  = document.getElementById('adjGrid');
+  const countEl    = document.getElementById('adjCount');
+  const heroEl     = document.getElementById('adjHero');
+  const gridEl     = document.getElementById('adjGrid');
+  const moreWrap   = document.getElementById('adjMoreWrap');
+  const moreBtn    = document.getElementById('adjMoreBtn');
+  const moreLabel  = document.getElementById('adjMoreLabel');
   if (countEl) countEl.textContent = top.length;
   heroEl.innerHTML = '';
   gridEl.innerHTML = '';
+
+  // Show-more toggle: only present if there are more than the default limit
+  if (moreWrap && moreBtn && moreLabel) {
+    if (hasMore) {
+      moreWrap.classList.remove('hidden');
+      moreLabel.textContent = adjacentExpanded
+        ? 'Show less'
+        : `Show more (${Math.min(EXPANDED_LIMIT, ngrams.length) - DEFAULT_LIMIT} more)`;
+      moreBtn.classList.toggle('expanded', adjacentExpanded);
+    } else {
+      moreWrap.classList.add('hidden');
+    }
+  }
+
   // Reset the angle-opp registry — it gets repopulated below
   angleOpportunityPhrases = new Set();
 
