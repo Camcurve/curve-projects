@@ -1,11 +1,16 @@
 name: Deploy to Cloudflare Pages
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
       - 'validated-site/**'
+      # contact.html is symlinked into validated-site/, so edits to the root
+      # file must also trigger a deploy (git diffs the real path, not the link).
+      - 'contact.html'
+      - '.github/workflows/deploy.yml'
 
 jobs:
   deploy:
