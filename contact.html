@@ -531,7 +531,10 @@
 </div><!-- /page -->
 
 <script>
-const SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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';
+// Leads are delivered server-side to this inbox via FormSubmit (no visitor
+// email client required). The same address is the mailto backstop below.
+const LEAD_FALLBACK_EMAIL = 'cam@thecurve.media';
+const FORM_ENDPOINT = `https://formsubmit.co/ajax/${LEAD_FALLBACK_EMAIL}`;
 
 const form      = document.getElementById('contact-form');
 const errorBox  = document.getElementById('form-error');
@@ -576,70 +579,70 @@ form.addEventListener('submit', async e => {
   setLoading(true);
 
   const payload = {
-    blocks: [
-      { type: 'header', text: { type: 'plain_text', text: '🟠 New Inbound — Curve', emoji: true } },
-      { type: 'divider' },
-      {
-        type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: `*Name*\n${firstName} ${lastName}` },
-          { type: 'mrkdwn', text: `*Email*\n<mailto:${email}|${email}>` }
-        ]
-      },
-      {
-        type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: `*Type*\n${type || '_Not provided_'}` },
-          { type: 'mrkdwn', text: `*Channel*\n${channel || '_Not provided_'}` }
-        ]
-      },
-      {
-        type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: `*Subscribers*\n${subscribers || '_Not provided_'}` },
-          { type: 'mrkdwn', text: `*Monthly Revenue / Budget*\n${revenue || '_Not provided_'}` }
-        ]
-      },
-      {
-        type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: `*Commitment (1–10)*\n${commitment}` }
-        ]
-      },
-      { type: 'divider' },
-      { type: 'section', text: { type: 'mrkdwn', text: `*Biggest YouTube challenge*\n${challenge || '_Not provided_'}` } },
-      {
-        type: 'section',
-        fields: [
-          { type: 'mrkdwn', text: `*Heard about Curve via*\n${referral || '_Not provided_'}` },
-          { type: 'mrkdwn', text: `*Anything else*\n${extra || '_Nothing_'}` }
-        ]
-      },
-      { type: 'divider' },
-      {
-        type: 'context',
-        elements: [{ type: 'mrkdwn', text: `Submitted via Curve contact form · ${new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}` }]
-      }
-    ]
+    _subject: `🟠 New Inbound — ${firstName} ${lastName}`,
+    _template: 'table',
+    _captcha: 'false',
+    Name: `${firstName} ${lastName}`,
+    email,                                   // sets reply-to so you can reply to the lead directly
+    'Creator or brand': type || 'Not provided',
+    'Channel': channel || 'Not provided',
+    'Subscribers': subscribers || 'Not provided',
+    'Monthly revenue / budget': revenue || 'Not provided',
+    'Commitment (1-10)': commitment,
+    'Biggest YouTube challenge': challenge || 'Not provided',
+    'Heard about Curve via': referral || 'Not provided',
+    'Anything else': extra || 'Nothing'
+  };
+
+  const showSuccess = () => {
+    form.style.display = 'none';
+    successEl.style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Backstop: if server-side delivery ever fails, no lead is lost — we open a
+  // pre-filled email straight to Curve with every detail from the form.
+  const emailFallback = () => {
+    const lines = [
+      `Name: ${firstName} ${lastName}`,
+      `Email: ${email}`,
+      `Creator or brand: ${type || '—'}`,
+      `Channel: ${channel || '—'}`,
+      `Subscribers: ${subscribers || '—'}`,
+      `Monthly revenue / budget: ${revenue || '—'}`,
+      `Commitment (1–10): ${commitment}`,
+      ``,
+      `Biggest YouTube challenge:`,
+      `${challenge || '—'}`,
+      ``,
+      `Heard about Curve via: ${referral || '—'}`,
+      `Anything else: ${extra || '—'}`
+    ].join('\n');
+    const subject = `New Inbound — ${firstName} ${lastName}`;
+    window.location.href =
+      `mailto:${LEAD_FALLBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
+    form.style.display = 'none';
+    successEl.style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   try {
-    const res = await fetch(SLACK_WEBHOOK_URL, {
+    const res = await fetch(FORM_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (res.ok || res.status === 200) {
-      form.style.display = 'none';
-      successEl.style.display = 'flex';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const data = await res.json().catch(() => ({}));
+    // FormSubmit returns success:"true" only when the lead was actually
+    // delivered. Anything else (endpoint down, form not yet activated,
+    // network error) drops to the mailto backstop so no lead is lost.
+    if (res.ok && String(data.success) === 'true') {
+      showSuccess();
     } else {
-      throw new Error(`${res.status}`);
+      throw new Error(data.message || `${res.status}`);
     }
   } catch (err) {
-    errorBox.textContent = 'Something went wrong. Please try again.';
-    errorBox.style.display = 'block';
-    setLoading(false);
+    emailFallback();
   }
 });
 </script>
