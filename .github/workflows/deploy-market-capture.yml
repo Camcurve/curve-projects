@@ -1,0 +1,27 @@
+name: Deploy Market Capture
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'curve-market-capture/**'
+      - '.github/workflows/deploy-market-capture.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy curve-market-capture
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: e7ca2e379c03b34eb45410430ffa746d
+    steps:
+      - uses: actions/checkout@v4
+
+      # Idempotent: fails harmlessly once the project exists
+      - name: Ensure Pages project exists
+        run: npx wrangler pages project create curve-market-capture --production-branch=main || true
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy curve-market-capture --project-name curve-market-capture --commit-dirty=true

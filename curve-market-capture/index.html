@@ -951,6 +951,91 @@ html, body {
   margin-left: 6px;
 }
 
+/* Similar Formats — appears when a video is selected */
+#similarSection {
+  width: 100%;
+  max-width: 760px;
+  margin-top: 6px;
+}
+.similar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+.similar-col-title {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 12px;
+}
+.similar-col-title span {
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 11px;
+  font-weight: 700;
+}
+.similar-list { display: flex; flex-direction: column; gap: 2px; }
+.similar-item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 10px;
+  padding: 7px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(4px);
+  animation: simReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 35ms);
+}
+@keyframes simReveal { to { opacity: 1; transform: translateY(0); } }
+.similar-item:hover { background: rgba(255,255,255,0.04); }
+.similar-thumb {
+  width: 72px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: var(--surface2);
+  display: block;
+}
+.similar-info { min-width: 0; align-self: center; }
+.similar-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.similar-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.similar-meta strong { color: var(--text); font-weight: 700; }
+.similar-views {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  align-self: center;
+  font-variant-numeric: tabular-nums;
+}
+.similar-empty {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  font-style: italic;
+  padding: 8px 6px;
+}
+
 /* Show more / Show less toggle */
 .adj-more-wrap {
   display: flex;
@@ -1721,9 +1806,11 @@ html, body {
   background: var(--surface);
   color: var(--text-muted);
 }
-.conc-badge.open        { color: #4ade80; border-color: rgba(34,197,94,0.4);  background: rgba(34,197,94,0.08); }
-.conc-badge.competitive { color: #fbbf24; border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); }
-.conc-badge.dominated   { color: #f87171; border-color: rgba(239,68,68,0.4);  background: rgba(239,68,68,0.08); }
+.conc-badge.open           { color: #4ade80; border-color: rgba(34,197,94,0.4);  background: rgba(34,197,94,0.08); }
+.conc-badge.untapped       { color: #6ee7a8; border-color: rgba(110,231,168,0.45); background: rgba(16,185,129,0.10); }
+.conc-badge.emerging-conc  { color: #ff8b5e; border-color: rgba(255,95,0,0.4);   background: rgba(255,95,0,0.10); }
+.conc-badge.competitive    { color: #fbbf24; border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); }
+.conc-badge.dominated      { color: #f87171; border-color: rgba(239,68,68,0.4);  background: rgba(239,68,68,0.08); }
 .conc-explain {
   font-size: 11.5px;
   color: var(--text-muted);
@@ -2141,6 +2228,28 @@ html, body {
                   <path d="M2 4L5 7L8 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                 </svg>
               </button>
+            </div>
+          </div>
+
+          <!-- Similar Formats — appears only when a video is selected -->
+          <div id="similarSection" class="hidden">
+            <div class="adj-header">
+              <div class="adj-header-left">
+                <div class="adj-title">Similar Formats</div>
+                <div class="adj-hint" id="similarHint">Based on your selected video</div>
+              </div>
+            </div>
+            <div class="similar-grid">
+              <div class="similar-col">
+                <div class="similar-col-title">More from <span id="similarChannelName">—</span></div>
+                <div class="similar-list" id="similarChannelList"></div>
+                <div class="similar-empty hidden" id="similarChannelEmpty">No other top videos found for this channel.</div>
+              </div>
+              <div class="similar-col">
+                <div class="similar-col-title">Similar format in the niche</div>
+                <div class="similar-list" id="similarNicheList"></div>
+                <div class="similar-empty hidden" id="similarNicheEmpty">No format-matching videos in the current result set.</div>
+              </div>
             </div>
           </div>
 
@@ -2767,6 +2876,9 @@ async function fetchKeywordData(kw, status) {
           views:       parseInt(item.statistics?.viewCount || '0', 10),
           durationSec: parseISODuration(item.contentDetails?.duration || ''),
           publishedAt: item.snippet?.publishedAt || null,
+          thumbnail:   item.snippet?.thumbnails?.medium?.url
+                    || item.snippet?.thumbnails?.default?.url
+                    || '',
         };
       });
     } catch { /* batch failure — skip */ }
@@ -2778,6 +2890,23 @@ async function fetchKeywordData(kw, status) {
     const ids = channelToVideoIds[chId] || [];
     // Tag channelId onto each recent video for the Keyword Ideas extractor
     ids.forEach(vid => { if (recentVideoData[vid]) recentVideoData[vid].channelId = chId; });
+
+    // Persist the per-channel recent videos for Similar Formats / Same-Channel Expansion
+    chData[chId].recentVideos = ids
+      .map(id => {
+        const d = recentVideoData[id];
+        if (!d) return null;
+        return {
+          id,
+          title:       d.title,
+          views:       d.views,
+          thumbnail:   d.thumbnail || '',
+          durationSec: d.durationSec,
+          publishedAt: d.publishedAt,
+        };
+      })
+      .filter(Boolean);
+
     const eligible = ids
       .map(id => recentVideoData[id])
       .filter(d => d && d.durationSec > 60 && d.publishedAt && new Date(d.publishedAt).getTime() < thirtyDaysAgo);
@@ -2909,6 +3038,11 @@ function renderResults(keyword, fromCache) {
   drawChannelBars();
   renderAdjacentStrength();
   renderKeywordIdeas();
+
+  // Hide Similar Formats until the user selects a video
+  const similarSection = document.getElementById('similarSection');
+  if (similarSection) similarSection.classList.add('hidden');
+  selectedVideoIdx = -1;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -3027,6 +3161,7 @@ function selectVideo(idx, el) {
     selectedVideoIdx = -1;
     document.querySelectorAll('.video-item').forEach(v => v.classList.remove('selected'));
     chartRow.classList.remove('has-preview');
+    renderSimilarFormats(-1);   // hide the similar panel
     return;
   }
 
@@ -3081,6 +3216,9 @@ function selectVideo(idx, el) {
 
   // Fetch real channel avatar
   if (v.channelId) fetchChannelAvatar(v.channelId, v.channel, idx);
+
+  // Populate Similar Formats below
+  renderSimilarFormats(idx);
 }
 
 function setAvatar(channelName, imgUrl) {
@@ -3377,6 +3515,160 @@ function renderKeywordIdeas() {
     el.addEventListener('click', () => exploreIdea(idea.phrase));
     grid.appendChild(el);
   });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Similar Formats — Option 1 (same-channel) + Option 2 (title-pattern niche)
+// ═══════════════════════════════════════════════════════════════════════════
+function detectTitleShape(title) {
+  const shapes = [];
+  // All-caps prefix (8+ uppercase chars at the start) → "MATCH THE VOICE..."
+  if (/^[A-Z][A-Z0-9 !'-]{8,}/.test(title)) shapes.push('all-caps-prefix');
+  // Colon format → "FULL MATCH: The Rock vs..."
+  if (/^[A-Za-z0-9 '-]+:/.test(title)) shapes.push('colon-format');
+  // Numbered list → "Top 10", "5 Ways", "7 Things"
+  if (/\b\d+\s+(things?|ways?|reasons?|tips?|hacks?|recipes?|ideas?|moments?|videos?|times)\b/i.test(title)) shapes.push('numbered-list');
+  // Question hook → starts with WH-word or contains ?
+  if (/\?/.test(title) || /^(can|why|how|what|when|where|who|is|are|do|does|did)\b/i.test(title)) shapes.push('question');
+  // Challenge format
+  if (/\bchallenge\b/i.test(title)) shapes.push('challenge');
+  // VS / battle format
+  if (/\s+vs\.?\s+/i.test(title) || /\bbattle\b/i.test(title)) shapes.push('vs-format');
+  // First-person framing
+  if (/^(i|my|we|our)\b/i.test(title)) shapes.push('first-person');
+  // Reaction format
+  if (/\b(react(s|ion|ed|ing)?|reacts?\s+to)\b/i.test(title)) shapes.push('reaction');
+  // Tutorial / how-to
+  if (/\b(how\s+to|tutorial|guide|step\s+by\s+step)\b/i.test(title)) shapes.push('tutorial');
+  // Tested / tried / tested-it
+  if (/\b(tested|tried|testing|trying|tested\s+every)\b/i.test(title)) shapes.push('tested');
+  return shapes;
+}
+
+function titleSimilarity(titleA, titleB) {
+  // Token overlap (Jaccard) on meaningful words
+  const tokensA = new Set(tokenize(titleA).filter(t => t.length >= 3 && !STOPWORDS.has(t)));
+  const tokensB = new Set(tokenize(titleB).filter(t => t.length >= 3 && !STOPWORDS.has(t)));
+  if (tokensA.size === 0 || tokensB.size === 0) return 0;
+  const inter = [...tokensA].filter(x => tokensB.has(x)).length;
+  const union = new Set([...tokensA, ...tokensB]).size;
+  const jaccard = union > 0 ? inter / union : 0;
+
+  // Title-shape overlap
+  const shapesA = new Set(detectTitleShape(titleA));
+  const shapesB = new Set(detectTitleShape(titleB));
+  let shapeScore = 0;
+  if (shapesA.size && shapesB.size) {
+    const sInter = [...shapesA].filter(x => shapesB.has(x)).length;
+    const sUnion = new Set([...shapesA, ...shapesB]).size;
+    shapeScore = sUnion > 0 ? sInter / sUnion : 0;
+  }
+
+  // Weighted: tokens matter more than shape (shape is supporting evidence)
+  return 0.7 * jaccard + 0.3 * shapeScore;
+}
+
+function getMoreFromChannel(anchor, channelData, limit = 6) {
+  const ch = channelData[anchor.channelId];
+  if (!ch || !ch.recentVideos) return [];
+  return ch.recentVideos
+    .filter(v => v.id !== anchor.id && v.durationSec > 60)
+    .sort((a, b) => b.views - a.views)
+    .slice(0, limit);
+}
+
+function findSimilarInNiche(anchor, allVideos, limit = 6) {
+  return allVideos
+    .filter(v => v.id !== anchor.id && v.channelId !== anchor.channelId)   // exclude self + same-channel (covered by the other panel)
+    .map(v => ({ video: v, score: titleSimilarity(anchor.title, v.title) }))
+    .filter(item => item.score >= 0.12)        // minimum signal floor
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(item => item.video);
+}
+
+function renderSimilarFormats(anchorIdx) {
+  const section = document.getElementById('similarSection');
+  if (!section) return;
+  if (anchorIdx < 0 || !videos[anchorIdx]) {
+    section.classList.add('hidden');
+    return;
+  }
+  const anchor = videos[anchorIdx];
+  const sameChannel = getMoreFromChannel(anchor, channelData, 6);
+  const sameFormat  = findSimilarInNiche(anchor, videos, 6);
+
+  if (!sameChannel.length && !sameFormat.length) {
+    section.classList.add('hidden');
+    return;
+  }
+  section.classList.remove('hidden');
+
+  // Channel-name label
+  const chNameEl = document.getElementById('similarChannelName');
+  if (chNameEl) chNameEl.textContent = anchor.channel;
+
+  // --- LEFT: more from this channel ---
+  const channelList   = document.getElementById('similarChannelList');
+  const channelEmpty  = document.getElementById('similarChannelEmpty');
+  channelList.innerHTML = '';
+  if (sameChannel.length) {
+    channelEmpty.classList.add('hidden');
+    const ch = channelData[anchor.channelId] || {};
+    sameChannel.forEach((v, i) => {
+      const ratio  = ch.recentMedian > 0 ? (v.views / ch.recentMedian).toFixed(1) + '× vs avg' : 'recent upload';
+      const a = document.createElement('a');
+      a.className = 'similar-item';
+      a.href      = `https://www.youtube.com/watch?v=${v.id}`;
+      a.target    = '_blank';
+      a.rel       = 'noopener noreferrer';
+      a.style.setProperty('--i', i);
+      a.innerHTML = `
+        ${v.thumbnail ? `<img class="similar-thumb" src="${esc(v.thumbnail)}" alt="" loading="lazy">` : '<div class="similar-thumb"></div>'}
+        <div class="similar-info">
+          <div class="similar-title">${esc(v.title)}</div>
+          <div class="similar-meta"><strong>${ratio}</strong> · opens on YouTube</div>
+        </div>
+        <div class="similar-views">${fmt(v.views)}</div>
+      `;
+      channelList.appendChild(a);
+    });
+  } else {
+    channelEmpty.classList.remove('hidden');
+  }
+
+  // --- RIGHT: similar format in the niche ---
+  const nicheList  = document.getElementById('similarNicheList');
+  const nicheEmpty = document.getElementById('similarNicheEmpty');
+  nicheList.innerHTML = '';
+  if (sameFormat.length) {
+    nicheEmpty.classList.add('hidden');
+    sameFormat.forEach((v, i) => {
+      const idx = videos.indexOf(v);
+      const el = document.createElement('div');
+      el.className = 'similar-item';
+      el.style.setProperty('--i', i);
+      el.innerHTML = `
+        ${v.thumbnail ? `<img class="similar-thumb" src="${esc(v.thumbnail)}" alt="" loading="lazy">` : '<div class="similar-thumb"></div>'}
+        <div class="similar-info">
+          <div class="similar-title">${esc(v.title)}</div>
+          <div class="similar-meta">${esc(v.channel)}</div>
+        </div>
+        <div class="similar-views">${fmt(v.views)}</div>
+      `;
+      el.addEventListener('click', () => {
+        // Find the row in the left list (if rendered) and select it; otherwise synthesize a fake el
+        const rowEl = document.querySelector(`.video-item[data-index="${idx}"]`);
+        selectVideo(idx, rowEl || document.createElement('div'));
+        // Scroll the new selection's similar panel into view
+        const sec = document.getElementById('similarSection');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      nicheList.appendChild(el);
+    });
+  } else {
+    nicheEmpty.classList.remove('hidden');
+  }
 }
 
 function exploreIdea(phrase) {
@@ -3843,9 +4135,18 @@ function computeConcentration(vids, market) {
   });
   const top = Math.max(...Object.values(map));
   const pct = market > 0 ? (top / market) * 100 : 0;
-  if (pct > 50) return { label: 'Dominated',   pct };
-  if (pct > 25) return { label: 'Competitive', pct };
-  return { label: 'Open', pct };
+  const totalChannels = Object.keys(map).length;
+
+  // High top-channel share means very different things depending on how many channels exist.
+  // > 50% share + few total channels = no one's competing yet (UNTAPPED — opportunity)
+  // > 50% share + many total channels = many tried, one won (DOMINATED — hard to break in)
+  if (pct > 50) {
+    if (totalChannels < 15) return { label: 'Untapped',  pct, totalChannels };
+    if (totalChannels < 30) return { label: 'Emerging',  pct, totalChannels };
+    return { label: 'Dominated', pct, totalChannels };
+  }
+  if (pct > 25) return { label: 'Competitive', pct, totalChannels };
+  return { label: 'Open', pct, totalChannels };
 }
 
 function renderCompareTab() {
@@ -3918,11 +4219,30 @@ function drawChannelBars() {
   const top = list.slice(0, 10);
   const topShare = totalMarket > 0 ? (list[0].views / totalMarket) * 100 : 0;
 
-  // Concentration label
-  let cls = 'open', label = 'Open Market', explain = 'Spread across many channels — wide open opportunity.';
-  if (topShare > 50)      { cls = 'dominated';   label = 'Dominated Market';   explain = `One channel owns ${topShare.toFixed(0)}% of the market. Hard to break in.`; }
-  else if (topShare > 25) { cls = 'competitive'; label = 'Competitive Market'; explain = `Top channel holds ${topShare.toFixed(0)}% — beatable with a strong push.`; }
-  else                    { explain = `Top channel only owns ${topShare.toFixed(0)}% across ${list.length} channels. Niche is wide open.`; }
+  // Concentration label — now nuanced by total channel count
+  const conc = computeConcentration(videos, totalMarket);
+  let cls = 'open', label = 'Open Market', explain = '';
+  if (conc.label === 'Untapped') {
+    cls = 'untapped';
+    label = 'Untapped Niche';
+    explain = `Only ${conc.totalChannels} channels here. Top owns ${topShare.toFixed(0)}% but the niche is barely contested — early-entry opportunity.`;
+  } else if (conc.label === 'Emerging') {
+    cls = 'emerging-conc';
+    label = 'Emerging Niche';
+    explain = `${conc.totalChannels} channels exploring this. Top owns ${topShare.toFixed(0)}% but room exists for new players.`;
+  } else if (conc.label === 'Dominated') {
+    cls = 'dominated';
+    label = 'Dominated Market';
+    explain = `${conc.totalChannels} channels competing, one owns ${topShare.toFixed(0)}%. Many tried — hard to break in.`;
+  } else if (conc.label === 'Competitive') {
+    cls = 'competitive';
+    label = 'Competitive Market';
+    explain = `${conc.totalChannels} channels in play. Top holds ${topShare.toFixed(0)}% — beatable with a strong push.`;
+  } else {
+    cls = 'open';
+    label = 'Open Market';
+    explain = `Spread across ${conc.totalChannels} channels — wide open opportunity.`;
+  }
   concBadge.className = 'conc-badge ' + cls;
   concBadge.textContent = label;
   concExplain.textContent = explain;
