@@ -571,14 +571,11 @@
     0 16px 40px rgba(0,0,0,0.45);
 }
 @media (max-width: 768px) {
-  #volt-section      { height: auto !important; }
-  #volt-inner        { position: relative !important; height: auto !important; padding: 5rem 1.5rem 4rem; }
-  #volt-cards-row    { flex-wrap: wrap !important; gap: 16px !important; justify-content: center !important; }
-  .volt-card         { width: 178px !important; height: 250px !important; }
-  .volt-card-back    { display: none !important; }
-  .volt-card-front   { position: relative !important; inset: auto !important; transform: none !important; width: 100% !important; height: 100% !important; }
-  #volt-arcs-svg     { display: none !important; }
-  #volt-cta          { opacity: 1 !important; transform: none !important; }
+  #volt-section    { height: 500vh; }
+  #volt-cards-row  { flex-wrap: wrap !important; gap: 10px !important; align-items: center !important; justify-content: center !important; }
+  .volt-card       { width: 165px !important; height: 235px !important; }
+  .volt-card-front { padding: 14px 14px !important; }
+  #volt-arcs-svg   { display: none !important; }
 }
 </style>
 </head>
@@ -2065,7 +2062,54 @@
     if (!section || !cards.length) return;
 
     var isMobile = window.innerWidth <= 768;
-    if (isMobile) return; // CSS handles mobile
+    if (isMobile) {
+      // Mobile: 2×2 grid, cards start back-facing, flip one by one on scroll
+      var mVoltLetters = ['V','O','L','T'];
+      cards.forEach(function (card, i) {
+        var back = card.querySelector('.volt-card-back');
+        back.innerHTML =
+          '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:0;">' +
+            '<span class="volt-letter" style="font-family:\'Cormorant Garamond\',serif;font-size:5.5rem;font-weight:300;line-height:1;color:rgba(229,226,225,0.13);letter-spacing:-0.02em;user-select:none;">' + mVoltLetters[i] + '</span>' +
+            '<div class="volt-letter-rule" style="width:22px;height:1px;background:rgba(255,95,0,0.3);margin-top:0.6rem;"></div>' +
+          '</div>';
+        gsap.set(card, { rotateY: 0, transformPerspective: 900 });
+      });
+      gsap.set(heading, { opacity: 0, y: 24 });
+      gsap.set(cta,     { opacity: 0, y: 18 });
+
+      var mobileTl   = gsap.timeline({ paused: true });
+      var mLetterEls = document.querySelectorAll('.volt-letter');
+      var mRuleEls   = document.querySelectorAll('.volt-letter-rule');
+
+      mobileTl.to(heading, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.08 }, 0);
+      mobileTl.to(mLetterEls, {
+        color:      '#FF5F00',
+        textShadow: '0 0 24px rgba(255,95,0,1), 0 0 60px rgba(255,95,0,0.65), 0 0 120px rgba(255,95,0,0.3)',
+        ease: 'power2.out', duration: 0.07
+      }, 0.12);
+      mobileTl.to(mRuleEls, { backgroundColor: 'rgba(255,95,0,0.9)', ease: 'power2.out', duration: 0.07 }, 0.12);
+
+      function addMobFlip(idx, start) {
+        mobileTl.to(cards[idx], { rotateY: -90,  y: -10, ease: 'power1.in',  duration: 0.08 }, start);
+        mobileTl.to(cards[idx], { rotateY: -180, y:   0, ease: 'power1.out', duration: 0.08 }, start + 0.08);
+      }
+      addMobFlip(0, 0.20);
+      addMobFlip(1, 0.37);
+      addMobFlip(2, 0.54);
+      addMobFlip(3, 0.70);
+
+      mobileTl.to(cta, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.08 }, 0.86);
+
+      ScrollTrigger.create({
+        trigger:   section,
+        start:     'top top',
+        end:       'bottom bottom',
+        scrub:     1.8,
+        animation: mobileTl,
+      });
+      ScrollTrigger.refresh();
+      return;
+    }
 
     // ── Inject card back faces ──────────────────────────────────────────────
     var voltLetters = ['V','O','L','T'];
