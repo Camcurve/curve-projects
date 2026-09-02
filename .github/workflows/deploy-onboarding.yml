@@ -1,0 +1,63 @@
+name: Deploy Onboarding
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'curve-onboarding/**'
+      - '.github/workflows/deploy-onboarding.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy curve-onboarding
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: e7ca2e379c03b34eb45410430ffa746d
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: curve-onboarding/package-lock.json
+
+      - name: Install
+        working-directory: curve-onboarding
+        run: npm ci
+
+      # Vite inlines VITE_* at BUILD time, so these must be present here — not at
+      # runtime. Anything missing silently ships as an empty string, which is why
+      # the app degrades gracefully rather than crashing when one is absent.
+      - name: Build
+        working-directory: curve-onboarding
+        env:
+          VITE_WEB3FORMS_KEY: ${{ secrets.VITE_WEB3FORMS_KEY }}
+          VITE_YOUTUBE_API_KEY: ${{ secrets.VITE_YOUTUBE_API_KEY }}
+          VITE_DELIVERY_EMAIL: ${{ vars.VITE_DELIVERY_EMAIL }}
+          VITE_YOUTUBE_MANAGER_EMAIL: ${{ vars.VITE_YOUTUBE_MANAGER_EMAIL }}
+          VITE_CONTACT_EMAIL: ${{ vars.VITE_CONTACT_EMAIL }}
+          VITE_BOOKING_URL: ${{ vars.VITE_BOOKING_URL }}
+          VITE_LOOM_URL: ${{ vars.VITE_LOOM_URL }}
+          VITE_WEBHOOK_URL: ${{ vars.VITE_WEBHOOK_URL }}
+        run: npm run build
+
+      # Fail loudly here rather than shipping a build that silently drops briefs.
+      - name: Verify delivery transport is configured
+        working-directory: curve-onboarding
+        run: |
+          if ! grep -q "api.web3forms.com" dist/assets/*.js; then
+            echo "::error::VITE_WEB3FORMS_KEY missing — build would fall back to FormSubmit and briefs would be dropped."
+            exit 1
+          fi
+          echo "Web3Forms transport present."
+
+      # Idempotent: fails harmlessly once the project exists
+      - name: Ensure Pages project exists
+        run: npx wrangler pages project create curve-onboarding --production-branch=main || true
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy curve-onboarding/dist --project-name curve-onboarding --commit-dirty=true
