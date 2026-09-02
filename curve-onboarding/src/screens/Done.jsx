@@ -5,11 +5,15 @@ import Layout from '@/components/Layout'
 import Button from '@/components/Button'
 import { useOnboarding } from '@/lib/useOnboarding'
 import { firstNameOf } from '@/config/clients'
+import { COMMS, commsOf } from '@/lib/comms'
 import { buildManualEmail, fireCompletionWebhook } from '@/lib/webhook'
 
 export default function Done({ client }) {
   const { state, persist } = useOnboarding(client.slug)
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'cam@thecurve.media'
+  const comms = commsOf(client)
+  const commsName =
+    comms === COMMS.WHATSAPP ? 'WhatsApp' : comms === COMMS.EMAIL ? 'the email thread' : 'Slack'
   const fired = useRef(false)
   // 'sending' | 'sent' | 'failed' — drives the fallback below. Starts as 'sent'
   // when a previous visit already delivered, so returning clients see nothing.
@@ -138,15 +142,15 @@ export default function Done({ client }) {
           <h2 className="mb-1 text-[13px] font-semibold text-bone-dim">What happens next</h2>
           <NextBlock
             title="Within 24 hours"
-            body="Cam accepts the YouTube invite and gets you an intro note."
+            body="Curve accepts the YouTube invite and analyses your channel."
           />
           <NextBlock
-            title="Before the kick-off"
-            body="Ayla ships a channel snapshot — what's working, what's bleeding watch time."
+            title="Before the kick-off call"
+            body={`Curve adds key stakeholders to ${commsName} for comms.`}
           />
           <NextBlock
             title="After the call"
-            body="You get the 30-day plan, content pillars, and the first three packaged concepts."
+            body="Curve begins working on creative, with a 7-day turnaround."
           />
         </motion.div>
       </motion.div>
