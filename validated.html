@@ -390,8 +390,12 @@
   /* ── Infinite marquee ─────────────────────────────────────────────── */
   #more-clients-track:hover { animation-play-state: paused; }
 
-  /* ── Brand ticker: margin-right instead of gap so -50% lands exactly at Set B ── */
+  /* ── Brand ticker: 3 sets, margin-right for even spacing, -33.33% loop ── */
   #brand-ticker-track img { margin-right: clamp(3.5rem,6vw,7rem); }
+  @keyframes brand-ticker-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-33.3333%); }
+  }
 
   /* ══════════════════════════════════════════════════════════════════
      MOBILE — additional section fixes
@@ -708,14 +712,20 @@
   <section id="brand-ticker" style="position:relative; padding:clamp(1.5rem,3vw,2.5rem) 0; overflow:hidden;">
     <p style="text-align:center; font-family:'Cabinet Grotesk',sans-serif; font-size:0.68rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:rgba(229,226,225,0.28); margin:0 0 clamp(1rem,2vw,1.4rem);">Trusted by</p>
     <div style="overflow:hidden; -webkit-mask:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%); mask:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%);">
-      <div id="brand-ticker-track" style="display:flex; align-items:center; width:max-content; animation:marquee-scroll 32s linear infinite;">
+      <div id="brand-ticker-track" style="display:flex; align-items:center; width:max-content; animation:brand-ticker-scroll 32s linear infinite;">
         <!-- ── Set A ── -->
         <img src="hubspot-transparent.png"       alt="HubSpot"      style="flex-shrink:0; height:clamp(28px,3.5vw,40px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
         <img src="bbc-transparent.png"           alt="BBC"           style="flex-shrink:0; height:clamp(28px,3.5vw,40px); width:auto; filter:grayscale(1) invert(1) brightness(5); opacity:0.5; object-fit:contain;">
         <img src="welltech-transparent.png"      alt="WellTech"     style="flex-shrink:0; height:clamp(20px,2.5vw,28px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
         <img src="qatar-tourism-transparent.png" alt="Qatar Tourism" style="flex-shrink:0; height:clamp(36px,4.5vw,52px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
         <img src="medly-transparent.png"         alt="Medly"         style="flex-shrink:0; height:clamp(22px,2.8vw,32px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
-        <!-- ── Set B — seamless loop duplicate ── -->
+        <!-- ── Set B ── -->
+        <img src="hubspot-transparent.png"       alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(28px,3.5vw,40px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
+        <img src="bbc-transparent.png"           alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(28px,3.5vw,40px); width:auto; filter:grayscale(1) invert(1) brightness(5); opacity:0.5; object-fit:contain;">
+        <img src="welltech-transparent.png"      alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(20px,2.5vw,28px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
+        <img src="qatar-tourism-transparent.png" alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(36px,4.5vw,52px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
+        <img src="medly-transparent.png"         alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(22px,2.8vw,32px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
+        <!-- ── Set C ── -->
         <img src="hubspot-transparent.png"       alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(28px,3.5vw,40px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
         <img src="bbc-transparent.png"           alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(28px,3.5vw,40px); width:auto; filter:grayscale(1) invert(1) brightness(5); opacity:0.5; object-fit:contain;">
         <img src="welltech-transparent.png"      alt="" aria-hidden="true" style="flex-shrink:0; height:clamp(20px,2.5vw,28px); width:auto; filter:grayscale(1) brightness(10); opacity:0.5; object-fit:contain;">
