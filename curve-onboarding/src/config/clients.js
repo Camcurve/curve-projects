@@ -10,6 +10,8 @@
 //                  Defaults to /logos/<slug>.png if you drop the file there.
 //   logoTint     — 'white' to force-tint the logo via CSS (for dark-on-light logos).
 //   slackChannelId — the `C...` ID of their dedicated channel. Grab it from the Slack URL once created.
+//   channelId    — their YouTube channel (UC...). When set, the welcome screen shows
+//                  THEIR live subscriber/view counts instead of Curve's track record.
 //   comms        — how they talk to us day-to-day: 'slack' (default), 'whatsapp' or 'email'.
 //                  'whatsapp' collects name + number rows and we add them to the group
 //                  after onboarding. 'email' swaps the step for a point-of-contact capture.
@@ -37,6 +39,9 @@ export const clients = {
     name: 'FIFA e',
     firstName: 'team',
     comms: 'whatsapp',
+    // Their channel, so the welcome screen can show their own numbers back to
+    // them instead of ours. Optional — without it the Curve stats show instead.
+    channelId: 'UCnpZzzqzyiS5qD2HDxqLkDA',
   },
   perfectted: {
     name: 'PerfectTed',

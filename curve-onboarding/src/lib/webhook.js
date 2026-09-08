@@ -23,6 +23,9 @@ const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
 
 export const emailTransport = WEB3FORMS_KEY ? 'web3forms' : 'formsubmit'
 
+// Sending the client their own copy needs Web3Forms' ccemail, which is Pro-only.
+const WEB3FORMS_PRO = import.meta.env.VITE_WEB3FORMS_PRO === 'true'
+
 const dash = (v) => {
   if (v === null || v === undefined) return '—'
   const s = String(v).trim()
@@ -207,6 +210,54 @@ export function buildManualEmail({ client, state }) {
   }
 }
 
+// A copy for the client. They've just granted channel access and handed over
+// numbers and received nothing in return — this gives them a record they can
+// forward internally. Sent as a separate submission so the wording is theirs,
+// not the internal one with chase notes in it.
+async function sendClientConfirmation({ client, state }) {
+  const to = state.brief?.contact?.email?.trim()
+  // ccemail is a Web3Forms Pro feature — on the free tier the request 400s, so
+  // don't fire it at all until VITE_WEB3FORMS_PRO is set. Flip that on after
+  // upgrading and the client copy starts sending with no other change.
+  if (!WEB3FORMS_PRO) return { ok: false, skipped: 'needs Web3Forms Pro' }
+  if (!WEB3FORMS_KEY || !to || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to)) {
+    return { ok: false, skipped: true }
+  }
+  const b = state.brief || {}
+  const contactEmail =
+    import.meta.env.VITE_CONTACT_EMAIL || 'cam@thecurve.media'
+  try {
+    const res = await fetch(WEB3FORMS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        from_name: 'Curve',
+        ccemail: to,
+        _subject: `You're all set — ${client.name} × Curve`,
+        _template: 'table',
+        'Thanks': `Everything's in, ${client.name}. Here's a copy for your records.`,
+        'Your channel': b.channelMeta?.title || b.youtube || '—',
+        'Point of contact': describeContact(b.contact),
+        'YouTube access': state.ytDone
+          ? 'Granted'
+          : state.ytDelegatedTo
+            ? `Passed to ${state.ytDelegatedTo.name}`
+            : 'Not yet',
+        'Kick-off call': state.bookingDone ? 'Booked' : 'Not yet booked',
+        'Within 24 hours': 'Curve accepts the YouTube invite and analyses your channel.',
+        'Before the kick-off': `Curve adds key stakeholders to ${commsOf(client) === 'whatsapp' ? 'WhatsApp' : commsOf(client) === 'email' ? 'the email thread' : 'Slack'} for comms.`,
+        'After the call': 'Curve begins working on creative, with a 7-day turnaround.',
+        'Questions': contactEmail,
+      }),
+    })
+    const data = await res.json().catch(() => ({}))
+    return res.ok && data.success === true ? { ok: true, to } : { ok: false, error: data.message }
+  } catch (err) {
+    return { ok: false, error: String(err) }
+  }
+}
+
 export async function fireCompletionWebhook({ client, state }) {
   const brief = { ...(state.brief || {}) }
 
@@ -227,9 +278,11 @@ export async function fireCompletionWebhook({ client, state }) {
 
   const emailPayload = buildEmailPayload({ client, state, brief })
 
-  const [email, hook] = await Promise.all([
+  const [email, hook, clientCopy] = await Promise.all([
     deliverEmail(emailPayload),
     deliverWebhook(import.meta.env.VITE_WEBHOOK_URL, webhookPayload, emailPayload),
+    // Never gates success — the brief reaching Curve is what matters.
+    sendClientConfirmation({ client, state }),
   ])
 
   // Either channel landing is enough — we never lose a brief to one dead endpoint.
@@ -239,5 +292,5 @@ export async function fireCompletionWebhook({ client, state }) {
     console.warn('[curve] brief delivery failed', { email, webhook: hook })
   }
 
-  return { ok, channels: { email, webhook: hook } }
+  return { ok, channels: { email, webhook: hook, clientCopy } }
 }

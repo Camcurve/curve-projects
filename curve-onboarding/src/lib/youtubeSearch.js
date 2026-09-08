@@ -86,3 +86,36 @@ export async function searchChannels(query, { signal } = {}) {
     return []
   }
 }
+
+// One channel by id — 1 quota unit. Used on the welcome screen to show a client
+// their own numbers before they've done anything, which is the whole point: it
+// says we looked, rather than asking them to take our word for it.
+export async function fetchChannelStats(channelId) {
+  if (!API_KEY || !channelId) return null
+  const key = `stats:${channelId}`
+  if (cache.has(key)) return cache.get(key)
+  try {
+    const url = new URL('https://www.googleapis.com/youtube/v3/channels')
+    url.searchParams.set('part', 'snippet,statistics')
+    url.searchParams.set('id', channelId)
+    url.searchParams.set('key', API_KEY)
+    const res = await fetch(url.toString())
+    if (!res.ok) return null
+    const data = await res.json()
+    const c = data.items?.[0]
+    if (!c) return null
+    const out = {
+      channelId,
+      title: c.snippet?.title || '',
+      handle: c.snippet?.customUrl || null,
+      thumbnail: c.snippet?.thumbnails?.medium?.url || c.snippet?.thumbnails?.default?.url || null,
+      subs: c.statistics?.hiddenSubscriberCount ? null : compactSubs(c.statistics?.subscriberCount),
+      views: compactSubs(c.statistics?.viewCount),
+      videos: compactSubs(c.statistics?.videoCount),
+    }
+    cache.set(key, out)
+    return out
+  } catch {
+    return null
+  }
+}

@@ -15,20 +15,22 @@ const ACT_PLAN = 'The plan'
 const ACT_ESSENTIALS = 'The essentials'
 const ACT_DETAILS = 'The details'
 
+// Channel picker leads: it's the moment that feels like magic, and it shouldn't
+// sit behind a headcount question.
 const QUESTIONS = [
+  {
+    id: 'youtube',
+    act: ACT_PLAN,
+    type: 'channel-picker',
+    label: <>Which {accent('YouTube')} channel is yours?</>,
+    hint: 'Start typing and pick it from the list — that way we link you straight to the right settings later.',
+  },
   {
     id: 'team',
     act: ACT_PLAN,
     type: 'team-sliders',
     label: <>Who&apos;s on your {accent('team')}?</>,
     hint: 'Drag each row to how many of that role you have. Zero is fine.',
-  },
-  {
-    id: 'youtube',
-    act: ACT_ESSENTIALS,
-    type: 'channel-picker',
-    label: <>Which {accent('YouTube')} channel is yours?</>,
-    hint: 'Start typing and pick it from the list — that way we link you straight to the right settings later.',
   },
 ]
 
