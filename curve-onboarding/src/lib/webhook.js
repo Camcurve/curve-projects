@@ -67,7 +67,11 @@ function buildEmailPayload({ client, state, brief }) {
     Brand: client.name,
     Slug: client.slug,
     'Completed at': new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }),
-    'YouTube channel': dash(b.youtube),
+    // The picker already resolved the name — 'FIFAe (251K) — <url>' reads better
+    // in an inbox than a bare /channel/UC… URL.
+    'YouTube channel': b.channelMeta?.title
+      ? `${b.channelMeta.title}${b.channelMeta.subs ? ` (${b.channelMeta.subs} subs)` : ''} — ${dash(b.youtube)}`
+      : dash(b.youtube),
     Team: describeTeam(b.team),
     'Point of contact': describeContact(b.contact),
     'YouTube access granted': state.ytDone
