@@ -5,6 +5,7 @@ import Layout from '@/components/Layout'
 import Button from '@/components/Button'
 import { Chip, Input, Textarea } from '@/components/Field'
 import TeamSliderStack from '@/components/TeamSliderStack'
+import ChannelPicker from '@/components/ChannelPicker'
 import { useOnboarding } from '@/lib/useOnboarding'
 
 
@@ -32,10 +33,9 @@ const QUESTIONS = [
   {
     id: 'youtube',
     act: ACT_ESSENTIALS,
-    type: 'url',
-    label: <>And your {accent('YouTube')} channel URL?</>,
-    hint: "We'll use this to deep-link you straight into Studio later.",
-    placeholder: 'https://youtube.com/@…',
+    type: 'channel-picker',
+    label: <>Which {accent('YouTube')} channel is yours?</>,
+    hint: 'Start typing and pick it from the list — that way we link you straight to the right settings later.',
   },
   {
     id: 'neverDo',
@@ -49,6 +49,7 @@ const QUESTIONS = [
 function hasAnswer(value, type) {
   if (type === 'chip-multi') return Array.isArray(value) && value.length > 0
   if (type === 'chip-single') return typeof value === 'string' && value.length > 0
+  if (type === 'channel-picker') return typeof value === 'string' && value.trim().length > 0
   if (type === 'team-sliders') {
     // The sliders default to an all-zero object, so an untouched brief would look
     // answered and the resume logic would skip straight past it.
@@ -114,6 +115,10 @@ export default function Brief({ client }) {
     }
     setDirection(-1)
     setIndex((i) => Math.max(0, i - 1))
+  }
+
+  const handleMeta = (m) => {
+    updateBrief({ channelMeta: m, channelId: m?.channelId || '' })
   }
 
   const handleChange = (next) => {
@@ -203,6 +208,8 @@ export default function Brief({ client }) {
               q={q}
               value={value}
               onChange={handleChange}
+              meta={state.brief.channelMeta}
+              onMeta={handleMeta}
               onKeyDown={onKeyDown}
             />
           </motion.div>
@@ -212,7 +219,7 @@ export default function Brief({ client }) {
   )
 }
 
-function QuestionInput({ q, value, onChange, onKeyDown }) {
+function QuestionInput({ q, value, onChange, onKeyDown, meta, onMeta }) {
   if (q.type === 'text' || q.type === 'url') {
     return (
       <Input
@@ -271,6 +278,11 @@ function QuestionInput({ q, value, onChange, onKeyDown }) {
   }
   if (q.type === 'team-sliders') {
     return <TeamSliderStack value={value} onChange={onChange} />
+  }
+  if (q.type === 'channel-picker') {
+    return (
+      <ChannelPicker value={value} onChange={onChange} meta={meta} onMeta={onMeta} />
+    )
   }
   return null
 }

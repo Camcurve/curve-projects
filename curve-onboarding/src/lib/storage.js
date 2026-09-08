@@ -12,7 +12,9 @@ const defaultState = () => ({
     },
     website: '',
     youtube: '',
-    channelId: '', // resolved from `youtube` so we can deep-link their Studio permissions
+    channelId: '',
+    // { channelId, title, thumbnail, subs } once picked from the search
+    channelMeta: null, // resolved from `youtube` so we can deep-link their Studio permissions
     neverDo: '',
     // Captured on the Access screen. 'email' comms fills name + email;
     // 'whatsapp' fills people[] — one row per person joining the group, so a
