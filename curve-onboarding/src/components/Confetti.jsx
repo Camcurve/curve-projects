@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const COLORS = ['#FF5F00', '#FF7A29', '#FFAD80', '#F5B895', '#E5E2E1']
 
-export default function Confetti({ durationMs = 1500, count = 130 }) {
+export default function Confetti({ durationMs = 1500, count }) {
   const canvasRef = useRef(null)
   const [done, setDone] = useState(false)
 
@@ -17,9 +17,15 @@ export default function Confetti({ durationMs = 1500, count = 130 }) {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const w = window.innerWidth
     const h = window.innerHeight
+
+    // Phones do the same work on a slower GPU with a denser display, so both the
+    // particle count and the backing-store resolution come down. 130 particles at
+    // 3x DPR is ~1.2M pixels of overdraw per frame, which is where the jank was.
+    const isPhone = w < 640
+    const dpr = Math.min(window.devicePixelRatio || 1, isPhone ? 1.5 : 2)
+    const particleCount = count ?? (isPhone ? 55 : 130)
     canvas.width = Math.floor(w * dpr)
     canvas.height = Math.floor(h * dpr)
     canvas.style.width = `${w}px`
@@ -38,7 +44,7 @@ export default function Confetti({ durationMs = 1500, count = 130 }) {
     const targetT = (durationMs * 0.7) / 1000
     const minSpeed = (h + 80 + 0.5 * 260 * targetT * targetT) / targetT
 
-    const particles = Array.from({ length: count }, (_, i) => {
+    const particles = Array.from({ length: particleCount }, (_, i) => {
       const cannon = cannons[i % 2]
       const angle = cannon.aim + (Math.random() - 0.5) * spreadArc
       const speed = minSpeed * (1 + Math.random() * 0.55) // 1.0x – 1.55x minimum
@@ -84,7 +90,9 @@ export default function Confetti({ durationMs = 1500, count = 130 }) {
         elapsed < fadeStart ? 1 : Math.max(0, 1 - (elapsed - fadeStart) / fadeLen)
 
       const dragFactor = 1 - dragPerSec * dt
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, w, h)
+      ctx.globalAlpha = alpha // same for every particle — set once, not per draw
       for (const p of particles) {
         p.vy += gravity * dt
         p.vx *= dragFactor
@@ -93,10 +101,12 @@ export default function Confetti({ durationMs = 1500, count = 130 }) {
         p.y += p.vy * dt
         p.rot += p.aVel * dt
 
-        ctx.save()
-        ctx.globalAlpha = alpha
-        ctx.translate(p.x, p.y)
-        ctx.rotate(p.rot)
+        // Off-screen particles still cost a draw call; skip them.
+        if (p.y < -40 || p.x < -40 || p.x > w + 40) continue
+
+        const c = Math.cos(p.rot)
+        const sn = Math.sin(p.rot)
+        ctx.setTransform(dpr * c, dpr * sn, -dpr * sn, dpr * c, dpr * p.x, dpr * p.y)
         ctx.fillStyle = p.color
         if (p.isRibbon) {
           ctx.fillRect(-p.len / 2, -p.thick / 2, p.len, p.thick)
@@ -105,7 +115,6 @@ export default function Confetti({ durationMs = 1500, count = 130 }) {
           ctx.arc(0, 0, p.len, 0, Math.PI * 2)
           ctx.fill()
         }
-        ctx.restore()
       }
       raf = requestAnimationFrame(frame)
     }

@@ -5,6 +5,7 @@ import Button from '@/components/Button'
 import ChannelStatsPreview from '@/components/ChannelStatsPreview'
 import Confetti from '@/components/Confetti'
 import LoomFrame from '@/components/LoomFrame'
+import HeroWordmark from '@/components/HeroWordmark'
 
 export default function Welcome({ client }) {
   const navigate = useNavigate()
@@ -34,8 +35,7 @@ export default function Welcome({ client }) {
           className="font-display text-[52px] font-extrabold leading-[0.95] tracking-[-0.04em] text-bone sm:text-[64px]"
         >
           Welcome,
-          <br />
-          <span className="text-brand">{client.name}.</span>
+          <HeroWordmark client={client} />
         </motion.h1>
 
         <motion.p variants={item} className="max-w-[42ch] text-[16px] leading-[1.55] text-bone-dim">
