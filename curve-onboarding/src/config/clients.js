@@ -12,6 +12,8 @@
 //   slackChannelId — the `C...` ID of their dedicated channel. Grab it from the Slack URL once created.
 //   channelId    — their YouTube channel (UC...). When set, the welcome screen shows
 //                  THEIR live subscriber/view counts instead of Curve's track record.
+//   loomUrl      — a walkthrough recorded FOR this client. Falls back to VITE_LOOM_URL.
+//                  Anything that names the client belongs here, not in the env var.
 //   comms        — how they talk to us day-to-day: 'slack' (default), 'whatsapp' or 'email'.
 //                  'whatsapp' collects name + number rows and we add them to the group
 //                  after onboarding. 'email' swaps the step for a point-of-contact capture.
@@ -42,6 +44,7 @@ export const clients = {
     // Their channel, so the welcome screen can show their own numbers back to
     // them instead of ours. Optional — without it the Curve stats show instead.
     channelId: 'UCnpZzzqzyiS5qD2HDxqLkDA',
+    loomUrl: 'https://www.loom.com/share/9ffb2a587d6a4ba9b1043bcc3d0e6e6d',
   },
   perfectted: {
     name: 'PerfectTed',

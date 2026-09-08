@@ -77,7 +77,7 @@ export default function Welcome({ client }) {
         )}
 
         <motion.div variants={item}>
-          <LoomFrame client={client} url={import.meta.env.VITE_LOOM_URL} />
+          <LoomFrame client={client} url={client.loomUrl || import.meta.env.VITE_LOOM_URL} />
         </motion.div>
       </motion.div>
     </Layout>
