@@ -99,8 +99,7 @@ export default function Access({ client }) {
   const filledPeople = people.filter((p) => p.name.trim() || p.phone.trim())
   const whatsappValid =
     filledPeople.length > 0 &&
-    filledPeople.every((p) => p.name.trim().length > 1 && isValidPhone(p.phone)) &&
-    isValidEmail(contact.email)
+    filledPeople.every((p) => p.name.trim().length > 1 && isValidPhone(p.phone))
 
   // We need the number to confirm they actually landed in the group — matching a
   // join to a person is impossible otherwise.
@@ -114,7 +113,6 @@ export default function Access({ client }) {
         ...state.brief,
         contact: {
           ...state.brief.contact,
-          email: contact.email.trim(),
           people: filledPeople.map((p) => ({
             name: p.name.trim(),
             phone: normalisePhone(p.phone),
@@ -382,25 +380,9 @@ export default function Access({ client }) {
                       match each join to a name.
                     </p>
 
-                    <input
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      value={contact.email}
-                      onChange={(e) => {
-                        setContactError(false)
-                        setContact((c) => ({ ...c, email: e.target.value }))
-                      }}
-                      placeholder="your@email.com"
-                      className="mt-1 w-full rounded-md border border-line bg-ink-raised/60 px-3 py-[12px] text-[14px] text-bone placeholder:text-bone-faint transition-colors duration-200 focus:border-brand focus:bg-ink-raised focus:outline-none caret-brand"
-                    />
-                    <p className="text-[11px] leading-[1.5] text-bone-muted">
-                      So we can reach you in writing when we need to.
-                    </p>
                     {contactError && (
                       <p className="text-[12px] text-danger">
-                        Every row needs a name and a valid number, and we need your email
-                        address.
+                        Every row needs a name and a valid number, including country code.
                       </p>
                     )}
                   </div>
