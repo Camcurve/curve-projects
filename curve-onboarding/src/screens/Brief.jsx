@@ -24,6 +24,7 @@ const QUESTIONS = [
     type: 'channel-picker',
     label: <>Which {accent('YouTube')} channel is yours?</>,
     hint: 'Start typing and pick it from the list — that way we link you straight to the right settings later.',
+    required: true,
   },
   {
     id: 'team',
@@ -129,13 +130,22 @@ export default function Brief({ client }) {
   )
 
   const footer = (
-    <div className="flex items-center gap-3">
-      <Button variant="ghost" onClick={goBack} className="px-4">
-        Back
-      </Button>
-      <Button size="block" withArrow disabled={!canAdvance} onClick={goNext}>
-        {isLast ? 'Continue' : 'Next'}
-      </Button>
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" onClick={goBack} className="px-4">
+          Back
+        </Button>
+        <Button size="block" withArrow disabled={!canAdvance} onClick={goNext}>
+          {isLast ? 'Continue' : 'Next'}
+        </Button>
+      </div>
+      {!canAdvance && (
+        <p className="text-center text-[12px] text-bone-muted">
+          {q.type === 'channel-picker'
+            ? 'Pick your channel to carry on.'
+            : 'Answer this one to carry on.'}
+        </p>
+      )}
     </div>
   )
 

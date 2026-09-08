@@ -142,7 +142,7 @@ export default function Done({ client }) {
           <h2 className="mb-1 text-[13px] font-semibold text-bone-dim">What happens next</h2>
           <NextBlock
             title="Within 24 hours"
-            body="Curve accepts the YouTube invite and analyses your channel."
+            body="Curve accepts the YouTube invite and leverages data from your channel to inform creative."
           />
           <NextBlock
             title="Before the kick-off call"
