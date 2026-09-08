@@ -64,10 +64,8 @@ function buildEmailPayload({ client, state, brief }) {
     Brand: client.name,
     Slug: client.slug,
     'Completed at': new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }),
-    Website: dash(b.website),
     'YouTube channel': dash(b.youtube),
     Team: describeTeam(b.team),
-    'Never say or do': dash(b.neverDo),
     'Point of contact': describeContact(b.contact),
     'YouTube access granted': state.ytDone
       ? 'Yes'

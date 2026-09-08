@@ -264,6 +264,10 @@ export default function Access({ client }) {
                 </code>{' '}
                 and set the role to <strong className="text-bone">Manager</strong>.
               </>,
+              <>
+                Seeing a permissions error? Tap <strong className="text-bone">Switch account</strong>{' '}
+                — it needs the Google account that manages the channel.
+              </>,
               <>Send. We&apos;ll accept within a few hours.</>,
               <>Tick below once the invite&apos;s sent.</>,
             ]}

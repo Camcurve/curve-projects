@@ -24,25 +24,11 @@ const QUESTIONS = [
     hint: 'Drag each row to how many of that role you have. Zero is fine.',
   },
   {
-    id: 'website',
-    act: ACT_ESSENTIALS,
-    type: 'url',
-    label: <>What&apos;s your {accent('website')}?</>,
-    placeholder: 'https://',
-  },
-  {
     id: 'youtube',
     act: ACT_ESSENTIALS,
     type: 'channel-picker',
     label: <>Which {accent('YouTube')} channel is yours?</>,
     hint: 'Start typing and pick it from the list — that way we link you straight to the right settings later.',
-  },
-  {
-    id: 'neverDo',
-    act: ACT_DETAILS,
-    type: 'textarea',
-    label: <>Anything we should {accent('never')} say or do?</>,
-    placeholder: "Topics, phrases, competitors you won't touch…",
   },
 ]
 

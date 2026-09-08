@@ -40,7 +40,7 @@ export default function Welcome({ client }) {
 
         <motion.p variants={item} className="max-w-[42ch] text-[16px] leading-[1.55] text-bone-dim">
           A short walkthrough from Cam, then four quick steps so we can plug straight into
-          your channel. Takes about five minutes — your answers save as you go.
+          your channel. Takes about two minutes — your answers save as you go.
         </motion.p>
 
         {client.stats && (
