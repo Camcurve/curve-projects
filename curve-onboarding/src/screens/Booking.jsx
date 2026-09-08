@@ -49,7 +49,7 @@ export default function Booking({ client }) {
             kick-off call.
           </h1>
           <p className="text-[14px] leading-[1.55] text-bone-dim">
-            Forty-five minutes with Cam &amp; Ayla to sharpen the concepts we&apos;re already working on.
+            Forty-five minutes with Cam &amp; Ayla. We&apos;re already working — the sooner we talk, the sharper the first round.
           </p>
         </header>
 
@@ -59,7 +59,7 @@ export default function Booking({ client }) {
             <span>45 min · Google Meet · With Cam &amp; Ayla</span>
           </div>
           <ul className="flex flex-col gap-3">
-            <Bullet>React to the first concepts and narrow down what we make</Bullet>
+            <Bullet>Walk where the concepts are heading and narrow down what we make</Bullet>
             <Bullet>Establish the key roles and stakeholders on both sides</Bullet>
             <Bullet>
               Understand access — the event spaces, the talent, and what we&apos;re able to film

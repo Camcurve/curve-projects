@@ -149,8 +149,12 @@ export default function Done({ client }) {
             body={`Curve adds key stakeholders to ${commsName} for comms.`}
           />
           <NextBlock
+            title="Your kick-off call"
+            body="Whenever you've booked it — the sooner we talk, the sharper the first round. Bring whoever signs off on creative."
+          />
+          <NextBlock
             title="Within 7 days"
-            body="First concepts back for you to react to. The kick-off call is where we sharpen them against the talent and spaces you can actually get to."
+            body="First concepts back for you to react to."
           />
         </motion.div>
       </motion.div>
