@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 // The client's logo standing in for their name in the welcome headline.
 //
 // The stored logos are white-on-transparent, so they're used as a CSS mask and
-// filled with the brand colour — that keeps the headline's orange accent instead
-// of dropping a white mark into the middle of it, and it works for any client
-// logo without needing a second recoloured file.
+// filled with a colour token rather than shown as an image — same file works for
+// any treatment, and it matches the headline type exactly instead of reading
+// brighter than it.
 //
 // Falls back to the plain text name if there's no logo, if it fails to load, or
 // if the browser can't do masking.
@@ -55,7 +55,7 @@ export default function HeroWordmark({ client, className = '' }) {
       role="img"
       aria-label={client.name}
       style={mask}
-      className={`mt-[6px] block h-[64px] w-full bg-brand sm:h-[84px] ${className}`}
+      className={`mt-[6px] block h-[64px] w-full bg-bone sm:h-[84px] ${className}`}
     />
   )
 }
