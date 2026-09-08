@@ -97,7 +97,7 @@ export default function Done({ client }) {
             <span className="text-brand">{firstNameOf(client)}.</span>
           </h1>
           <p className="text-[14px] leading-[1.55] text-bone-dim">
-            Everything we need is in. The first artefacts land within a week of your kick-off call.
+            Everything we need is in — we start today.
           </p>
         </motion.div>
 
@@ -142,15 +142,15 @@ export default function Done({ client }) {
           <h2 className="mb-1 text-[13px] font-semibold text-bone-dim">What happens next</h2>
           <NextBlock
             title="Within 24 hours"
-            body="Curve accepts the YouTube invite and leverages data from your channel to inform creative."
+            body="Curve accepts the YouTube invite and starts working up concepts from your channel data."
           />
           <NextBlock
             title="Before the kick-off call"
             body={`Curve adds key stakeholders to ${commsName} for comms.`}
           />
           <NextBlock
-            title="After the call"
-            body="Curve begins working on creative, with a 7-day turnaround."
+            title="Within 7 days"
+            body="First concepts back for you to react to. The kick-off call is where we sharpen them against the talent and spaces you can actually get to."
           />
         </motion.div>
       </motion.div>

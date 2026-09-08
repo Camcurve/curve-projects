@@ -49,7 +49,7 @@ export default function Booking({ client }) {
             kick-off call.
           </h1>
           <p className="text-[14px] leading-[1.55] text-bone-dim">
-            Forty-five minutes with Cam &amp; Ayla to get creative moving.
+            Forty-five minutes with Cam &amp; Ayla to sharpen the concepts we&apos;re already working on.
           </p>
         </header>
 
@@ -59,6 +59,7 @@ export default function Booking({ client }) {
             <span>45 min · Google Meet · With Cam &amp; Ayla</span>
           </div>
           <ul className="flex flex-col gap-3">
+            <Bullet>React to the first concepts and narrow down what we make</Bullet>
             <Bullet>Establish the key roles and stakeholders on both sides</Bullet>
             <Bullet>
               Understand access — the event spaces, the talent, and what we&apos;re able to film
@@ -76,7 +77,7 @@ export default function Booking({ client }) {
           </div>
           <ul className="flex flex-col gap-3">
             <Bullet>Your brand guidelines — however they exist today, a PDF is ideal</Bullet>
-            <Bullet>Anyone who owns sign-off on creative or permissions</Bullet>
+            <Bullet>Whoever owns sign-off on creative — decisions land faster with them in the room</Bullet>
           </ul>
           <p className="text-[12px] leading-[1.5] text-bone-muted">
             No need to send anything ahead — we&apos;ll go through it together on the call.
